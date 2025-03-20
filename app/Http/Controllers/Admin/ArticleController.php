@@ -19,8 +19,8 @@ class ArticleController extends Controller
 
     public function index(Request $request)
     {
-        $keyword = $request->keyword ?? '';
-        $query = Article::query();
+        $keyword    = $request->keyword ?? '';
+        $query      = Article::query();
         
         // Apply search filter based on the keyword (search in title or content)
         $query->when($keyword, function($query) use ($keyword) {
@@ -44,18 +44,17 @@ class ArticleController extends Controller
     public function store(Request $request)
         {
                 $request->validate([
-                    'title'     => 'required|string|max:255',
-                    'sub_title' => 'nullable|string|max:255',
-                    'content' => 'required|string',
-                    'meta_type' => 'nullable|string',
-                    'meta_description' => 'nullable|string',
-                    'meta_keywords' => 'nullable|string',
-                    'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+                    'title'             => 'required|string|max:255',
+                    'sub_title'         => 'nullable|string|max:255',
+                    'content'           => 'required|string',
+                    'meta_type'         => 'nullable|string',
+                    'meta_description'  => 'nullable|string',
+                    'meta_keywords'     => 'nullable|string',
+                    'image'             => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
                 ]);
 
                 // Prepare the request data
                 $data = $request->all();
-
                // Handle Image Upload
                 if ($request->hasFile('image') && $request->file('image')->isValid()) {
                     $file       = $request->file('image');
@@ -92,13 +91,13 @@ class ArticleController extends Controller
     {
         // dd("dgfcdysgy");
         $request->validate([
-            'title' => 'required|string|max:255',
-            'sub_title' => 'nullable|string|max:255',
-            'content' => 'required|string',
-            'meta_type' => 'nullable|string',
-            'meta_description' => 'nullable|string',
-            'meta_keywords' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+            'title'             => 'required|string|max:255',
+            'sub_title'         => 'nullable|string|max:255',
+            'content'           => 'required|string',
+            'meta_type'         => 'nullable|string',
+            'meta_description'  => 'nullable|string',
+            'meta_keywords'     => 'nullable|string',
+            'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
         ]);
     
         $this->articleRepository->update($id, $request->all());

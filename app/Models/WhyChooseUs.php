@@ -5,13 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SocialMedia extends Model
+class WhyChooseUs extends Model
 {
     use HasFactory;
-    protected $table = "social_media";
+    protected $table = "why_chhose_us";
     protected $fillable = [
-        'title',
-        'link' ,
-        'image',
+        'title', 'desc' 
     ];
 }

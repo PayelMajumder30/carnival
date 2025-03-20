@@ -15,7 +15,9 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.social_media.update') }}" method="post" enctype="multipart/form-data">@csrf
+                        <form action="{{ route('admin.social_media.update', $data->id) }}" method="post" enctype="multipart/form-data">@csrf
+                            @csrf
+                            @method('POST')
                             <div class="row form-group">
                                 <div class="col-md-6" style="margin-top: 50px;">
                                     <label for="title">Title <span style="color: red;">*</span></label>
@@ -33,7 +35,7 @@
                                     @endif
                                     <label for="image">Image <span style="color: red;">*</span></label>
                                     <input type="file" class="form-control" name="image" id="image">
-                                    <p class="small text-muted">Size: less than 1 mb | Extension: .webp for better SEO | Preferable Dimensions: 64 X 64 px</p>
+                                    <p class="small text-muted">Size: less than 1 mb</p>
                                     @error('image') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div>
                             </div>

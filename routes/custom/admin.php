@@ -23,7 +23,7 @@ Route::name('admin.')->group(function() {
         // settings
         Route::get('/settings', [ContentController::class, 'settings'])->name('settings');
         Route::post('/settings/update', [ContentController::class, 'settingsUpdate'])->name('settings.update');
-         // Social Media
+         // user management
          Route::prefix('admin-management')->group(function() {
             Route::get('/', [UserManagementController::class, 'index'])->name('user_management.list.all');
             Route::get('/create', [UserManagementController::class, 'create'])->name('user_management.create');
@@ -41,9 +41,10 @@ Route::name('admin.')->group(function() {
                Route::get('/create', [SocialMediaController::class, 'create'])->name('social_media.create');
                Route::post('/store', [SocialMediaController::class, 'store'])->name('social_media.store');
                Route::get('/edit/{id}', [SocialMediaController::class, 'edit'])->name('social_media.edit');
-               Route::post('/update', [SocialMediaController::class, 'update'])->name('social_media.update');
+               Route::post('/update/{id}', [SocialMediaController::class, 'update'])->name('social_media.update');
                Route::get('/delete/{id}', [SocialMediaController::class, 'delete'])->name('social_media.delete');
            });
+           //blogs
            Route::prefix('blog')->group(function() {
                 Route::get('/', [BlogController::class, 'index'])->name('blog.list.all');
                 Route::get('/create', [BlogController::class, 'create'])->name('blog.create');
@@ -54,6 +55,7 @@ Route::name('admin.')->group(function() {
                 Route::get('/status/{id}', [BlogController::class, 'BlogStatus'])->name('blog.status'); 
                 Route::get('/delete/{id}', [BlogController::class, 'delete'])->name('blog.delete');
             });
+            //partners
             Route::prefix('partners')->group(function() {
                 Route::get('/', [PartnerController::class, 'index'])->name('partners.list.all');
                 Route::get('/create', [PartnerController::class, 'create'])->name('partners.create');
@@ -61,6 +63,24 @@ Route::name('admin.')->group(function() {
                 Route::get('/edit/{id}', [PartnerController::class, 'edit'])->name('partners.edit');
                 Route::post('/update/{id}', [PartnerController::class, 'update'])->name('partners.update');
                 Route::get('/delete/{id}', [PartnerController::class, 'delete'])->name('partners.delete');
+            });
+            //banners
+            Route::prefix('banner')->group(function() {
+                Route::get('/', [BannerController::class, 'index'])->name('banner.list.all');
+                Route::get('/create', [BannerController::class, 'create'])->name('banner.create');
+                Route::post('/store', [BannerController::class, 'store'])->name('banner.store');
+                Route::get('/edit/{id}', [BannerController::class, 'edit'])->name('banner.edit');
+                Route::post('/update/{id}', [BannerController::class, 'update'])->name('banner.update');
+                Route::get('/delete/{id}', [BannerController::class, 'delete'])->name('banner.delete');
+            });
+            //why choose us
+            Route::prefix('whychooseus')->group(function() {
+                Route::get('/', [WhyChooseController::class, 'index'])->name('whychooseus.list.all');
+                Route::get('/create', [WhyChooseController::class, 'create'])->name('whychooseus.create');
+                Route::post('/store', [WhyChooseController::class, 'store'])->name('whychooseus.store');
+                Route::get('/edit/{id}', [WhyChooseController::class, 'edit'])->name('whychooseus.edit');
+                Route::post('/update/{id}', [WhyChooseController::class, 'update'])->name('whychooseus.update');
+                Route::get('/delete/{id}', [WhyChooseController::class, 'delete'])->name('whychooseus.delete');
             });
         });
         // Route::resource('article', ArticleController::class);

@@ -86,6 +86,8 @@
                                                     <label for="">Social Media</label>
                                                     <input type="checkbox" id="partners" name="roles[]" value="partners" data-parent="MASTER MODULES" {{ in_array('partners', $permissions) ? 'checked' : '' }}>
                                                     <label for="">Partners</label>
+                                                    <input type="checkbox" id="banner" name="roles[]" value="banner" data-parent="MASTER MODULES" {{ in_array('banner', $permissions) ? 'checked' : '' }}>
+                                                    <label for="">Banners</label>
                                                 </li>
                                             </ul>
                                         </li>

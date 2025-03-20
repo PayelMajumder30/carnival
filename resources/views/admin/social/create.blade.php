@@ -25,7 +25,7 @@
                                 <div class="col-md-6">
                                     <label for="image">Image <span style="color: red;">*</span></label>
                                     <input type="file" class="form-control" name="image" id="image">
-                                    <p class="small text-muted">Size: less than 1 mb | Extension: .webp for better SEO | Preferable Dimensions: 64 X 64 px</p>
+                                    <p class="small text-muted">Size: less than 1 mb</p>
                                     @error('image') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div>
                             </div>

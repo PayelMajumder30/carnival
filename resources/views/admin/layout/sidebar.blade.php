@@ -56,6 +56,24 @@
                         </a>
                     </li>
                 @endif
+                @if(in_array('banner', $RolePass)) 
+                <li class="nav-item">
+                    <a href="{{ route('admin.banner.list.all')}}" 
+                       class="nav-link {{ (request()->is('admin/master-module/banner*')) ? 'active active_nav_link' : '' }}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Banner List</p>
+                    </a>
+                </li>
+                @endif
+                @if(in_array('whychooseus', $RolePass))
+                <li class="nav-item">
+                    <a href="{{ route('admin.whychooseus.list.all')}}"
+                        class="nav-link {{ (request()->is('admin/master-module/whychooseus*')) ? 'active active_nav_link' : ''}}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Why Choose US</p>
+                    </a>
+                </li>
+                @endif
                 </ul>
             </li>
         @endif

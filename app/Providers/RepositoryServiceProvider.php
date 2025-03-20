@@ -26,6 +26,15 @@ use App\Repositories\ArticleRepository;
 use App\Interfaces\PartnerRepositoryInterface;
 use App\Repositories\PartnerRepository;
 
+use App\Interfaces\BannerRepositoryInterface;
+use App\Repositories\BannerRepository;
+
+use App\Interfaces\SocialRepositoryInterface;
+use App\Repositories\SocialRepository;
+
+use App\Interfaces\ChooseUsRepositoryInterface;
+use App\Repositories\ChooseUsRepository;
+
 use App\Interfaces\BlogRepositoryInterface;
 use App\Repositories\BlogRepository;
 
@@ -46,6 +55,9 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(PageContentRepositoryInterface::class, PageContentRepository::class);
         $this->app->bind(BlogRepositoryInterface::class, BlogRepository::class);
         $this->app->bind(PartnerRepositoryInterface::class, PartnerRepository::class);
+        $this->app->bind(SocialRepositoryInterface::class, SocialRepository::class);
+        $this->app->bind(BannerRepositoryInterface::class, BannerRepository::class);
+        $this->app->bind(ChooseUsRepositoryInterface::class, ChooseUsRepository::class);
 
         $this->app->bind(UserInterface::class, UserRepository::class);
         // $this->app->bind(OrderInterface::class, OrderRepository::class);
