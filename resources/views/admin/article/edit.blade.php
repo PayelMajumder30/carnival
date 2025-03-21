@@ -21,7 +21,7 @@
                             @csrf
                             @method('POST')
                             <div class="form-group">
-                                <label for="title">Title *</label>
+                                <label for="title">Title <span style="color: red;">*</span></label>
                                 <input type="text" class="form-control" name="title" id="title" placeholder="Enter Title" value="{{ $data->title }}">
                                 @error('title') 
                                     <p class="small text-danger">{{ $message }}</p> 
@@ -29,14 +29,14 @@
                             </div>
                             
                             <div class="form-group">
-                                <label for="sub_title">Sub Title *</label>
+                                <label for="sub_title">Sub Title <span style="color: red;">*</span></label>
                                 <input type="text" class="form-control" name="sub_title" id="sub_title" placeholder="Enter Sub Title" value="{{ $data->sub_title }}">
                                 @error('sub_title') 
                                     <p class="small text-danger">{{ $message }}</p> 
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label for="content">Content *</label>
+                                <label for="content">Content <span style="color: red;">*</span></label>
                                 <textarea class="form-control ckeditor" name="content" id="content" placeholder="Enter Content">{{ $data->content }}</textarea>
                                 @error('content') 
                                     <p class="small text-danger">{{ $message }}</p> 
@@ -77,7 +77,7 @@
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label for="status">Status *</label>
+                                <label for="status">Status <span style="color: red;">*</span></label>
                                 <select class="form-control" name="status" id="status">
                                     <option value="1" {{ $data->status == 1 ? 'selected' : '' }}>Active</option>
                                     <option value="0" {{ $data->status == 0 ? 'selected' : '' }}>Inactive</option>

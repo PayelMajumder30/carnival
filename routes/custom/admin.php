@@ -82,6 +82,16 @@ Route::name('admin.')->group(function() {
                 Route::post('/update/{id}', [WhyChooseController::class, 'update'])->name('whychooseus.update');
                 Route::get('/delete/{id}', [WhyChooseController::class, 'delete'])->name('whychooseus.delete');
             });
+             //offer list
+             Route::prefix('offers')->group(function() {
+                Route::get('/', [OfferController::class, 'index'])->name('offers.list.all');
+                Route::get('/create', [OfferController::class, 'create'])->name('offers.create');
+                Route::post('/store', [OfferController::class, 'store'])->name('offers.store');
+                Route::get('/status/{id}', [OfferController::class, 'status'])->name('offers.status'); 
+                Route::get('/edit/{id}', [OfferController::class, 'edit'])->name('offers.edit');
+                Route::post('/update/{id}', [OfferController::class, 'update'])->name('offers.update');
+                Route::get('/delete/{id}', [OfferController::class, 'delete'])->name('offers.delete');
+            });
         });
         // Route::resource('article', ArticleController::class);
 

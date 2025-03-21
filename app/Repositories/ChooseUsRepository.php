@@ -28,26 +28,24 @@ class ChooseUsRepository implements ChooseUsRepositoryInterface
             return WhyChooseUs::create($chooseusData);
         }
 
-    // public function update($id, array $data)
-    //     {
-    //         // Find the banner media by ID
-    //         $banner     = WhyChooseUs::findOrFail($id);      
-    //         $updateData = [            
-    //             'title'  => $data['title'],
-    //         ];
-    //         $banner->update($updateData);
-    //         return $banner;
-    //     }
+    public function update($id, array $data)
+        {
+            // Find the banner media by ID
+            $choose     = WhyChooseUs::findOrFail($id);      
+            $chooseusData = [            
+                'title' => $data['title'],
+                'desc'  => $data['desc'], 
+            ];
+            $choose->update($chooseusData);
+            return $choose;
+        }
 
-    // public function delete($id)
-    // {
-    //     $banner = WhyChooseUs::findOrFail($id);
-    //     //dd($banner);
-    //     if($banner->delete()){
-    //         return true;
-    //     } else{
-    //         return false;
-    //     }
-        
-    // }
+    public function delete($id){
+        $choose = WhyChooseUs::findOrFail($id);
+        if($choose->delete()){
+            return true;
+        } else{
+            return false;
+        }
+    }
 }

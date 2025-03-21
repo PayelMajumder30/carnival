@@ -20,21 +20,21 @@
                         <form action="{{ route('admin.article.store') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group">
-                                <label for="title">Title *</label>
+                                <label for="title">Title <span style="color: red;">*</span></label>
                                 <input type="text" class="form-control" name="title" id="title" placeholder="Enter Title" value="{{ old('title') }}">
                                 @error('title') 
                                     <p class="small text-danger">{{ $message }}</p> 
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label for="sub_title">Sub Title *</label>
+                                <label for="sub_title">Sub Title <span style="color: red;">*</span></label>
                                 <input type="text" class="form-control" name="sub_title" id="sub_title" placeholder="Enter Sub Title" value="{{ old('sub_title') }}">
                                 @error('sub_title') 
                                     <p class="small text-danger">{{ $message }}</p> 
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label for="content">Content *</label>
+                                <label for="content">Content <span style="color: red;">*</span></label>
                                 <textarea class="form-control ckeditor" name="content" id="content" placeholder="Enter Content">{{ old('content') }}</textarea>
                                 @error('content') 
                                     <p class="small text-danger">{{ $message }}</p> 

@@ -70,7 +70,16 @@
                     <a href="{{ route('admin.whychooseus.list.all')}}"
                         class="nav-link {{ (request()->is('admin/master-module/whychooseus*')) ? 'active active_nav_link' : ''}}">
                         <i class="far fa-circle nav-icon"></i>
-                        <p>Why Choose US</p>
+                        <p>Why Choose Us</p>
+                    </a>
+                </li>
+                @endif
+                @if(in_array('offers', $RolePass))
+                <li class="nav-item">
+                    <a href="{{ route('admin.offers.list.all')}}"
+                        class="nav-link {{ (request()->is('admin/master-module/offers*')) ? 'active active_nav_link' : ''}}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Offer List</p>
                     </a>
                 </li>
                 @endif

@@ -87,7 +87,11 @@
                                                     <input type="checkbox" id="partners" name="roles[]" value="partners" data-parent="MASTER MODULES" {{ in_array('partners', $permissions) ? 'checked' : '' }}>
                                                     <label for="">Partners</label>
                                                     <input type="checkbox" id="banner" name="roles[]" value="banner" data-parent="MASTER MODULES" {{ in_array('banner', $permissions) ? 'checked' : '' }}>
-                                                    <label for="">Banners</label>
+                                                    <label for="">Banner List</label>
+                                                    <input type="checkbox" id="whychooseus" name="roles[]" value="whychooseus" data-parent="MASTER MODULES" {{ in_array('whychooseus', $permissions) ? 'checked' : '' }}>
+                                                    <label for="">Why Choose Us</label>
+                                                    <input type="checkbox" id="offers" name="roles[]" value="offers" data-parent="MASTER MODULES" {{ in_array('offers', $permissions) ? 'checked' : '' }}>
+                                                    <label for="">Offer List</label>
                                                 </li>
                                             </ul>
                                         </li>
