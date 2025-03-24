@@ -29,13 +29,13 @@
                                 <input type="text" class="form-control" name="title" id="title" placeholder="Enter title.." value="{{ old('title') }}">
                                 @error('title') <p class="small text-danger">{{ $message }}</p> @enderror
                             </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label for="">Short Description</label>
                                 <textarea name="short_description" id="short_description" cols="4" rows="5" class="form-control" placeholder="">{{old('short_description')}}</textarea>
                                 @error('short_description')
                                     <p class="small text-danger">{{$message}}</p>
                                 @enderror
-                            </div>
+                            </div> --}}
                             <div class="form-group">
                                 <label for="">Description <span style="color: red;">*</span></label>
                                 <textarea name="description" id="description" cols="4" rows="5" class="form-control ckeditor" placeholder="">{{old('description')}}</textarea>
@@ -43,7 +43,7 @@
                                     <p class="small text-danger">{{$message}}</p>
                                 @enderror
                             </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label for="meta_title">Meta Title</label>
                                 <input type="text" class="form-control" name="meta_title" id="meta_title" placeholder="Enter Meta Title.." value="{{ old('meta_title') }}">
                                 @error('meta_title') <p class="small text-danger">{{ $message }}</p> @enderror
@@ -69,11 +69,10 @@
                                   <p class="small text-danger">{{$message}}</p>
                                 @enderror
                             </div>
-                            
+                             --}}
                           
                             </div>
                             <div class="mb-4 ml-4">
-
                                 <button type="submit" class="btn btn-primary">Upload</button>
                             </div>
                         </form>
@@ -87,7 +86,7 @@
 @endsection
 @section('script')
 <script>
-   CKEDITOR.replace( 'desc' ); 
+   CKEDITOR.replace( 'description' ); 
     // Loop through each editor element and initialize ClassicEditor
     
 </script>

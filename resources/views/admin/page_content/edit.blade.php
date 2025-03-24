@@ -37,13 +37,13 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label for="short_description">Short Description</label>
                                 <textarea name="short_description" id="short_description" cols="4" rows="5" class="form-control" placeholder="Enter short description">{{ old('short_description', $data->short_description) }}</textarea>
                                 @error('short_description')
                                     <p class="small text-danger">{{ $message }}</p>
                                 @enderror
-                            </div>
+                            </div> --}}
 
                             <div class="form-group">
                                 <label for="description">Description <span style="color: red;">*</span></label>
@@ -52,7 +52,7 @@
                                     <p class="small text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
-                            <div class="form-group">
+                            {{-- <div class="form-group">
                                 <label for="meta_title">Meta Title</label>
                                 <input type="text" class="form-control" name="meta_title" id="meta_title" placeholder="Enter Meta Title.." value="{{ old('meta_title', $data->meta_title) }}">
                                 @error('meta_title') 
@@ -88,7 +88,7 @@
                                 @error('image')
                                     <p class="small text-danger">{{ $message }}</p>
                                 @enderror
-                            </div>
+                            </div> --}}
 
                             <div class="mb-4 ml-4">
                                 <button type="submit" class="btn btn-primary">Update</button>

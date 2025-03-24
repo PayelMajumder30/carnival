@@ -19,9 +19,9 @@ class PageContentRepository implements PageContentRepositoryInterface
 
         $query->when($keyword, function($query) use ($keyword) {
             $query->where('page', 'like', '%' . $keyword . '%');
-        });
+        })->orderBy('created_at', 'ASC')->get();   
 
-        return $query->orderBy('page', 'ASC')->paginate(25);
+        return $query->paginate(25);
     }
 
     /**
@@ -35,16 +35,16 @@ class PageContentRepository implements PageContentRepositoryInterface
         $page_content = new PageContent();
         $page_content->page = $data['page'];
         $page_content->title = $data['title'];
-        $page_content->short_description = $data['short_description'];
+        // $page_content->short_description = $data['short_description'];
         $page_content->description = $data['description'];
-        $page_content->slug = pageContentSlug($data['page'], 'page_contents');
-        $page_content->meta_title = $data['meta_title'];
-        $page_content->meta_description = $data['meta_description'];
-        $page_content->meta_keyword = $data['meta_keyword'];
+        // $page_content->slug = pageContentSlug($data['page'], 'page_contents');
+        // $page_content->meta_title = $data['meta_title'];
+        // $page_content->meta_description = $data['meta_description'];
+        // $page_content->meta_keyword = $data['meta_keyword'];
         
-        if (isset($data['image'])) {
-            $page_content->image = $data['image'];
-        }
+        // if (isset($data['image'])) {
+        //     $page_content->image = $data['image'];
+        // }
 
         $page_content->save();
 
@@ -76,23 +76,23 @@ class PageContentRepository implements PageContentRepositoryInterface
     {
         $page_content->page = $data['page'];
         $page_content->title = $data['title'];
-        $page_content->short_description = $data['short_description'];
+        // $page_content->short_description = $data['short_description'];
         $page_content->description = $data['description'];
-        $page_content->meta_title = $data['meta_title'];
-        $page_content->meta_description = $data['meta_description'];
-        $page_content->meta_keyword = $data['meta_keyword'];
+        // $page_content->meta_title = $data['meta_title'];
+        // $page_content->meta_description = $data['meta_description'];
+        // $page_content->meta_keyword = $data['meta_keyword'];
 
-        if ($page_content->page !== $data['page']) {
-            $page_content->slug = pageContentSlugUpdate($data['page'], 'page_contents');
-        }
+        // if ($page_content->page !== $data['page']) {
+        //     $page_content->slug = pageContentSlugUpdate($data['page'], 'page_contents');
+        // }
 
-        if (isset($data['image'])) {
-            if ($page_content->image && file_exists(public_path($page_content->image))) {
-                unlink(public_path($page_content->image));
-            }
+        // if (isset($data['image'])) {
+        //     if ($page_content->image && file_exists(public_path($page_content->image))) {
+        //         unlink(public_path($page_content->image));
+        //     }
 
-            $page_content->image = $data['image'];
-        }
+        //     $page_content->image = $data['image'];
+        // }
 
         $page_content->save();
         return $page_content;

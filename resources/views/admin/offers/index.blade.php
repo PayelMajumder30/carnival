@@ -45,12 +45,12 @@
                                     <th style="width: 5%">#</th>
                                     <th width="15%">Coupon Code</th>
                                     <th width="15%">Start Date</th> <!-- Add this column for image -->
-                                    <th width="35%">End Date</th>
-                                    <th width="35%">Discount Type</th>
-                                    <th width="35%">Discount Value</th>
-                                    <th width="35%">Minimum Order Amount</th>
+                                    <th width="15%">End Date</th>
+                                    <th width="10%">Discount Type</th>
+                                    <th width="10%">Discount Value</th>
+                                    <th width="15%">Minimum Order Amount</th>
                                     <th width="35%">Maximum Discount Amount</th>
-                                    <th width="35%">Global Usage Limit</th>
+                                    <th width="40%">Global Usage Limit</th>
                                     <th width="35%">Usage Per User</th>
                                     <th>Status</th>
                                     <th width="10%">Action</th>
@@ -78,10 +78,14 @@
                                         </td>
                                         <td class="d-flex">
                                             <div class="btn-group">
-                                                <a href="" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
+                                                <a href="{{ route('admin.offers.edit', $item->id)}}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
-                                                <a href="" class="btn btn-sm btn-dark" onclick="return confirm('Are you sure ?')" data-toggle="tooltip" title="Delete">
+                                                <a href="{{ route('admin.offers.delete', ['id' => $item->id]) }}"
+                                                    class="btn btn-sm btn-dark"
+                                                    onclick="return confirm('Are you sure you want to delete this offer?')"
+                                                    data-toggle="tooltip"
+                                                    title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </div>

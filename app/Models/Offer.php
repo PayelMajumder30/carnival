@@ -21,4 +21,5 @@ class Offer extends Model
         'usage_per_user',
         'status',
     ];
+
 }

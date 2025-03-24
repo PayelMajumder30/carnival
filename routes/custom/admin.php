@@ -89,7 +89,7 @@ Route::name('admin.')->group(function() {
                 Route::post('/store', [OfferController::class, 'store'])->name('offers.store');
                 Route::get('/status/{id}', [OfferController::class, 'status'])->name('offers.status'); 
                 Route::get('/edit/{id}', [OfferController::class, 'edit'])->name('offers.edit');
-                Route::post('/update/{id}', [OfferController::class, 'update'])->name('offers.update');
+                Route::post('/update', [OfferController::class, 'update'])->name('offers.update');
                 Route::get('/delete/{id}', [OfferController::class, 'delete'])->name('offers.delete');
             });
         });

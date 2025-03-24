@@ -40,17 +40,17 @@ class PageContentController extends Controller
             'page' => 'required|unique:page_contents,page',
             'title' => 'required',
             'description' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            // 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $data = $request->all();
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $fileName = time() . rand(10000, 99999) . '.' . $file->getClientOriginalExtension();
-            $imgPath = public_path('uploads/page_content');
-            $file->move($imgPath, $fileName);
-            $data['image'] = "uploads/page_content/" . $fileName;
-        }
+        // if ($request->hasFile('image')) {
+        //     $file = $request->file('image');
+        //     $fileName = time() . rand(10000, 99999) . '.' . $file->getClientOriginalExtension();
+        //     $imgPath = public_path('uploads/page_content');
+        //     $file->move($imgPath, $fileName);
+        //     $data['image'] = "uploads/page_content/" . $fileName;
+        // }
 
         $this->pageContentRepository->storePageContent($data);
 
@@ -76,22 +76,22 @@ class PageContentController extends Controller
             'page' => 'required|unique:page_contents,page,' . $id,
             'title' => 'required',
             'description' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            // 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $data = $request->all();
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $fileName = time() . rand(10000, 99999) . '.' . $file->getClientOriginalExtension();
-            $imgPath = public_path('uploads/page_content');
-            $file->move($imgPath, $fileName);
-            $data['image'] = "uploads/page_content/" . $fileName;
-        }
+        // if ($request->hasFile('image')) {
+        //     $file = $request->file('image');
+        //     $fileName = time() . rand(10000, 99999) . '.' . $file->getClientOriginalExtension();
+        //     $imgPath = public_path('uploads/page_content');
+        //     $file->move($imgPath, $fileName);
+        //     $data['image'] = "uploads/page_content/" . $fileName;
+        // }
 
         $page_content = $this->pageContentRepository->getPageContentById($id);
         $data=$this->pageContentRepository->updatePageContent($page_content, $data);
         // dd($data);
-// dd("yfh");
+        // dd("yfh");
         return redirect()->route('admin.page_content.list.all')->with('success', 'Page Content Updated Successfully!');
     }
 

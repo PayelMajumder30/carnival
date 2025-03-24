@@ -11,7 +11,7 @@ class PageContent extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = "page_contents";
-    protected $fillable = ['page', 'title', 'short_description', 'description', 'image','meta_title', 'meta_description', 'meta_keyword'];
+    protected $fillable = ['page', 'title', 'description'];
 }
 
 

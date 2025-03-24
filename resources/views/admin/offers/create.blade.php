@@ -33,7 +33,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="start_date">Start Date <span style="color: red;">*</span></label>
-                                        <input type="date" class="form-control" name="start_date" id="start_date" placeholder="Enter Start Date" value="{{ old('start_date') }}">
+                                        <input type="datetime-local" class="form-control" name="start_date" id="start_date" placeholder="Enter Start Date" value="{{ old('start_date') }}">
                                         @error('start_date') 
                                         <p class="small text-danger">{{ $message }}</p> 
                                         @enderror
@@ -43,7 +43,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="end_date">End Date <span style="color: red;">*</span></label>
-                                        <input type="date" class="form-control" name="end_date" id="end_date" placeholder="Enter Start Date" value="{{ old('end_date') }}">
+                                        <input type="datetime-local" class="form-control" name="end_date" id="end_date" placeholder="Enter Start Date" value="{{ old('end_date') }}">
                                         @error('end_date') 
                                             <p class="small text-danger">{{ $message }}</p> 
                                         @enderror
@@ -91,7 +91,7 @@
     
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="usage_limit">Global Usage Limit(Optional) <span style="color: red;">*</span></label>
+                                        <label for="usage_limit">Global Usage Limit(Optional) </span></label>
                                         <input type="text" class="form-control" name="usage_limit" id="usage_limit" placeholder="Enter global usage" value="{{ old('usage_limit') }}">
                                         @error('usage_limit') 
                                             <p class="small text-danger">{{ $message }}</p> 
@@ -101,7 +101,7 @@
     
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="usage_per_user">Usage Per User(Optional) <span style="color: red;">*</span></label>
+                                        <label for="usage_per_user">Usage Per User(Optional) </span></label>
                                         <input type="text" class="form-control" name="usage_per_user" id="usage_per_user" placeholder="Enter usage per user" value="{{ old('usage_per_user') }}">
                                         @error('usage_per_user') 
                                             <p class="small text-danger">{{ $message }}</p> 
