@@ -46,10 +46,10 @@
                                     <th width="15%">Coupon Code</th>
                                     <th width="15%">Start Date</th> <!-- Add this column for image -->
                                     <th width="15%">End Date</th>
-                                    <th width="10%">Discount Type</th>
-                                    <th width="10%">Discount Value</th>
-                                    <th width="15%">Minimum Order Amount</th>
-                                    <th width="35%">Maximum Discount Amount</th>
+                                    <th width="10%">Type</th>
+                                    <th width="10%">Value</th>
+                                    <th width="15%">Min Order Amount</th>
+                                    <th width="35%">Max Discount Amount</th>
                                     <th width="40%">Global Usage Limit</th>
                                     <th width="35%">Usage Per User</th>
                                     <th>Status</th>
@@ -61,10 +61,16 @@
                                     <tr class="text-left align-middle">
                                         <td>{{ $index+1 }}</td>
                                         <td>{{ $item->coupon_code }}</td>
-                                        <td>{{ $item->start_date }}</td>
-                                        <td>{{ $item->end_date }}</td>
-                                        <td>{{ $item->discount_type }}</td>
-                                        <td>{{ $item->discount_value }}</td>
+                                        <td>{{date('d-m-Y h:i A',strtotime($item->start_date))}}</td>
+                                        <td>{{date('d-m-Y h:i A',strtotime($item->end_date))}}</td>
+                                        <td>{{ucwords($item->discount_type)}}</td>
+                                        <td>
+                                            @if($item->discount_type == 'percentage')
+                                                {{ number_format($item->discount_value, 0) }} %
+                                            @else
+                                                {{ $item->discount_value }}
+                                            @endif
+                                        </td>
                                         <td>{{ $item->minimum_order_amount }}</td>
                                         <td>{{ $item->maximum_discount }}</td>
                                         <td>{{ $item->usage_limit }}</td>
@@ -98,6 +104,10 @@
                                 @endforelse
                             </tbody>
                         </table>
+                       {{-- Pagination Links --}}
+                        <div class="pagination-container">
+                            {{$offer->links()}}
+                        </div>
                     </div>
                 </div>
             </div>

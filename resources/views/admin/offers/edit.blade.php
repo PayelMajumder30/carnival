@@ -56,9 +56,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="discount_value_label">Discount Value <span style="color: red;">*</span></label>
+                                    <label for="discount_value" id="discount_value_label">Discount Value <span style="color: red;">*</span></label>
                                     <input type="text" class="form-control" name="discount_value" id="discount_value" 
-                                        value="{{ old('discount_value', $data->discount_value)}}">
+                                        value="{{ old('discount_value', $data->discount_type == 'percentage' ? intval($data->discount_value) : $data->discount_value)}}">
                                     @error('discount_value') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div>
                             </div>
@@ -96,7 +96,7 @@
                             </div>
                         </div>
                         <input type="hidden" name="id" value="{{$data->id}}">
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="submit" class="btn btn-primary ">Update</button>
                         </form>
                     </div>
                 </div>
@@ -107,19 +107,32 @@
 @endsection
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function(){
-        function updateDiscountField() {
-            let discountType = $("#discount_type").val();
-            let discountLabel = $("#discount_value_label");
+  $(document).ready(function(){
+    function updateDiscountField(){
+        let discountType    = $('#discount_type').val();
+        let discountLabel   = $('#discount_value_label');
+        let discountValue   = $('#discount_value');
 
-            if(discountType === 'percentage') {
-                discountLabel.text("Percentage Discount Value (%)");
-            } else {
-                discountLabel.text("Flat Discount Value");
-            }
+        if(discountType === 'percentage') {
+            discountLabel.html("Percentage Discount Value % <span style='color: red;'>*</span>");
+            discountValue.attr("placeholder", "Enter percentage discount value");
+            discountValue.val(""); // Clear the input field when switching
+        } else{
+            discountLabel.html("Flat Discount Value <span style= 'color: red;'>*</span>");
+            discountValue.attr("placeholder", "Enter flat discount value");
+            discountValue.val(""); // Clear the input field when switching
         }
+    }
+        //Delete changes in the discount type dropdown
+        $('#discount_type').change(updateDiscountField);
 
-        $("#discount_type").change(updateDiscountField);
-        updateDiscountField(); // Run on page load
-    });
+        //Run function on page load but retain the existing value
+        let initialDiscountType = $('#discount_type').val();
+        if(initialDiscountType === "percentage") {
+            $('#discount_value_label').html("Percentage Discount Value % <span style='color: red;'>*</span>");  
+        } else {
+            $('#discount_value_label').html("Flat Discount value <span style= 'color:red'>*</span>")
+        }  
+        
+  })
 </script>
