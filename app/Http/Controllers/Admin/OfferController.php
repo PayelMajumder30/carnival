@@ -66,7 +66,7 @@ class OfferController extends Controller
 
     public function status(Request $request, $id)
     {
-        $data = Offer::find($id);;
+        $data = Offer::find($id);
         $data->status = ($data->status == 1) ? 0 : 1;
         $data->update();
         return response()->json([
