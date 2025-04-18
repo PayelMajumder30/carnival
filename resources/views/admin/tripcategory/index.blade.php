@@ -110,9 +110,12 @@
                                                 <i class="fa fa-edit"></i>
                                             </a>
                                             <a href="{{ route('admin.tripcategory.delete', $item->id) }}"
-                                                class="btn btn-sm btn-dark" onclick="return confirm('Are you sure?')"
+                                                class="btn btn-sm btn-dark mr-1" onclick="return confirm('Are you sure?')"
                                                 data-toggle="tooltip" title="Delete">
                                                 <i class="fa fa-trash"></i>
+                                            </a>
+                                            <a href="{{ route('admin.tripcategorybanner.list.all', ['trip_cat_id' => $item->id] )}}" class="btn btn-sm btn-primary mr-1" data-toggle="tooltip" title="Banner">
+                                                Banner
                                             </a>
                                         </div>
                                     </div>

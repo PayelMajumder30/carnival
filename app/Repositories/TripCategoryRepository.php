@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\TripCategory;
+use App\Models\{TripCategory, TripCategoryBanner};
 use App\Interfaces\TripCategoryRepositoryInterface;
 //use Auth;
 
@@ -48,4 +48,40 @@ class TripCategoryRepository implements TripCategoryRepositoryInterface
             return false;
         }       
     }
+
+    public function banner_create(array $data)
+    {
+        
+        // Initialize image path to null
+        //$imagePath      = $data['image'] ?? null;   
+        $tripbannerCatdata = [  
+            'trip_cat_id'   => $data['trip_cat_id'] ?? null,                   
+            'image'         => $data['image'] ?? null, // Store the image path
+        ];
+        return TripCategoryBanner::create($tripbannerCatdata);
+    }
+
+    public function banner_update(array $data)
+        {
+            // Find the tripcategorybanner by ID
+            $tripbanner = TripCategoryBanner::findOrFail($data['id']);
+            $imagePath  = $tripbanner->image;
+            if (isset($data['image']) && $data['image']->isValid()) {
+                if (!empty($imagePath) && file_exists(public_path($imagePath))) {
+                    unlink(public_path($imagePath));
+                }
+                $image   = $data['image'];
+                $extension  = $image->getClientOriginalExtension();
+                $filename   = time() . rand(10000, 99999) . '.' . $extension;
+                $filePath   = 'uploads/trip_category_banner/' . $filename;
+                $image->move(public_path('uploads/trip_category_banner'), $filename);
+                $imagePath  = $filePath;
+            }
+          
+            $updateData = [            
+                'image'     => $imagePath, // Assign the image path
+            ];
+            $tripbanner->update($updateData);
+            return $tripbanner;
+        }
 }

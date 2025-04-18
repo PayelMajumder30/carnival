@@ -13,4 +13,9 @@ class TripCategory extends Model
     protected $fillable = [
         'title', 'status'
     ];
+
+    public function tripcategorybanner() {
+        return $this->hasMany(TripCategoryBanner::class, 'trip_cat_id');
+    }
+
 }

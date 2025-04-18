@@ -95,7 +95,27 @@ Route::name('admin.')->group(function() {
                 Route::get('/status/{id}', [TripcategoryController::class, 'status'])->name('tripcategory.status'); 
                 Route::get('/delete/{id}', [TripcategoryController::class, 'delete'])->name('tripcategory.delete');
                 Route::post('/sort', [TripcategoryController::class, 'sort'])->name('tripcategory.sort');
+
+                //trip category banner
+                Route::get('/banner/{trip_cat_id}', [TripcategoryController::class, 'bannerIndex'])->name('tripcategorybanner.list.all');
+                Route::get('banner/create/{trip_cat_id}', [TripcategoryController::class, 'bannerCreate'])->name('tripcategory.bannercreate');
+                Route::post('banner/store', [TripcategoryController::class, 'bannerStore'])->name('tripcategory.bannerstore');
+                Route::get('banner/edit/{id}', [TripcategoryController::class, 'bannerEdit'])->name('tripcategory.banneredit');
+                Route::post('banner/update', [TripcategoryController::class, 'bannerUpdate'])->name('tripcategory.bannerupdate');
+                Route::get('banner/status/{id}', [TripcategoryController::class, 'bannerStatus'])->name('tripcategory.bannerstatus'); 
+                Route::get('banner/delete/{id}', [TripcategoryController::class, 'bannerDelete'])->name('tripcategory.bannerdelete');
             });
+
+            //trip category banner
+            // Route::prefix('tripcategorybanner')->group(function() {
+            //     Route::get('/', [TripcategoryController::class, 'index'])->name('tripcategorybanner.list.all');
+            //     Route::get('/create', [TripcategoryController::class, 'create'])->name('tripcategorybanner.create');
+            //     Route::post('/store', [TripcategoryController::class, 'store'])->name('tripcategorybanner.store');
+            //     Route::get('/edit/{id}', [TripcategoryController::class, 'edit'])->name('tripcategorybanner.edit');
+            //     Route::post('/update/{id}', [TripcategoryController::class, 'update'])->name('tripcategorybanner.update');
+            //     Route::get('/status/{id}', [TripcategoryController::class, 'status'])->name('tripcategorybanner.status'); 
+            //     Route::get('/delete/{id}', [TripcategoryController::class, 'delete'])->name('tripcategorybanner.delete');
+            // });
 
              //offer list
              Route::prefix('offers')->group(function() {
