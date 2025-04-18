@@ -78,18 +78,33 @@ Route::name('admin.')->group(function() {
                 Route::get('/', [WhyChooseController::class, 'index'])->name('whychooseus.list.all');
                 Route::get('/create', [WhyChooseController::class, 'create'])->name('whychooseus.create');
                 Route::post('/store', [WhyChooseController::class, 'store'])->name('whychooseus.store');
+                Route::get('/status/{id}', [WhyChooseController::class, 'status'])->name('whychooseus.status');
                 Route::get('/edit/{id}', [WhyChooseController::class, 'edit'])->name('whychooseus.edit');
                 Route::post('/update/{id}', [WhyChooseController::class, 'update'])->name('whychooseus.update');
                 Route::get('/delete/{id}', [WhyChooseController::class, 'delete'])->name('whychooseus.delete');
+                Route::post('/sort', [WhyChooseController::class, 'sort'])->name('whychooseus.sort');
             });
+
+            //trip categories
+            Route::prefix('tripcategory')->group(function() {
+                Route::get('/', [TripcategoryController::class, 'index'])->name('tripcategory.list.all');
+                Route::get('/create', [TripcategoryController::class, 'create'])->name('tripcategory.create');
+                Route::post('/store', [TripcategoryController::class, 'store'])->name('tripcategory.store');
+                Route::get('/edit/{id}', [TripcategoryController::class, 'edit'])->name('tripcategory.edit');
+                Route::post('/update/{id}', [TripcategoryController::class, 'update'])->name('tripcategory.update');
+                Route::get('/status/{id}', [TripcategoryController::class, 'status'])->name('tripcategory.status'); 
+                Route::get('/delete/{id}', [TripcategoryController::class, 'delete'])->name('tripcategory.delete');
+                Route::post('/sort', [TripcategoryController::class, 'sort'])->name('tripcategory.sort');
+            });
+
              //offer list
              Route::prefix('offers')->group(function() {
                 Route::get('/', [OfferController::class, 'index'])->name('offers.list.all');
                 Route::get('/create', [OfferController::class, 'create'])->name('offers.create');
                 Route::post('/store', [OfferController::class, 'store'])->name('offers.store');
-                Route::get('/status/{id}', [OfferController::class, 'status'])->name('offers.status'); 
                 Route::get('/edit/{id}', [OfferController::class, 'edit'])->name('offers.edit');
                 Route::post('/update', [OfferController::class, 'update'])->name('offers.update');
+                Route::get('/status/{id}', [OfferController::class, 'status'])->name('offers.status'); 
                 Route::get('/delete/{id}', [OfferController::class, 'delete'])->name('offers.delete');
             });
         });

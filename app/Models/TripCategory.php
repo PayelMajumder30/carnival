@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WhyChooseUs extends Model
+class TripCategory extends Model
 {
     use HasFactory;
-    protected $table = "why_chhose_us";
+
+    protected $table = "trip_categories";
     protected $fillable = [
-        'title', 'desc', 'status', 
+        'title', 'status'
     ];
 }

@@ -119,6 +119,8 @@
     </div>
     <form action="{{ route('admin.logout') }}" id="logout-form" method="post" class="d-none">@csrf</form>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {{-- <script src="{{ asset('backend-assets/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('backend-assets/js/jquery-ui.min.js') }}"></script>  --}}
     <script src="{{ asset('backend-assets/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('backend-assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('backend-assets/js/adminlte.min.js') }}"></script>

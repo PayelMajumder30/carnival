@@ -23,12 +23,15 @@ class WhyChooseController extends Controller
             $query->where('title', 'like', '%'.$keyword.'%')
                 ->orWhere('desc', 'like', '%'.$keyword. '%');
         });
-        $data = $query->latest('id')->paginate(25);
+        //$data = $query->latest('id')->paginate(5);
+        $data = $query->orderBy('positions', 'asc')->paginate(5);
         return view('admin.whychooseus.index', compact('data'));
     }
+
     public function create(Request $request){
         return view('admin.whychooseus.create');
     }
+
     public function store(Request $request){
         $request->validate([
             'title'     => 'required|string|max:255',
@@ -55,8 +58,30 @@ class WhyChooseController extends Controller
         return redirect()->route('admin.whychooseus.list.all')->with('success', 'Why choose us updated successfully');
     }
 
+    
+    public function status(Request $request, $id){
+        $data = WhyChooseUs::find($id);
+        $data->status = ($data->status == 1) ? 0 : 1;
+        $data->update();
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Status updated',
+        ]);
+    }
+
     public function delete(Request $request, $id){
         $this->chooseUsRepository->delete($id);
         return redirect()->route('admin.whychooseus.list.all')->with('success', 'Why choose us deleted');
+    }
+
+    public function sort(Request $request) {
+        foreach ($request->order as $item) {
+            WhyChooseUs::where('id', $item['id'])->update(['positions'  => $item['position']]);
+        }
+
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Table updated successfully',
+        ]);
     }
 }

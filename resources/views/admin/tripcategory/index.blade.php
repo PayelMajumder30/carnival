@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('page-title', 'Why Choose Us List')
+@section('page-title', 'Trip Categories')
 
 @section('section')
 <section class="content">
@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <div class="row mb-3">
                             <div class="col-md-12 text-right">
-                                <a href="{{ route('admin.whychooseus.create') }}" class="btn btn-sm btn-primary"> <i class="fa fa-plus"></i> Create</a>
+                                <a href="{{ route('admin.tripcategory.create') }}" class="btn btn-sm btn-primary"> <i class="fa fa-plus"></i> Create</a>
                             </div>
                         </div>
                         <div class="row">
@@ -40,36 +40,36 @@
                     <div class="card-body">
                         {{-- <table class="table table-sm table-hover">
                             <thead>
-                                <div class="text-center">
-                                    <th style="width: 5px">#</th>
-                                    <th width="50%">Title</th>
-                                    <th width="50%">Description</th>
-                                    <th>Status</th>
-                                    <th width="10%">Action</th>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>status</th>
+                                    <th style="width: 100px">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($data as $index => $item)
-                                    <tr class="text-center">
+                                    <tr>
                                         <td>{{ $index + $data->firstItem() }}</td>
                                         <td>
                                             <div class="title-part">
                                                 <p class="text-muted mb-0">{{ $item->title }}</p>
                                             </div>
                                         </td>
-                                        <td>{{ Str::limit($item->desc, 100) }}</td>
+
                                         <td> 
                                             <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
-                                                <input type="checkbox" class="custom-control-input" id="customSwitch{{$item->id}}" {{ ($item->status == 1) ? 'checked' : '' }} onchange="statusToggle('{{ route('admin.whychooseus.status', $item->id) }}')">
+                                                <input type="checkbox" class="custom-control-input" id="customSwitch{{$item->id}}" {{ ($item->status == 1) ? 'checked' : '' }} onchange="statusToggle('{{ route('admin.tripcategory.status', $item->id) }}')">
                                                 <label class="custom-control-label" for="customSwitch{{$item->id}}"></label>
                                             </div>
                                         </td>
+
                                         <td class="d-flex">
                                             <div class="btn-group">
-                                                <a href="{{route('admin.whychooseus.edit', $item->id)}}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
+                                                <a href="{{ route('admin.tripcategory.edit', $item->id)}}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
-                                                <a href="{{route('admin.whychooseus.delete', $item->id)}}" class="btn btn-sm btn-dark" onclick="return confirm('Are you sure ?')" data-toggle="tooltip" title="Delete">
+                                                <a href="{{ route('admin.tripcategory.delete', $item->id)}}" class="btn btn-sm btn-dark" onclick="return confirm('Are you sure ?')" data-toggle="tooltip" title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </div>
@@ -82,12 +82,12 @@
                                 @endforelse
                             </tbody>
                         </table> --}}
+
                         <div class="d-flex font-weight-bold text-center border-bottom py-2 bg-light">
                             <div class="col-1">#</div>
-                            <div class="col-3">Title</div>
-                            <div class="col-4">Description</div>
-                            <div class="col-2">Status</div>
-                            <div class="col-2">Action</div>
+                            <div class="col-3 text-left">Title</div>
+                            <div class="col-5">Status</div>
+                            <div class="col-3">Action</div>
                         </div>
                         
                         <ul class="list-group sortable-list" id="sortable">
@@ -96,21 +96,20 @@
                                     <div class="d-flex text-center align-items-center">
                                         <div class="col-1">{{ $index + $data->firstItem() }}</div>
                                         <div class="col-3 text-left">{{ $item->title }}</div>
-                                        <div class="col-4 text-left">{{ Str::limit($item->desc, 100) }}</div>
-                                        <div class="col-2">
+                                        <div class="col-5">
                                             <div class="custom-control custom-switch" data-toggle="tooltip" title="Toggle status">
                                                 <input type="checkbox" class="custom-control-input"
                                                     id="customSwitch{{$item->id}}"
                                                     {{ ($item->status == 1) ? 'checked' : '' }}
-                                                    onchange="statusToggle('{{ route('admin.whychooseus.status', $item->id) }}')">
+                                                    onchange="statusToggle('{{ route('admin.tripcategory.status', $item->id) }}')">
                                                 <label class="custom-control-label" for="customSwitch{{$item->id}}"></label>
                                             </div>
                                         </div>
-                                        <div class="col-2 d-flex justify-content-center">
-                                            <a href="{{ route('admin.whychooseus.edit', $item->id) }}" class="btn btn-sm btn-info mr-1" data-toggle="tooltip" title="Edit">
+                                        <div class="col-3 d-flex justify-content-center">
+                                            <a href="{{ route('admin.tripcategory.edit', $item->id) }}" class="btn btn-sm btn-info mr-1" data-toggle="tooltip" title="Edit">
                                                 <i class="fa fa-edit"></i>
                                             </a>
-                                            <a href="{{ route('admin.whychooseus.delete', $item->id) }}"
+                                            <a href="{{ route('admin.tripcategory.delete', $item->id) }}"
                                                 class="btn btn-sm btn-dark" onclick="return confirm('Are you sure?')"
                                                 data-toggle="tooltip" title="Delete">
                                                 <i class="fa fa-trash"></i>
@@ -124,7 +123,7 @@
                         </ul>
 
                         <div class="pagination-container">
-                            {{$data->links()}}
+                            {{$data->appends($_GET)->links()}}
                         </div>
                     </div>
                 </div>
@@ -149,7 +148,7 @@
                 });
     
                 $.ajax({
-                    url: "{{ route('admin.whychooseus.sort')}}",
+                    url: "{{ route('admin.tripcategory.sort')}}",
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
@@ -184,4 +183,3 @@
     });  
 </script>
 @endsection
-

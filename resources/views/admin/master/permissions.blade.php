@@ -90,6 +90,8 @@
                                                     <label for="">Banner List</label>
                                                     <input type="checkbox" id="whychooseus" name="roles[]" value="whychooseus" data-parent="MASTER MODULES" {{ in_array('whychooseus', $permissions) ? 'checked' : '' }}>
                                                     <label for="">Why Choose Us</label>
+                                                    <input type="checkbox" id="tripcategory" name="roles[]" value="tripcategory" data-parent="MASTER MODULES" {{ in_array('tripcategory', $permissions) ? 'checked' : '' }}>
+                                                    <label for="">Trip Category</label>
                                                     <input type="checkbox" id="offers" name="roles[]" value="offers" data-parent="MASTER MODULES" {{ in_array('offers', $permissions) ? 'checked' : '' }}>
                                                     <label for="">Offer List</label>
                                                 </li>
