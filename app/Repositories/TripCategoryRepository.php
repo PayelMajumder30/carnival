@@ -49,6 +49,8 @@ class TripCategoryRepository implements TripCategoryRepositoryInterface
         }       
     }
 
+
+    //tripcategory banner
     public function banner_create(array $data)
     {
         

@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <div class="row mb-3">
                             <div class="col-md-12 text-right">
-                                <a href="{{ route('admin.tripcategorybanner.list.all', $edit->id)}}" class="btn btn-sm btn-primary"> <i class="fa fa-chevron-left"></i> Back</a>
+                                <a href="{{ route('admin.tripcategorybanner.list.all', $tripCategoryBanner->id)}}" class="btn btn-sm btn-primary"> <i class="fa fa-chevron-left"></i> Back</a>
                             </div>
                         </div>
                     </div>
@@ -20,9 +20,9 @@
                             @method('POST') 
                             <div class="row form-group">
                                 <div class="col-md-6">
-                                    @if (!empty($edit->image))
-                                        @if (!empty($edit->image) && file_exists(public_path($edit->image)))
-                                            <img src="{{ asset($edit->image) }}" alt="tripCategoryBanner-img" class="img-thumbnail mr-3" style="height: 50px">
+                                    @if (!empty($tripCategoryBanner->image))
+                                        @if (!empty($tripCategoryBanner->image) && file_exists(public_path($tripCategoryBanner->image)))
+                                            <img src="{{ asset($tripCategoryBanner->image) }}" alt="tripCategoryBanner-img" class="img-thumbnail mr-3" style="height: 50px">
                                         @else
                                             <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="tripCategoryBanner-image" style="height: 50px" class="mr-2">
                                         @endif
@@ -35,8 +35,8 @@
                                 </div>
                             </div>
 
-                            <input type="hidden" name="id" value="{{ $edit->id }}">
-                            <input type="hidden" name="trip_cat_id" value="{{ $edit->trip_cat_id }}">
+                            <input type="hidden" name="id" value="{{ $tripCategoryBanner->id }}">
+                            <input type="hidden" name="trip_cat_id" value="{{ $tripCategoryBanner->trip_cat_id }}">
                             <button type="submit" class="btn btn-primary">Update</button>
                         </form>
                     </div>

@@ -45,7 +45,7 @@
                             </thead>
                             <tbody>
                                 @forelse ($banner as $index => $item)
-                                    <tr>
+                                    <tr id="banner_section_{{$item->id}}">
                                         <td class="text-center">{{ $index + $banner->firstItem() }}</td>
                                         <td>
                                             <div class="text-center">
@@ -64,10 +64,10 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="{{route('admin.tripcategory.banneredit',$item->id)}}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
+                                                <a href="{{route('admin.tripcategory.banneredit',base64_encode($item->id))}}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
-                                                <a href="" class="btn btn-sm btn-dark" onclick="return confirm('Are you sure ?')" data-toggle="tooltip" title="Delete">
+                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark" onclick="deleteBanner({{$item->id}})" data-toggle="tooltip" title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </div>
@@ -111,4 +111,42 @@
         </div>
     </div>
 </section>
+@endsection
+
+@section('script')
+<script>
+    function deleteBanner(bannerId) {
+        Swal.fire({
+            icon: 'warning',
+            title: "Are you sure you want to delete this?",
+            text: "You won't be able to revert this!",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Delete",
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('admin.tripcategory.bannerDelete')}}",
+                    type: 'POST',
+                    data: {
+                        "id": bannerId,
+                        "_token": '{{ csrf_token() }}',
+                    },
+                    success: function (data){
+                        if (data.status != 200) {
+                            toastFire('error', data.message);
+                        } else {
+                            toastFire('success', data.message);
+                            location.reload();
+                            // $("#banner_section_" + bannerId).hide();
+                        }
+                    }
+                });
+            }
+        });
+    }
+    </script>
+
 @endsection

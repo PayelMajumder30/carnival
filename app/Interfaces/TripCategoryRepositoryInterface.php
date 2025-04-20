@@ -8,5 +8,8 @@ interface TripCategoryRepositoryInterface
     public function create(array $data);
     public function update($id, array $data);
     public function delete($id);
+
+    public function banner_create(array $data);
+    public function banner_update(array $data);
     
 }

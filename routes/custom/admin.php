@@ -103,7 +103,7 @@ Route::name('admin.')->group(function() {
                 Route::get('banner/edit/{id}', [TripcategoryController::class, 'bannerEdit'])->name('tripcategory.banneredit');
                 Route::post('banner/update', [TripcategoryController::class, 'bannerUpdate'])->name('tripcategory.bannerupdate');
                 Route::get('banner/status/{id}', [TripcategoryController::class, 'bannerStatus'])->name('tripcategory.bannerstatus'); 
-                Route::get('banner/delete/{id}', [TripcategoryController::class, 'bannerDelete'])->name('tripcategory.bannerdelete');
+                Route::post('banner/delete', [TripcategoryController::class, 'bannerDelete'])->name('tripcategory.bannerDelete');
             });
 
             //trip category banner

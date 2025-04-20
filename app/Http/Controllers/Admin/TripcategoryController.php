@@ -90,7 +90,7 @@ class TripcategoryController extends Controller
 
         $trip = TripCategory::findOrFail($trip_cat_id);
         $banner = TripCategoryBanner::where('trip_cat_id', $trip_cat_id)->paginate(10);
-        return view('admin.tripcategory.bannerindex', compact('trip', 'banner'));
+        return view('admin.tripcategory.bannerindex', compact('trip', 'banner'));   
     }
 
     public function bannerCreate($trip_cat_id) {
@@ -107,7 +107,8 @@ class TripcategoryController extends Controller
         ]);
     
         $data = $request->all(); 
-        $data['trip_cat_id'] = $request->trip_cat_id;   
+        // dd($data);
+        // $data['trip_cat_id'] = $request->trip_cat_id;   
         // Handle Image Upload
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file       = $request->file('image');
@@ -127,8 +128,8 @@ class TripcategoryController extends Controller
     }
 
     public function bannerEdit($banner_id) {
-        $edit   = TripCategoryBanner::findOrFail($banner_id);
-        return view('admin.tripcategory.banneredit', compact('edit'));
+        $tripCategoryBanner = TripCategoryBanner::findOrFail(base64_decode($banner_id));
+        return view('admin.tripcategory.banneredit', compact('tripCategoryBanner'));
     }
 
     public function bannerUpdate(Request $request) {
@@ -155,6 +156,40 @@ class TripcategoryController extends Controller
         return response()->json([
             'status'    => 200,
             'message'   => 'status updated',
+        ]);
+    }
+
+    /**
+     * Delete a banner by its ID.
+     *
+     * This method retrieves the banner from the database using the provided ID.
+     * If the banner is found, it deletes the database record and the associated image file from the public directory.
+     * Returns a JSON response indicating success or failure.
+     *
+     * @param \Illuminate\Http\Request $request The HTTP request object containing the 'id' of the banner to delete.
+     * @return \Illuminate\Http\JsonResponse JSON response with status and message.
+    */
+    public function bannerDelete(Request $request) {
+        // Get banner data by ID
+        $tripCategoryBanner = TripCategoryBanner::findOrFail($request->id);
+        // If banner is not found then return status 404 with error message
+        if (!$tripCategoryBanner) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Banner is not found',
+            ]);
+        }
+        $imagePath = $tripCategoryBanner->image;
+        // Delete banner from db
+        $tripCategoryBanner->delete();
+        // If file is exist ithen remove from target directory
+        if (!empty($imagePath) && file_exists(public_path($imagePath))) {
+            unlink(public_path($imagePath));
+        }
+        // Return suceess response with message
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Banner has been deleted successfully',
         ]);
     }
 }
