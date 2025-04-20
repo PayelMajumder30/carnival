@@ -44,10 +44,10 @@
                                 <tr>
                                     <th style="width: 5%">#</th>
                                     <th width="15%">Image</th> <!-- Add this column for image -->
-                                    <th width="35%">Title</th>
-                                    <th width="35%">Sub Title</th>
+                                    <th width="25%">Title</th>
+                                    <th width="25%">Sub Title</th>
                                     <!-- <th width="35%">Content</th> -->
-                                    <th>Status</th>
+                                    <th width="15%">Status</th>
                                     <th width="10%">Action</th>
                                 </tr>
                             </thead>

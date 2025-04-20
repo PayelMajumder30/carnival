@@ -10,6 +10,6 @@ class WhyChooseUs extends Model
     use HasFactory;
     protected $table = "why_chhose_us";
     protected $fillable = [
-        'title', 'desc' 
+        'title', 'desc', 'status', 
     ];
 }

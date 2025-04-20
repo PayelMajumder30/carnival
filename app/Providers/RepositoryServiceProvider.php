@@ -29,6 +29,12 @@ use App\Repositories\PartnerRepository;
 use App\Interfaces\BannerRepositoryInterface;
 use App\Repositories\BannerRepository;
 
+use App\Interfaces\TripCategoryRepositoryInterface;
+use App\Repositories\TripCategoryRepository;
+
+use App\Interfaces\TripCategoryBannerRepositoryInterface;
+use App\Repositories\TripCategoryBannerRepository;
+
 use App\Interfaces\SocialRepositoryInterface;
 use App\Repositories\SocialRepository;
 
@@ -57,6 +63,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(PartnerRepositoryInterface::class, PartnerRepository::class);
         $this->app->bind(SocialRepositoryInterface::class, SocialRepository::class);
         $this->app->bind(BannerRepositoryInterface::class, BannerRepository::class);
+        $this->app->bind(TripCategoryRepositoryInterface::class, TripCategoryRepository::class);
+        $this->app->bind(TripCategoryBannerRepositoryInterface::class, TripCategoryBannerRepository::class);
         $this->app->bind(ChooseUsRepositoryInterface::class, ChooseUsRepository::class);
 
         $this->app->bind(UserInterface::class, UserRepository::class);

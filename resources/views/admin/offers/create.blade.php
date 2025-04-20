@@ -2,6 +2,7 @@
 @section('page-title', 'Create Offer')
 
 @section('section')
+
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -52,7 +53,7 @@
                                
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="discount_type">Discount Type <span style="color: red;">*</label>
+                                        <label for="discount_type">Discount Type <span style="color: red;">*</span></label>
                                         <select name="discount_type" id="discount_type" class="form-control">
                                             <option value="flat">Flat</option>
                                             <option value="percentage">Percentage</option>
@@ -122,17 +123,20 @@
 @section('script')
 
 @endsection
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function(){
         function updateDiscountField() {
-            let discountType = $("#discount_type").val();
-            let discountLabel = $("#discount_value_label");
+            let discountType    = $("#discount_type").val();
+            let discountLabel   = $("#discount_value_label");
+            let discountValue   = $("#discount_value");
 
             if(discountType === 'percentage') {
-                discountLabel.text("Percentage Discount Value (%)");
+                discountLabel.html("Percentage Discount Value (%) <span style='color: red;'>*</span>");
+                
             } else {
-                discountLabel.text("Flat Discount Value");
+                discountLabel.html("Flat Discount Value <span style='color: red;'>*</span>");
             }
         }
 

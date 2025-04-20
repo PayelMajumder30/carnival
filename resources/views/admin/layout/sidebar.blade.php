@@ -75,6 +75,16 @@
                     </a>
                 </li>
                 @endif
+                
+                @if(in_array('tripcategory', $RolePass))
+                <li class="nav-item">
+                    <a href="{{ route('admin.tripcategory.list.all')}}"
+                        class="nav-link {{ (request()->is('admin/master-module/tripcategory*')) ? 'active active_nav_link' : ''}}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Trip Category</p>
+                    </a>
+                </li>
+                @endif
                 @if(in_array('offers', $RolePass))
                 <li class="nav-item">
                     <a href="{{ route('admin.offers.list.all')}}"

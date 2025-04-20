@@ -39,8 +39,8 @@
                     <div class="card-body">
                         <table class="table table-sm table-hover">
                             <thead>
-                                <tr>
-                                    <th style="width: 10px">#</th>
+                                <tr class="text-center">
+                                    <th>#</th>
                                     <th>Image</th>
                                     <th>Title</th>
                                     <th style="width: 100px">Action</th>
@@ -49,22 +49,22 @@
                             <tbody>
                                 @forelse ($data as $index => $item)
                                     <tr>
-                                        <td>{{ $index + $data->firstItem() }}</td>
+                                        <td class="text-center">{{ $index + $data->firstItem() }}</td>
                                         <td>
-                                            <div class="d-flex">
+                                            <div class="text-center">
                                                 @if (!empty($item->image) && file_exists(public_path($item->image)))
-                                                    <img src="{{ asset($item->image) }}" alt="banner-image" style="height: 50px" class="img-thumbnail mr-2">
+                                                    <img src="{{ asset($item->image) }}" alt="partners-image" style="height: 50px" class="img-thumbnail mr-2">
                                                 @else
                                                     <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="partners-image" style="height: 50px" class="mr-2">
                                                 @endif
                                             </div>
                                         </td>
-                                        <td>
+                                        <td class="text-center">
                                             <div class="title-part">
                                                 <p class="text-muted mb-0">{{ $item->title }}</p>
                                             </div>
                                         </td>
-                                        <td class="d-flex">
+                                        <td class="text-center">
                                             <div class="btn-group">
                                                 <a href="{{ route('admin.partners.edit', $item->id) }}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>

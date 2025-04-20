@@ -11,7 +11,7 @@ class OfferController extends Controller
 {
     //
     public function index(){
-        $offer = Offer::latest()->paginate(10);
+        $offer = Offer::latest()->paginate(5);
         return view('admin.offers.index', compact('offer'));
     }
 
@@ -29,7 +29,7 @@ class OfferController extends Controller
            'discount_value'         => 'required|numeric|min:0',
            'minimum_order_amount'   => 'required|numeric|min:0',
            'maximum_discount'       => 'required|numeric|min:0',
-           'start_date'             => 'nullable|date|after_or_equal:today',
+           'start_date'             => 'nullable|date|before_or_equal:' . now()->format('Y-m-d 23:59:59'),
            'end_date'               => 'nullable|date|after:start_date',
            'usage_limit'            => 'nullable|integer|min:1',
            'usage_per_user'         => 'nullable|integer|min:1',
@@ -66,7 +66,7 @@ class OfferController extends Controller
 
     public function status(Request $request, $id)
     {
-        $data = Offer::find($id);;
+        $data = Offer::find($id);
         $data->status = ($data->status == 1) ? 0 : 1;
         $data->update();
         return response()->json([
@@ -88,7 +88,7 @@ class OfferController extends Controller
             'discount_value'         => 'required|numeric|min:0',
             'minimum_order_amount'   => 'required|numeric|min:0',
             'maximum_discount'       => 'required|numeric|min:0',
-            'start_date'             => 'required|date|after_or_equal:today',
+            'start_date'             => 'nullable|date|before_or_equal:' . now()->format('Y-m-d 23:59:59'),
             'end_date'               => 'required|date|after:start_date',
             'usage_limit'            => 'nullable|integer|min:1',
             'usage_per_user'         => 'nullable|integer|min:1',

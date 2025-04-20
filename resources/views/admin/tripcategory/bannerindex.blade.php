@@ -1,20 +1,17 @@
 @extends('admin.layout.app')
-@section('page-title', 'Social Media list')
+@section('page-title', $trip->title . '/' .'Category Banner List')
 
 @section('section')
 <section class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-12">
+            <div class="col-8">
                 <div class="card">
                     <div class="card-header">
-                        <div class="row mb-3">
-                            <div class="col-md-12 text-right">
-                                <a href="{{ route('admin.social_media.create') }}" class="btn btn-sm btn-primary"> <i class="fa fa-plus"></i> Create</a>
-                            </div>
-                        </div>
                         <div class="row">
-                            <div class="col-md-6"></div>
+                            <div class="col-md-6">
+                                <a href="{{ route('admin.tripcategory.list.all')}}" class="btn btn-sm btn-primary"> <i class="fa fa-chevron-left"></i> Back</a>
+                            </div>
                             <div class="col-md-6">
                                 <form action="" method="get">
                                     <div class="d-flex justify-content-end">
@@ -42,41 +39,35 @@
                                 <tr class="text-center">
                                     <th>#</th>
                                     <th>Image</th>
-                                    <th>Title</th>
-                                    <th>Link</th>
+                                    <th>status</th>
                                     <th style="width: 100px">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($data as $index => $item)
+                                @forelse ($banner as $index => $item)
                                     <tr>
-                                        <td class="text-center">{{ $index + $data->firstItem() }}</td>
+                                        <td class="text-center">{{ $index + $banner->firstItem() }}</td>
                                         <td>
                                             <div class="text-center">
                                                 @if (!empty($item->image) && file_exists(public_path($item->image)))
-                                                    <img src="{{ asset($item->image) }}" alt="banner-image" style="height: 50px" class="img-thumbnail mr-2">
+                                                    <img src="{{ asset($item->image) }}" alt="tripcategorybanner-image" style="height: 50px" class="img-thumbnail mr-2">
                                                 @else
-                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="social-media-image" style="height: 50px" class="mr-2">
+                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="tripcategorybanner-image" style="height: 50px" class="mr-2">
                                                 @endif
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            <div class="title-part">
-                                                <p class="text-muted mb-0">{{ $item->title }}</p>
+                                            <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
+                                                <input type="checkbox" class="custom-control-input" id="customSwitch{{$item->id}}" {{ ($item->status == 1) ? 'checked' : '' }} onchange="statusAllToggle('{{ route('admin.tripcategory.bannerstatus', $item->id) }}')">
+                                                <label class="custom-control-label" for="customSwitch{{$item->id}}"></label>
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            <a href="{{$item->link}}" target="_blank" class="btn btn-sm btn-dark" data-toggle="tooltip" title="link">
-                                                <i class="fa fa-link"></i>
-                                            </a>
-                                        </td>
-                                        <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="{{ route('admin.social_media.edit', $item->id) }}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
+                                                <a href="{{route('admin.tripcategory.banneredit',$item->id)}}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
-
-                                                <a href="{{ route('admin.social_media.delete', $item->id) }}" class="btn btn-sm btn-dark" onclick="return confirm('Are you sure ?')" data-toggle="tooltip" title="Delete">
+                                                <a href="" class="btn btn-sm btn-dark" onclick="return confirm('Are you sure ?')" data-toggle="tooltip" title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </div>
@@ -90,9 +81,30 @@
                             </tbody>
                         </table>
 
-                        <div class="pagination-container">
-                            {{$data->appends($_GET)->links()}}
-                        </div>
+                        {{-- <div class="pagination-container">
+                            {{$catbanner->appends($_GET)->links()}}
+                        </div> --}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>New Banner</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ route('admin.tripcategory.bannerstore') }}" method="post" enctype="multipart/form-data">@csrf
+                            <div class="row form-group">
+                                <div class="col-md-6">
+                                    <label for="image">Image <span style="color: red;">*</span></label>
+                                    <input type="file" class="form-control" name="image" id="image">
+                                    <p class="small text-muted">Size: less than 1 mb </p>
+                                    @error('image') <p class="small text-danger">{{ $message }}</p> @enderror
+                                </div>
+                            </div>
+                            <input type="hidden" name="trip_cat_id" value="{{$trip->id}}">
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                        </form>
                     </div>
                 </div>
             </div>
