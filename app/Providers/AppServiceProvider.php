@@ -69,6 +69,10 @@ class AppServiceProvider extends ServiceProvider
             // view()->share('social_media', $SocialMedia);
             view()->share('RolePass', $RolePass);
             view()->share('settings', $settings);
+            // echo '<pre>';
+            // print_r($RolePass);
+            // echo '</pre>';
+            // die;
             // view()->share('pageContent', $pageContent);
         });
     }

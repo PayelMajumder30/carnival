@@ -18,6 +18,7 @@
         </li>
         @endif
 
+
         @if(in_array('MASTER MODULES', $RolePass))
             <li class="nav-item {{ (request()->is('admin/master-module*')) ? 'menu-open' : '' }}">
                 <a href="#"
