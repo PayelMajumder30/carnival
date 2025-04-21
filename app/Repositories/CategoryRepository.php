@@ -43,6 +43,7 @@ class CategoryRepository implements CategoryInterface
     {
         return Faculty::latest()->where('deleted_at', 1)->get();
     }
+
     public function findFacultyById($id)
     {
         return Faculty::findOrFail($id);
@@ -72,7 +73,7 @@ class CategoryRepository implements CategoryInterface
         return Subject::latest()->where('deleted_at', 1)->get();
     }
     
-
+    
     public function findSubjectById($id)
     {
         return Subject::findOrFail($id);

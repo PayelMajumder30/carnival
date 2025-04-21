@@ -122,7 +122,6 @@ Route::name('admin.')->group(function() {
         });
 
         Route::prefix('content')->group(function() {
-
             Route::prefix('page-content')->group(function() {
                Route::get('/', [PageContentController::class, 'PageContentIndex'])->name('page_content.list.all');
                Route::get('/create', [PageContentController::class, 'PageContentCreate'])->name('page_content.create');
@@ -133,8 +132,12 @@ Route::name('admin.')->group(function() {
                Route::get('/delete/{id}', [PageContentController::class, 'PageContentDelete'])->name('page_content.delete');
 
            });
-         
-       });
+        });
+
+        Route::prefix('itenaries')->group(function() {
+            Route::get('/', [itenariesController::class, 'index'])->name('itenaries.list.all');
+            
+        });
        
     });
 

@@ -8,7 +8,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                         <div class="row mb-3">
+                        <div class="row mb-3">
                             <div class="col-md-12 text-right">
                                 <a href="{{ route('admin.page_content.create') }}" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>Create New Page</a>
                             </div>

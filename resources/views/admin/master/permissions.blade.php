@@ -97,6 +97,18 @@
                                                 </li>
                                             </ul>
                                         </li>
+
+                                        <li>
+                                            <input type="checkbox" id="itenaries" name="roles[]" value="ITENARIES" data-parent="" {{ in_array('ITENARIES', $permissions) ? 'checked' : '' }}>
+                                            <label for="itenaries">Itenaries</label>
+                                            <ul>
+                                                <li>
+                                                    <input type="checkbox" id="upcoming_events" name="roles[]" value="Upcoming events" data-parent="ITENARIES" {{ in_array('Upcoming events', $permissions) ? 'checked' : '' }}>
+                                                    <label for="upcoming_events">Upcoming Events</label>
+                                                </li>
+                                            </ul>
+                                        </li>
+
                                         <li>
                                             <input type="checkbox" id="content_management" name="roles[]" value="CONTENT MANAGEMENT" data-parent="" {{ in_array('CONTENT MANAGEMENT', $permissions) ? 'checked' : '' }}>
                                             <label for="content_management">CONTENT MANAGEMENT</label>
