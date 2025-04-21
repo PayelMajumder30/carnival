@@ -11,7 +11,7 @@ class OfferController extends Controller
 {
     //
     public function index(){
-        $offer = Offer::latest()->paginate(5);
+        $offer = Offer::latest()->paginate(25);
         return view('admin.offers.index', compact('offer'));
     }
 
@@ -64,17 +64,6 @@ class OfferController extends Controller
         }
     }
 
-    public function status(Request $request, $id)
-    {
-        $data = Offer::find($id);
-        $data->status = ($data->status == 1) ? 0 : 1;
-        $data->update();
-        return response()->json([
-            'status'    => 200,
-            'message'   => 'Status updated',
-        ]);
-    }
-
     public function edit($id){
         $data = Offer::findOrFail($id);
         return view('admin.offers.edit', compact('data'));
@@ -114,6 +103,18 @@ class OfferController extends Controller
         }
     }
 
+    
+    public function status(Request $request, $id)
+    {
+        $data = Offer::find($id);
+        $data->status = ($data->status == 1) ? 0 : 1;
+        $data->update();
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Status updated',
+        ]);
+    }
+    
     public function delete(Request $request, $id){
         DB::beginTransaction();
         try{

@@ -78,10 +78,10 @@ Route::name('admin.')->group(function() {
                 Route::get('/', [WhyChooseController::class, 'index'])->name('whychooseus.list.all');
                 Route::get('/create', [WhyChooseController::class, 'create'])->name('whychooseus.create');
                 Route::post('/store', [WhyChooseController::class, 'store'])->name('whychooseus.store');
-                Route::get('/status/{id}', [WhyChooseController::class, 'status'])->name('whychooseus.status');
                 Route::get('/edit/{id}', [WhyChooseController::class, 'edit'])->name('whychooseus.edit');
                 Route::post('/update/{id}', [WhyChooseController::class, 'update'])->name('whychooseus.update');
-                Route::get('/delete/{id}', [WhyChooseController::class, 'delete'])->name('whychooseus.delete');
+                Route::get('/status/{id}', [WhyChooseController::class, 'status'])->name('whychooseus.status');
+                Route::post('/delete', [WhyChooseController::class, 'delete'])->name('whychooseus.delete');
                 Route::post('/sort', [WhyChooseController::class, 'sort'])->name('whychooseus.sort');
             });
 
@@ -93,29 +93,18 @@ Route::name('admin.')->group(function() {
                 Route::get('/edit/{id}', [TripcategoryController::class, 'edit'])->name('tripcategory.edit');
                 Route::post('/update/{id}', [TripcategoryController::class, 'update'])->name('tripcategory.update');
                 Route::get('/status/{id}', [TripcategoryController::class, 'status'])->name('tripcategory.status'); 
-                Route::get('/delete/{id}', [TripcategoryController::class, 'delete'])->name('tripcategory.delete');
+                Route::post('/delete', [TripcategoryController::class, 'delete'])->name('tripcategory.delete');
                 Route::post('/sort', [TripcategoryController::class, 'sort'])->name('tripcategory.sort');
 
                 //trip category banner
                 Route::get('/banner/{trip_cat_id}', [TripcategoryController::class, 'bannerIndex'])->name('tripcategorybanner.list.all');
-                Route::get('banner/create/{trip_cat_id}', [TripcategoryController::class, 'bannerCreate'])->name('tripcategory.bannercreate');
-                Route::post('banner/store', [TripcategoryController::class, 'bannerStore'])->name('tripcategory.bannerstore');
-                Route::get('banner/edit/{id}', [TripcategoryController::class, 'bannerEdit'])->name('tripcategory.banneredit');
-                Route::post('banner/update', [TripcategoryController::class, 'bannerUpdate'])->name('tripcategory.bannerupdate');
-                Route::get('banner/status/{id}', [TripcategoryController::class, 'bannerStatus'])->name('tripcategory.bannerstatus'); 
+                Route::get('banner/create/{trip_cat_id}', [TripcategoryController::class, 'bannerCreate'])->name('tripcategory.bannerCreate');
+                Route::post('banner/store', [TripcategoryController::class, 'bannerStore'])->name('tripcategory.bannerStore');
+                Route::get('banner/edit/{id}', [TripcategoryController::class, 'bannerEdit'])->name('tripcategory.bannerEdit');
+                Route::post('banner/update', [TripcategoryController::class, 'bannerUpdate'])->name('tripcategory.bannerUpdate');
+                Route::get('banner/status/{id}', [TripcategoryController::class, 'bannerStatus'])->name('tripcategory.bannerStatus'); 
                 Route::post('banner/delete', [TripcategoryController::class, 'bannerDelete'])->name('tripcategory.bannerDelete');
             });
-
-            //trip category banner
-            // Route::prefix('tripcategorybanner')->group(function() {
-            //     Route::get('/', [TripcategoryController::class, 'index'])->name('tripcategorybanner.list.all');
-            //     Route::get('/create', [TripcategoryController::class, 'create'])->name('tripcategorybanner.create');
-            //     Route::post('/store', [TripcategoryController::class, 'store'])->name('tripcategorybanner.store');
-            //     Route::get('/edit/{id}', [TripcategoryController::class, 'edit'])->name('tripcategorybanner.edit');
-            //     Route::post('/update/{id}', [TripcategoryController::class, 'update'])->name('tripcategorybanner.update');
-            //     Route::get('/status/{id}', [TripcategoryController::class, 'status'])->name('tripcategorybanner.status'); 
-            //     Route::get('/delete/{id}', [TripcategoryController::class, 'delete'])->name('tripcategorybanner.delete');
-            // });
 
              //offer list
              Route::prefix('offers')->group(function() {
@@ -151,11 +140,8 @@ Route::name('admin.')->group(function() {
                Route::get('/edit/{id}', [PageContentController::class, 'PageContentEdit'])->name('page_content.edit');
                Route::post('/update/{id}', [PageContentController::class, 'PageContentUpdate'])->name('page_content.update');
                Route::get('/delete/{id}', [PageContentController::class, 'PageContentDelete'])->name('page_content.delete');
-
-           });
-         
-       });
-       
+            });
+        });       
     });
 
     // ckeditor custom upload adapter path

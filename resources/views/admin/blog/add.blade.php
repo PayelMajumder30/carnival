@@ -55,15 +55,15 @@
                                 @enderror
                             </div>
                             
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="meta_description">Meta Description</label>
-                                        <textarea class="form-control ckeditor" name="meta_description" id="meta_description" placeholder="Enter Meta Description">{{ old('meta_description') }}</textarea>
-                                        @error('meta_description') 
-                                            <p class="small text-danger">{{ $message }}</p> 
-                                        @enderror
-                                    </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="meta_description">Meta Description</label>
+                                    <textarea class="form-control ckeditor" name="meta_description" id="meta_description" placeholder="Enter Meta Description">{{ old('meta_description') }}</textarea>
+                                    @error('meta_description') 
+                                        <p class="small text-danger">{{ $message }}</p> 
+                                    @enderror
                                 </div>
+                            </div>
                             <div class="form-group">
                                 <label for="meta_keywords">Meta Keywords</label>
                                 <textarea class="form-control" name="meta_keywords" id="meta_keywords" placeholder="Enter Meta Keywords">{{ old('meta_keywords') }}</textarea>

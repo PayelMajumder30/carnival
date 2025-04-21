@@ -24,7 +24,7 @@ class WhyChooseController extends Controller
                 ->orWhere('desc', 'like', '%'.$keyword. '%');
         });
         //$data = $query->latest('id')->paginate(5);
-        $data = $query->orderBy('positions', 'asc')->paginate(5);
+        $data = $query->orderBy('positions', 'asc')->paginate(25);
         return view('admin.whychooseus.index', compact('data'));
     }
 
@@ -69,9 +69,21 @@ class WhyChooseController extends Controller
         ]);
     }
 
-    public function delete(Request $request, $id){
-        $this->chooseUsRepository->delete($id);
-        return redirect()->route('admin.whychooseus.list.all')->with('success', 'Why choose us deleted');
+    public function delete(Request $request){
+        $whychooseus = WhyChooseUs::find($request->id); // use find(), not findOrFail() to avoid immediate 404
+    
+        if (!$whychooseus) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Choose Us category not found.',
+            ]);
+        }
+    
+        $whychooseus->delete(); // perform deletion
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Why choose us category deleted successfully.',
+        ]);
     }
 
     public function sort(Request $request) {

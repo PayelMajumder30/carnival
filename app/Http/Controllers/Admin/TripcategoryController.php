@@ -23,7 +23,7 @@ class TripcategoryController extends Controller
         $query->when($keyword, function($query) use ($keyword) {
             $query->where('title', 'like', '%'.$keyword.'%');
         });
-        $data = $query->orderBy('positions', 'asc')->paginate(5);
+        $data = $query->orderBy('positions', 'asc')->paginate(25);
         return view('admin.tripcategory.index', compact('data'));
     }
     
@@ -68,10 +68,23 @@ class TripcategoryController extends Controller
         ]);
     }
 
-    public function delete(Request $request, $id){
-        $this->TripCategoryRepository->delete($id);
-        return redirect()->route('admin.tripcategory.list.all')->with('success', 'Trip category deleted successfully.');
+    public function delete(Request $request){
+        $tripcategory = TripCategory::find($request->id); // use find(), not findOrFail() to avoid immediate 404
+    
+        if (!$tripcategory) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Trip category not found.',
+            ]);
+        }
+    
+        $tripcategory->delete(); // perform deletion
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Trip category deleted successfully.',
+        ]);
     }
+    
 
     public function sort(Request $request) {
         foreach ($request->order as $item) {
@@ -89,14 +102,14 @@ class TripcategoryController extends Controller
         // dd($trip);
 
         $trip = TripCategory::findOrFail($trip_cat_id);
-        $banner = TripCategoryBanner::where('trip_cat_id', $trip_cat_id)->paginate(10);
-        return view('admin.tripcategory.bannerindex', compact('trip', 'banner'));   
+        $banner = TripCategoryBanner::where('trip_cat_id', $trip_cat_id)->paginate(25);
+        return view('admin.tripcategory.bannerIndex', compact('trip', 'banner'));   
     }
 
     public function bannerCreate($trip_cat_id) {
         
         $trip  = TripCategory::findOrFail($trip_cat_id);
-        return view('admin.tripcategory.bannercreate', compact('trip'));
+        return view('admin.tripcategory.bannerCreate', compact('trip'));
     }
 
     public function bannerStore(Request $request)
@@ -127,23 +140,42 @@ class TripcategoryController extends Controller
         return redirect()->back()->with('success', 'Trip category Banner created successfully.');    
     }
 
+    /**
+     * Show the form for editing a specific trip category banner.
+     *
+     * This method retrieves a trip category banner using its ID and returns
+     * a view where the admin can edit the banner details.
+     *
+     * @param int $banner_id The ID of the trip category banner to edit.
+     * @return \Illuminate\View\View The edit view with the banner data.
+    */
     public function bannerEdit($banner_id) {
-        $tripCategoryBanner = TripCategoryBanner::findOrFail(base64_decode($banner_id));
-        return view('admin.tripcategory.banneredit', compact('tripCategoryBanner'));
+        $tripCategoryBanner = TripCategoryBanner::findOrFail($banner_id);
+        return view('admin.tripcategory.bannerEdit', compact('tripCategoryBanner'));
     }
 
+
+    /**
+     * Update the specified trip category banner.
+     *
+     * This method validates the incoming request, updates the banner using a
+     * repository method, and redirects back to the banner list with a success message.
+     * If an image is included in the request, it is validated as an image file.
+     *
+     * @param \Illuminate\Http\Request $request The HTTP request containing banner update data.
+     * @return \Illuminate\Http\RedirectResponse Redirects to the banner list with a success message.
+    */
     public function bannerUpdate(Request $request) {
         $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
         ]);
         $data = $request->all();
-    
         $this->TripCategoryRepository->banner_update($data);
         return redirect()->route('admin.tripcategorybanner.list.all', $request->trip_cat_id)->with('success', 'Trip category banner updated successfully.');
     }
 
     public function bannerStatus($id) {
-        $data = TripCategoryBanner::find($id);
+        $data   = TripCategoryBanner::find($id);
         $update = TripCategoryBanner::where('trip_cat_id', $data->trip_cat_id)->where('id', '!=', $id)->get();
         foreach($update as $k=>$item){
             $item_update = TripCategoryBanner::find($item->id);
@@ -151,11 +183,11 @@ class TripcategoryController extends Controller
             $item_update->save();
         }
         
-        $data->status   = ($data->status == 1) ? 0 : 1;
+        $data->status  = ($data->status == 1) ? 0 : 1;
         $data->update();
         return response()->json([
-            'status'    => 200,
-            'message'   => 'status updated',
+            'status'   => 200,
+            'message'  => 'status updated',
         ]);
     }
 

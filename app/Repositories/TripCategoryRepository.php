@@ -38,15 +38,22 @@ class TripCategoryRepository implements TripCategoryRepositoryInterface
             return $tripcat;
         }
 
+    // public function delete($id)
+    // {
+    //     $tripcat = TripCategory::findOrFail($id);
+    //     //dd($tripcat);
+    //     if($tripcat->delete()){
+    //         return true;
+    //     } else{
+    //         return false;
+    //     }       
+    // }
+
     public function delete($id)
     {
-        $tripcat = TripCategory::findOrFail($id);
-        //dd($tripcat);
-        if($tripcat->delete()){
-            return true;
-        } else{
-            return false;
-        }       
+        $tripCategory = TripCategory::findOrFail($id);
+        $tripCategory->delete();
+        return true;
     }
 
 

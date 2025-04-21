@@ -109,9 +109,8 @@
                                             <a href="{{ route('admin.tripcategory.edit', $item->id) }}" class="btn btn-sm btn-info mr-1" data-toggle="tooltip" title="Edit">
                                                 <i class="fa fa-edit"></i>
                                             </a>
-                                            <a href="{{ route('admin.tripcategory.delete', $item->id) }}"
-                                                class="btn btn-sm btn-dark mr-1" onclick="return confirm('Are you sure?')"
-                                                data-toggle="tooltip" title="Delete">
+                    
+                                            <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deleteTrip({{$item->id}})" data-toggle="tooltip" title="Delete">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                             <a href="{{ route('admin.tripcategorybanner.list.all', ['trip_cat_id' => $item->id] )}}" class="btn btn-sm btn-primary mr-1" data-toggle="tooltip" title="Banner">
@@ -183,6 +182,38 @@
                 });
             }
         });
-    });  
+    }); 
+    
+    function deleteTrip(tripId) {
+        Swal.fire({
+            icon: 'warning',
+            title: "Are you sure you want to delete this?",
+            text: "You won't be able to revert this!",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Delete",
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('admin.tripcategory.delete')}}",
+                    type: 'POST',
+                    data: {
+                        "id": tripId,
+                        "_token": '{{ csrf_token() }}',
+                    },
+                    success: function (data){
+                        if (data.status != 200) {
+                            toastFire('error', data.message);
+                        } else {
+                            toastFire('success', data.message);
+                            location.reload();
+                        }
+                    }
+                });
+            }
+        });
+    }
 </script>
 @endsection

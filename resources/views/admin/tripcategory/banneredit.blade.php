@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('page-title', 'Update trip category banner')
+@section('page-title', 'Update trip category banner') 
 
 @section('section')
 <section class="content">
@@ -10,12 +10,12 @@
                     <div class="card-header">
                         <div class="row mb-3">
                             <div class="col-md-12 text-right">
-                                <a href="{{ route('admin.tripcategorybanner.list.all', $tripCategoryBanner->id)}}" class="btn btn-sm btn-primary"> <i class="fa fa-chevron-left"></i> Back</a>
+                                <a href="{{ route('admin.tripcategorybanner.list.all', $tripCategoryBanner->trip_cat_id)}}" class="btn btn-sm btn-primary"> <i class="fa fa-chevron-left"></i> Back</a>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.tripcategory.bannerupdate')}}" method="post" enctype="multipart/form-data">
+                        <form action="{{ route('admin.tripcategory.bannerUpdate')}}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method('POST') 
                             <div class="row form-group">
