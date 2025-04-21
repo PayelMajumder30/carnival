@@ -84,5 +84,5 @@ class PartnerController extends Controller
          $this->partnerRepository->delete($id);
          return redirect()->route('admin.partners.list.all')->with('success', 'Partner deleted successfully.');
     }
-
+    
 }

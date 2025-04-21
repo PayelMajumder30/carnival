@@ -131,7 +131,6 @@ Route::name('admin.')->group(function() {
         });
 
         Route::prefix('content')->group(function() {
-
             Route::prefix('page-content')->group(function() {
                Route::get('/', [PageContentController::class, 'PageContentIndex'])->name('page_content.list.all');
                Route::get('/create', [PageContentController::class, 'PageContentCreate'])->name('page_content.create');
@@ -140,8 +139,20 @@ Route::name('admin.')->group(function() {
                Route::get('/edit/{id}', [PageContentController::class, 'PageContentEdit'])->name('page_content.edit');
                Route::post('/update/{id}', [PageContentController::class, 'PageContentUpdate'])->name('page_content.update');
                Route::get('/delete/{id}', [PageContentController::class, 'PageContentDelete'])->name('page_content.delete');
+<<<<<<< HEAD
             });
         });       
+=======
+
+           });
+        });
+
+        Route::prefix('itenaries')->group(function() {
+            Route::get('/', [itenariesController::class, 'index'])->name('itenaries.list.all');
+            
+        });
+       
+>>>>>>> 2076f702ef08c644670b69d9ce7a278b0ddbe5c8
     });
 
     // ckeditor custom upload adapter path

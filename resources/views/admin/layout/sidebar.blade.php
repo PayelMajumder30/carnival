@@ -27,7 +27,6 @@
                     <p>Master Modules <i class="right fas fa-angle-left"></i></p>
                 </a>
 
-                
 
                 <ul class="nav nav-treeview">
                     @if(in_array('Blogs', $RolePass))
@@ -97,6 +96,29 @@
                 </ul>
             </li>
         @endif
+
+        {{-- <pre>{{ print_r($RolePass, true) }}</pre> --}}
+
+        @if(in_array('ITENARIES', $RolePass))
+            <li class="nav-item {{ (request()->is('admin/itenaries*')) ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link {{ (request()->is('admin/itenaries*')) ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-file-alt"></i>
+                    <p> Itenaries <i class="right fas fa-angle-left"></i></p>
+                </a>
+                <ul class="nav nav-treeview">
+                    @if(in_array('Upcoming events', $RolePass))
+                        <li class="nav-item">
+                            <a href="{{ route('admin.itenaries.list.all') }}"
+                            class="nav-link {{ (request()->is('admin/itenaries*')) ? 'active active_nav_link' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Upcoming Events </p>
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+            </li>
+        @endif
+
         
         @if(in_array('WEBSITE SETTINGS', $RolePass))
         <li class="nav-item {{ (request()->is('admin/settings*')) ? 'menu-open' : '' }}">
@@ -117,27 +139,6 @@
         </li>
         @endif
 
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-       
-
-
-
 
         @if(in_array('CONTENT MANAGEMENT', $RolePass))
         <li class="nav-item {{ (request()->is('admin/content*')) ? 'menu-open' : '' }}">
@@ -155,12 +156,11 @@
                         <p>Page Content</p>
                     </a>
                 </li>
-                @endif
-               
-                
+                @endif  
             </ul>
         </li>
         @endif
+
         <li class="nav-item">
             <a class="nav-link" href="javascript:void(0)"
                 onclick="event.preventDefault();document.getElementById('logout-form').submit()">
