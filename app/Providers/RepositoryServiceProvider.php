@@ -64,7 +64,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(SocialRepositoryInterface::class, SocialRepository::class);
         $this->app->bind(BannerRepositoryInterface::class, BannerRepository::class);
         $this->app->bind(TripCategoryRepositoryInterface::class, TripCategoryRepository::class);
-        $this->app->bind(TripCategoryBannerRepositoryInterface::class, TripCategoryBannerRepository::class);
         $this->app->bind(ChooseUsRepositoryInterface::class, ChooseUsRepository::class);
 
         $this->app->bind(UserInterface::class, UserRepository::class);

@@ -41,7 +41,7 @@ class SocialMediaController extends Controller
         $request->validate([
             'title'         => 'required|string|max:255',
             'image'         => 'required|image|mimes:jpg,jpeg,png,webp,gif,svg|max:1000',
-            'social_link'   => 'required|string',
+            'social_link'   => 'nullable|string',
         ], [
             'image.max'     => 'The image must not be greater than 1MB.',
         ]);
@@ -103,14 +103,27 @@ class SocialMediaController extends Controller
         return redirect()->route('admin.social_media.list.all')->with('success', 'Social media updated successfully.');
     }
 
-    public function delete(Request $request, $id)
-    {
-        // $data = SocialMedia::findOrFail($id);
-        // $data->delete();
-
-        // return redirect()->route('admin.social_media.list.all')->with('success', 'Social media deleted');
-
-        $this->socialRepository->delete($id);
-        return redirect()->route('admin.social_media.list.all')->with('success', 'Social media deleted successfully.');
+    public function delete(Request $request) {
+        // Get SocialMedia data by ID
+        $socialMedia = SocialMedia::findOrFail($request->id);
+        // If SocialMedia is not found then return status 404 with error message
+        if (!$socialMedia) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Social Media is not found',
+            ]);
+        }
+        $imagePath = $socialMedia->image;
+        // Delete SocialMedia from db
+        $socialMedia->delete();
+        // If file is exist ithen remove from target directory
+        if (!empty($imagePath) && file_exists(public_path($imagePath))) {
+            unlink(public_path($imagePath));
+        }
+        // Return suceess response with message
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Social Media has been deleted successfully',
+        ]);
     }
 }

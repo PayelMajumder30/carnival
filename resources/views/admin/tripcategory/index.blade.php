@@ -38,51 +38,6 @@
                     </div>
                     <div id="ajax-message"></div>
                     <div class="card-body">
-                        {{-- <table class="table table-sm table-hover">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Title</th>
-                                    <th>status</th>
-                                    <th style="width: 100px">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($data as $index => $item)
-                                    <tr>
-                                        <td>{{ $index + $data->firstItem() }}</td>
-                                        <td>
-                                            <div class="title-part">
-                                                <p class="text-muted mb-0">{{ $item->title }}</p>
-                                            </div>
-                                        </td>
-
-                                        <td> 
-                                            <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
-                                                <input type="checkbox" class="custom-control-input" id="customSwitch{{$item->id}}" {{ ($item->status == 1) ? 'checked' : '' }} onchange="statusToggle('{{ route('admin.tripcategory.status', $item->id) }}')">
-                                                <label class="custom-control-label" for="customSwitch{{$item->id}}"></label>
-                                            </div>
-                                        </td>
-
-                                        <td class="d-flex">
-                                            <div class="btn-group">
-                                                <a href="{{ route('admin.tripcategory.edit', $item->id)}}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>
-                                                <a href="{{ route('admin.tripcategory.delete', $item->id)}}" class="btn btn-sm btn-dark" onclick="return confirm('Are you sure ?')" data-toggle="tooltip" title="Delete">
-                                                    <i class="fa fa-trash"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="100%" class="text-center">No records found</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table> --}}
-
                         <div class="d-flex font-weight-bold text-center border-bottom py-2 bg-light">
                             <div class="col-1">#</div>
                             <div class="col-3 text-left">Title</div>

@@ -56,9 +56,21 @@ class BannerController extends Controller
         return redirect()->route('admin.banner.list.all')->with('success', 'Banner title updated successfully.');
     }
 
-    public function delete(Request $request, $id){
-        $this->bannerRepository->delete($id);
-        return redirect()->route('admin.banner.list.all')->with('success', 'Banner deleted successfully.');
+    public function delete(Request $request){
+        $banner = Banner::find($request->id); // use find(), not findOrFail() to avoid immediate 404
+    
+        if (!$banner) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Banner not found.',
+            ]);
+        }
+    
+        $banner->delete(); // perform deletion
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Banner deleted successfully.',
+        ]);
     }
 
 }

@@ -36,7 +36,7 @@ class TripcategoryController extends Controller
     {
         // dd($request->all());
         $request->validate([
-            'title'    => 'required|string|max:255',
+            'title'  => 'required|string|max:255',
         ]);
 
         $data = $request->all();
@@ -101,7 +101,7 @@ class TripcategoryController extends Controller
        // $trip = TripCategory::where('id',$trip_cat_id)->first();
         // dd($trip);
 
-        $trip = TripCategory::findOrFail($trip_cat_id);
+        $trip   = TripCategory::findOrFail($trip_cat_id);
         $banner = TripCategoryBanner::where('trip_cat_id', $trip_cat_id)->paginate(25);
         return view('admin.tripcategory.bannerIndex', compact('trip', 'banner'));   
     }
@@ -140,31 +140,12 @@ class TripcategoryController extends Controller
         return redirect()->back()->with('success', 'Trip category Banner created successfully.');    
     }
 
-    /**
-     * Show the form for editing a specific trip category banner.
-     *
-     * This method retrieves a trip category banner using its ID and returns
-     * a view where the admin can edit the banner details.
-     *
-     * @param int $banner_id The ID of the trip category banner to edit.
-     * @return \Illuminate\View\View The edit view with the banner data.
-    */
+ 
     public function bannerEdit($banner_id) {
         $tripCategoryBanner = TripCategoryBanner::findOrFail($banner_id);
         return view('admin.tripcategory.bannerEdit', compact('tripCategoryBanner'));
     }
 
-
-    /**
-     * Update the specified trip category banner.
-     *
-     * This method validates the incoming request, updates the banner using a
-     * repository method, and redirects back to the banner list with a success message.
-     * If an image is included in the request, it is validated as an image file.
-     *
-     * @param \Illuminate\Http\Request $request The HTTP request containing banner update data.
-     * @return \Illuminate\Http\RedirectResponse Redirects to the banner list with a success message.
-    */
     public function bannerUpdate(Request $request) {
         $request->validate([
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
@@ -191,16 +172,7 @@ class TripcategoryController extends Controller
         ]);
     }
 
-    /**
-     * Delete a banner by its ID.
-     *
-     * This method retrieves the banner from the database using the provided ID.
-     * If the banner is found, it deletes the database record and the associated image file from the public directory.
-     * Returns a JSON response indicating success or failure.
-     *
-     * @param \Illuminate\Http\Request $request The HTTP request object containing the 'id' of the banner to delete.
-     * @return \Illuminate\Http\JsonResponse JSON response with status and message.
-    */
+    
     public function bannerDelete(Request $request) {
         // Get banner data by ID
         $tripCategoryBanner = TripCategoryBanner::findOrFail($request->id);
@@ -214,7 +186,7 @@ class TripcategoryController extends Controller
         $imagePath = $tripCategoryBanner->image;
         // Delete banner from db
         $tripCategoryBanner->delete();
-        // If file is exist ithen remove from target directory
+        // If file is exist then remove from target directory
         if (!empty($imagePath) && file_exists(public_path($imagePath))) {
             unlink(public_path($imagePath));
         }

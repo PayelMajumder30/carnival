@@ -42,7 +42,7 @@ Route::name('admin.')->group(function() {
                Route::post('/store', [SocialMediaController::class, 'store'])->name('social_media.store');
                Route::get('/edit/{id}', [SocialMediaController::class, 'edit'])->name('social_media.edit');
                Route::post('/update/{id}', [SocialMediaController::class, 'update'])->name('social_media.update');
-               Route::get('/delete/{id}', [SocialMediaController::class, 'delete'])->name('social_media.delete');
+               Route::post('/delete', [SocialMediaController::class, 'delete'])->name('social_media.delete');
            });
            //blogs
            Route::prefix('blog')->group(function() {
@@ -62,7 +62,7 @@ Route::name('admin.')->group(function() {
                 Route::post('/store', [PartnerController::class, 'store'])->name('partners.store');
                 Route::get('/edit/{id}', [PartnerController::class, 'edit'])->name('partners.edit');
                 Route::post('/update/{id}', [PartnerController::class, 'update'])->name('partners.update');
-                Route::get('/delete/{id}', [PartnerController::class, 'delete'])->name('partners.delete');
+                Route::post('/delete', [PartnerController::class, 'delete'])->name('partners.delete');
             });
             //banners
             Route::prefix('banner')->group(function() {
@@ -71,7 +71,7 @@ Route::name('admin.')->group(function() {
                 Route::post('/store', [BannerController::class, 'store'])->name('banner.store');
                 Route::get('/edit/{id}', [BannerController::class, 'edit'])->name('banner.edit');
                 Route::post('/update/{id}', [BannerController::class, 'update'])->name('banner.update');
-                Route::get('/delete/{id}', [BannerController::class, 'delete'])->name('banner.delete');
+                Route::post('/delete', [BannerController::class, 'delete'])->name('banner.delete');
             });
             //why choose us
             Route::prefix('whychooseus')->group(function() {
@@ -114,7 +114,7 @@ Route::name('admin.')->group(function() {
                 Route::get('/edit/{id}', [OfferController::class, 'edit'])->name('offers.edit');
                 Route::post('/update', [OfferController::class, 'update'])->name('offers.update');
                 Route::get('/status/{id}', [OfferController::class, 'status'])->name('offers.status'); 
-                Route::get('/delete/{id}', [OfferController::class, 'delete'])->name('offers.delete');
+                Route::post('/delete', [OfferController::class, 'delete'])->name('offers.delete');
             });
         });
         // Route::resource('article', ArticleController::class);
@@ -143,11 +143,11 @@ Route::name('admin.')->group(function() {
            });
         });
 
+        //Itenaries
         Route::prefix('itenaries')->group(function() {
             Route::get('/', [itenariesController::class, 'index'])->name('itenaries.list.all');
             
-        });
-       
+        });    
     });
 
     // ckeditor custom upload adapter path

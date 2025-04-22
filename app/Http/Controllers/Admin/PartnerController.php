@@ -78,11 +78,28 @@ class PartnerController extends Controller
         return redirect()->route('admin.partners.list.all')->with('success', 'Partner updated successfully.');
     }
 
-    public function delete(Request $request, $id)
-    {
-         //dd($id);
-         $this->partnerRepository->delete($id);
-         return redirect()->route('admin.partners.list.all')->with('success', 'Partner deleted successfully.');
+    public function delete(Request $request) {
+        // Get partner data by ID
+        $partner = Partner::findOrFail($request->id);
+        // If partner is not found then return status 404 with error message
+        if (!$partner) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Partner is not found',
+            ]);
+        }
+        $imagePath = $partner->image;
+        // Delete partner from db
+        $partner->delete();
+        // If file is exist ithen remove from target directory
+        if (!empty($imagePath) && file_exists(public_path($imagePath))) {
+            unlink(public_path($imagePath));
+        }
+        // Return suceess response with message
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Partner has been deleted successfully',
+        ]);
     }
     
 }

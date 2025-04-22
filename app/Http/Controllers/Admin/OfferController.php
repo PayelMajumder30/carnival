@@ -115,17 +115,20 @@ class OfferController extends Controller
         ]);
     }
     
-    public function delete(Request $request, $id){
-        DB::beginTransaction();
-        try{
-            $offer = Offer::findOrFail($id);
-            $offer->delete();
-            DB::commit();
-            return redirect()->route('admin.offers.list.all')->with('success', 'Offer deleted successfully');
-        } catch( \Exception $e){
-            DB::rollback();
-            \Log::error($e);
-            return redirect()->back()->with('failure', 'Failed to delete Offer, please try again');
+    public function delete(Request $request){
+        $offer = Offer::find($request->id); // use find(), not findOrFail() to avoid immediate 404
+    
+        if (!$offer) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Offer not found.',
+            ]);
         }
+    
+        $offer->delete(); // perform deletion
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Offer deleted successfully.',
+        ]);
     }
 }
