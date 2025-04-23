@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Interfaces\TripCategoryRepositoryInterface;
 use Illuminate\Support\Facades\DB;
-use App\Models\{TripCategory, TripCategoryBanner};
+use App\Models\{TripCategory, TripCategoryBanner, TripCategoryDestination};
 
 class TripcategoryController extends Controller
 {
@@ -36,7 +36,12 @@ class TripcategoryController extends Controller
     {
         // dd($request->all());
         $request->validate([
-            'title'  => 'required|string|max:255',
+            'title'  => 'required|string|max:255|unique:trip_categories,title',
+        ], [
+            'title.required' => 'The title field is required.',
+            'title.string'   => 'The title must be a string.',
+            'title.max'      => 'The title may not be greater than 255 characters.',
+            'title.unique'   => 'This title already exists in the trip categories.',
         ]);
 
         $data = $request->all();
@@ -116,7 +121,6 @@ class TripcategoryController extends Controller
     {
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
-
         ]);
     
         $data = $request->all(); 
@@ -172,7 +176,6 @@ class TripcategoryController extends Controller
         ]);
     }
 
-    
     public function bannerDelete(Request $request) {
         // Get banner data by ID
         $tripCategoryBanner = TripCategoryBanner::findOrFail($request->id);
@@ -196,4 +199,66 @@ class TripcategoryController extends Controller
             'message'   => 'Banner has been deleted successfully',
         ]);
     }
+
+    //destinations
+    public function destinationIndex(Request $request, $trip_cat_id){
+        $trip       = TripCategory::findOrFail($trip_cat_id);
+        $keyword    = $request->keyword;
+        $query      = TripCategoryDestination::query();
+
+        $query->when($keyword, function($query) use ($keyword) {
+            $query->where('destination_id', 'like', '%'.$keyword.'%');
+        });
+        $data = $query->orderBy('id', 'asc')->paginate(25);
+        return view('admin.tripcategory.destinationIndex', compact('data', 'trip'));
+    }
+
+    public function destinationCreate($trip_cat_id) {
+        $trip  = TripCategory::findOrFail($trip_cat_id);
+        return view('admin.tripcategory.destinationCreate', compact('trip'));
+    }
+
+    public function destinationStore(Request $request) {
+        $request->validate([
+            'destination_id' => 'required|unique:trip_category_destinations,destination_id',
+            // 'trip_cat_id'    => 'required',
+        ],[
+            'destination_id.required'  => 'Destination field is required',
+            'destination_id.unique'    => 'This Destination has already been taken'
+        ]);
+        
+        $data = $request->all();
+        $this->TripCategoryRepository->destination_create($data);
+        return redirect()->route('admin.tripcategorydestination.list.all', ['trip_cat_id' => $request->trip_cat_id])->with('success', 'New destination created');  
+    }
+
+    public function destinationStatus(Request $request, $id)
+    {
+        $data = TripCategoryDestination::find($id);
+        $data->status = ($data->status == 1) ? 0 : 1;
+        $data->update();
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Status updated',
+        ]);
+    }
+
+    public function destinationDelete(Request $request) {
+        $tripdestination = TripCategoryDestination::find($request->id);
+
+        if(!$tripdestination) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Destination not found'
+            ]); 
+        }
+
+        $tripdestination->delete();
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Destination deleted succesfully',
+        ]);
+    }
+    
+    
 }

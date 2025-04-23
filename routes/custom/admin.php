@@ -104,6 +104,13 @@ Route::name('admin.')->group(function() {
                 Route::post('banner/update', [TripcategoryController::class, 'bannerUpdate'])->name('tripcategory.bannerUpdate');
                 Route::get('banner/status/{id}', [TripcategoryController::class, 'bannerStatus'])->name('tripcategory.bannerStatus'); 
                 Route::post('banner/delete', [TripcategoryController::class, 'bannerDelete'])->name('tripcategory.bannerDelete');
+
+                //destination
+                Route::get('/destination/{trip_cat_id}', [TripcategoryController::class, 'destinationIndex'])->name('tripcategorydestination.list.all');
+                Route::get('destination/create/{trip_cat_id}', [TripcategoryController::class, 'destinationCreate'])->name('tripcategory.destinationCreate');
+                Route::post('destination/store', [TripcategoryController::class, 'destinationStore'])->name('tripcategory.destinationStore');
+                Route::get('destination/status/{id}', [TripcategoryController::class, 'destinationStatus'])->name('tripcategory.destinationStatus'); 
+                Route::post('destination/delete', [TripcategoryController::class, 'destinationDelete'])->name('tripcategory.destinationDelete');
             });
 
              //offer list

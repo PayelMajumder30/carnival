@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Interfaces\PartnerRepositoryInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use App\Models\Partner;
 
 class PartnerController extends Controller
@@ -38,9 +39,22 @@ class PartnerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => ['required',
+            'string',
+            'max:255',
+            Rule::unique('partners', 'title'),
+        ],
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
 
+        ],[
+            'title.required'   => 'The partner title is required.',
+            'title.string'     => 'The title must be a valid string.',
+            'title.max'        => 'The title cannot exceed 255 characters.',
+            'title.unique'     => 'This title already exists. Please choose a different one.',
+        
+            'image.image' => 'The uploaded file must be an image.',
+            'image.mimes' => 'The image must be in one of the following formats: jpeg, png, jpg, gif, svg, webp.',
+            'image.max'   => 'The image size must not exceed 2MB.',
         ]);
     
         $data = $request->all();    
@@ -70,8 +84,22 @@ class PartnerController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => ['required',
+                'string',
+                'max:255',
+                Rule::unique('partners', 'title')->ignore($id),
+            ],
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
+        ],
+        [
+            'title.required' => 'The partner title is required.',
+            'title.string' => 'The title must be a valid string.',
+            'title.max' => 'The title cannot exceed 255 characters.',
+            'title.unique' => 'This title already exists. Please choose a different one.',
+        
+            'image.image' => 'The uploaded file must be an image.',
+            'image.mimes' => 'The image must be in one of the following formats: jpeg, png, jpg, gif, svg, webp.',
+            'image.max' => 'The image size must not exceed 2MB.',
         ]);
     
         $this->partnerRepository->update($id, $request->all());

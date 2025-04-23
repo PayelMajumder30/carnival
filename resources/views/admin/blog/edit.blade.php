@@ -53,7 +53,7 @@
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label for="meta_type">Meta Type</label>
+                                <label for="meta_type">Meta Title</label>
                                 <input type="text" class="form-control" name="meta_type" id="meta_type" placeholder="Enter Meta Type" value="{{ $data->meta_type }}">
                                 @error('meta_type') 
                                     <p class="small text-danger">{{ $message }}</p> 

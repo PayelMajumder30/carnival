@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Interfaces\SocialRepositoryInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use App\Models\SocialMedia;
 
 class SocialMediaController extends Controller
@@ -39,11 +40,25 @@ class SocialMediaController extends Controller
     {
         // dd($request->all());
         $request->validate([
-            'title'         => 'required|string|max:255',
+            'title' => ['required',
+                'string',
+                'max:255',
+                Rule::unique('social_media', 'title'),
+            ],
             'image'         => 'required|image|mimes:jpg,jpeg,png,webp,gif,svg|max:1000',
             'social_link'   => 'nullable|string',
         ], [
-            'image.max'     => 'The image must not be greater than 1MB.',
+            'title.required'    => 'The title field is required.',
+            'title.string'      => 'The title must be a valid string.',
+            'title.max'         => 'The title cannot exceed 255 characters.',
+            'title.unique'      => 'This title already exists. Please use a different one.',
+        
+            'image.required'    => 'Please upload an image.',
+            'image.image'       => 'The uploaded file must be an image.',
+            'image.mimes'       => 'The image must be a type of: jpg, jpeg, png, webp, gif, or svg.',
+            'image.max'         => 'The image must not be larger than 1MB.',
+        
+            'social_link.string' => 'The social link must be a valid string.',
         ]);
 
         $data = $request->all();
@@ -94,9 +109,27 @@ class SocialMediaController extends Controller
 
         // return redirect()->route('admin.social_media.list.all')->with('success', 'Social media updated');
         $request->validate([
-            'title'         => 'required|string|max:255',
-            'social_link'   => 'required|string',
-            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('social_media', 'title')->ignore($id),
+            ],
+            'social_link'   => 'nullable|string',
+            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+        ],
+        [
+            'title.required'    => 'The social media title is required.',
+            'title.string'      => 'The title must be a valid string.',
+            'title.max'         => 'The title cannot exceed 255 characters.',
+            'title.unique'      => 'This title already exists. Please choose a different one.',
+    
+            'social_link.required'  => 'The social media link is required.',
+            'social_link.string'    => 'The link must be a valid string.',
+    
+            'image.image'   => 'The uploaded file must be an image.',
+            'image.mimes'   => 'The image must be in one of the following formats: jpeg, png, jpg, gif, svg, webp.',
+            'image.max'     => 'The image size must not exceed 2MB.',
         ]);
     
         $this->socialRepository->update($id, $request->all());

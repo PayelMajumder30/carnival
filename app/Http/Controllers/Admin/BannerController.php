@@ -34,7 +34,12 @@ class BannerController extends Controller
     {
         // dd($request->all());
         $request->validate([
-            'title'    => 'required|string|max:255',
+            'title'    => 'required|string|max:255|unique:banners,title',
+        ],[
+            'title.required'    => 'The banner title is required.',
+            'title.string'      => 'The banner title must be a valid string.',
+            'title.max'         => 'The banner title cannot exceed 255 characters.',
+            'title.unique'      => 'This banner title already exists. Please choose a different one.',
         ]);
 
         $data = $request->all();

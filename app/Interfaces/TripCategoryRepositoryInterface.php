@@ -11,5 +11,8 @@ interface TripCategoryRepositoryInterface
 
     public function banner_create(array $data);
     public function banner_update(array $data);
+
+    public function destination_create(array $data);
+    public function destination_update(array $data);
     
 }

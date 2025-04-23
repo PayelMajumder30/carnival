@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\{TripCategory, TripCategoryBanner};
+use App\Models\{TripCategory, TripCategoryBanner, TripCategoryDestination};
 use App\Interfaces\TripCategoryRepositoryInterface;
 //use Auth;
 
@@ -38,17 +38,6 @@ class TripCategoryRepository implements TripCategoryRepositoryInterface
             return $tripcat;
         }
 
-    // public function delete($id)
-    // {
-    //     $tripcat = TripCategory::findOrFail($id);
-    //     //dd($tripcat);
-    //     if($tripcat->delete()){
-    //         return true;
-    //     } else{
-    //         return false;
-    //     }       
-    // }
-
     public function delete($id)
     {
         $tripCategory = TripCategory::findOrFail($id);
@@ -59,8 +48,7 @@ class TripCategoryRepository implements TripCategoryRepositoryInterface
 
     //tripcategory banner
     public function banner_create(array $data)
-    {
-        
+    {     
         // Initialize image path to null
         //$imagePath      = $data['image'] ?? null;   
         $tripbannerCatdata = [  
@@ -92,5 +80,21 @@ class TripCategoryRepository implements TripCategoryRepositoryInterface
             ];
             $tripbanner->update($updateData);
             return $tripbanner;
+        }
+
+        //tripcategory destination
+
+        public function destination_create(array $data) {
+            { 
+                $destinationData = [     
+                    'destination_id' => $data['destination_id'] ?? null, 
+                    'trip_cat_id'    => $data['trip_cat_id'] ?? null,   
+                ];
+                return TripCategoryDestination::create($destinationData);
+            }
+        }
+
+        public function destination_update(array $data) {
+
         }
 }

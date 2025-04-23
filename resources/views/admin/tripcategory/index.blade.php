@@ -71,6 +71,9 @@
                                             <a href="{{ route('admin.tripcategorybanner.list.all', ['trip_cat_id' => $item->id] )}}" class="btn btn-sm btn-primary mr-1" data-toggle="tooltip" title="Banner">
                                                 Banner
                                             </a>
+                                            <a href="{{ route('admin.tripcategorydestination.list.all', ['trip_cat_id' => $item->id])}}" class="btn btn-sm btn-info mr-1" data-toggle="tooltip" title="Banner">
+                                                Destination
+                                            </a>
                                         </div>
                                     </div>
                                 </li>

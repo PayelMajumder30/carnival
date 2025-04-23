@@ -18,4 +18,8 @@ class TripCategory extends Model
         return $this->hasMany(TripCategoryBanner::class, 'trip_cat_id');
     }
 
+    public function tripcategorydestination() {
+        return $this->hasMany(TripCategoryDestination::class, 'trip_cat_id');
+    }
+
 }
