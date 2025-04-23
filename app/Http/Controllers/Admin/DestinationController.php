@@ -26,6 +26,7 @@ class DestinationController extends Controller
                 $new_country = [];
             }
             
+            
         $data = Country::orderBy('country_name', 'ASC')->get();
         $existing_country = $data->pluck('crm_country_id')->toArray();
 
@@ -67,6 +68,7 @@ class DestinationController extends Controller
         ]);
 
         Destination::create([
+            'country_id' => $request->country_id,
             'crm_destination_id' => $validated['crm_destination_id'],
             'destination_name' => $validated['destination_name'],
             'status' => 1

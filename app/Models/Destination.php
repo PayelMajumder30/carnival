@@ -11,7 +11,8 @@ class Destination extends Model
     protected $table = 'destinations';
     protected $fillable = [
         'country_id',
-        'destination_id',
+        'crm_destination_id',
+        'destination_name',
         'image',
         'status',
     ];
