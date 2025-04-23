@@ -94,6 +94,8 @@
                                                     <label for="">Trip Category</label>
                                                     <input type="checkbox" id="offers" name="roles[]" value="offers" data-parent="MASTER MODULES" {{ in_array('offers', $permissions) ? 'checked' : '' }}>
                                                     <label for="">Offer List</label>
+                                                    <input type="checkbox" id="destination" name="roles[]" value="destination" data-parent="MASTER MODULES" {{ in_array('destination', $permissions) ? 'checked' : '' }}>
+                                                    <label for="">Destination</label>
                                                 </li>
                                             </ul>
                                         </li>
