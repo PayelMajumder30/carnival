@@ -10,6 +10,24 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 
+if (!function_exists('GetDestinationBycountryId')) {
+    function GetDestinationBycountryId($country_id) {
+        $Url = env('CRM_BASEPATH').'api/crm/active/country/destinations/'.$country_id;
+        $ch = curl_init($Url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);;
+
+        $countryResponse = curl_exec($ch);
+        curl_close($ch);
+
+        $countryData = json_decode($countryResponse, true);
+        if ($countryData['status']==true) {
+            $new_country = $countryData['data'];
+        } else {
+            $new_country = [];
+        }
+        return $new_country;
+    }
+}
 if (!function_exists('slugGenerate')) {
     function slugGenerate($title, $table) {
         $slug = Str::slug($title, '-');

@@ -92,6 +92,15 @@
                     </a>
                 </li>
                 @endif
+                @if(in_array('destination', $RolePass))
+                <li class="nav-item">
+                    <a href="{{ route('admin.destination.list.all')}}"
+                        class="nav-link {{ (request()->is('admin/master-module/destination*')) ? 'active active_nav_link' : ''}}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Destination</p>
+                    </a>
+                </li>
+                @endif
                 </ul>
             </li>
         @endif

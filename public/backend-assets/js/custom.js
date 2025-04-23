@@ -472,6 +472,74 @@ $( document ).ready(function() {
         return selected;
     }
 });
+
+//added button on each date
+
+// function addUploadButtons() {
+//     const calendarDays = document.querySelectorAll('#calendar_first .calendar_content div');
+
+//     if (calendarDays.length === 0) {
+//         setTimeout(addUploadButtons, 300);
+//         return;
+//     }
+
+//     calendarDays.forEach(cell => {
+//         if (!cell.querySelector('.upload-itenary-btn')) {
+//             const dateText = cell.textContent.trim();
+//             cell.innerHTML = ''; // clear
+
+//             const dateSpan = document.createElement('div');
+//             dateSpan.innerText = dateText;
+//             dateSpan.className = 'calendar-date-number';
+
+//             const btn = document.createElement('button');
+//             btn.innerText = 'Upload';
+//             btn.className = 'upload-itenary-btn';
+
+//             btn.addEventListener('click', function () {
+//                 alert('Upload itinerary for date: ' + dateText);
+//             });
+
+//             cell.appendChild(dateSpan);
+//             cell.appendChild(btn);
+
+//             // Layout for stacking
+//             cell.style.display = 'flex';
+//             cell.style.flexDirection = 'column';
+//             cell.style.alignItems = 'center';
+//             cell.style.justifyContent = 'center';
+//             cell.style.padding = '4px';
+//         }
+//     });
+// }
+
+
+// // Wait for DOM
+// document.addEventListener('DOMContentLoaded', function () {
+//     addUploadButtons();
+
+//     // Re-run when Show Calendar is clicked
+//     const filterBtn = document.getElementById('filterCalendar');
+//     if (filterBtn) {
+//         filterBtn.addEventListener('click', function () {
+//             setTimeout(addUploadButtons, 500);
+//         });
+//     }
+
+//     // Re-run when month is switched
+//     const leftArrow = document.querySelector('#calendar_first .switch-month.left');
+//     const rightArrow = document.querySelector('#calendar_first .switch-month.right');
+
+//     [leftArrow, rightArrow].forEach(btn => {
+//         if (btn) {
+//             btn.addEventListener('click', function () {
+//                 setTimeout(addUploadButtons, 500); // Wait for calendar to update
+//             });
+//         }
+//     });
+// });
+
+
 // $(document).ready(function() {
 //     function makeWeek(week) {
 //         week.empty();
@@ -603,3 +671,6 @@ $( document ).ready(function() {
 //     c(month, year, 0);
 //     c(nextMonth, nextYear, 1);
 // });
+
+
+// 

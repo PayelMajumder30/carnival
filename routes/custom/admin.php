@@ -107,6 +107,14 @@ Route::name('admin.')->group(function() {
                 Route::get('/status/{id}', [OfferController::class, 'status'])->name('offers.status'); 
                 Route::get('/delete/{id}', [OfferController::class, 'delete'])->name('offers.delete');
             });
+
+            Route::prefix('country/destinations')->group(function(){
+                Route::post('/country/add',[DestinationController::class, 'countryAdd'])->name('country.add');
+                Route::post('/destination/add',[DestinationController::class, 'destinationAdd'])->name('destination.add');
+                Route::get('/',[DestinationController::class, 'index'])->name('destination.list.all');
+                Route::get('/country_show',[DestinationController::class, 'show'])->name('destination.show');
+                
+            });
         });
         // Route::resource('article', ArticleController::class);
 
