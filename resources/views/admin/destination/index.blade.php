@@ -92,7 +92,7 @@
                                                         <option value="" selected hidden>Add New Destination</option>
                                                         @forelse ($Country_destination as $destination_item)
                                                             @if(!in_array($destination_item['id'], $existing_destination))
-                                                                <option value="{{ucwords($destination_item['name'])}}" data-id="{{$destination_item['id']}}">{{ucwords($destination_item['name'])}}</option>
+                                                                <option value="{{ucwords($destination_item['name'])}}" data-id="{{$destination_item['id']}}" data-country="{{$item->id}}">{{ucwords($destination_item['name'])}}</option>
                                                             @endif
                                                         @empty
                                                             <option value="">No new data found</option>
@@ -109,13 +109,13 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    @foreach ($country_wise_destinations as $desti_item)
                                                     <tr class="text-center">
-                                                        @foreach ($country_wise_destinations as $desti_item)
-                                                            <td>{{$desti_item->destination_name}}</td>
-                                                            <td> status</td>
-                                                            <td>Delete</td>
-                                                        @endforeach
+                                                        <td>{{$desti_item->destination_name}}</td>
+                                                        <td> status</td>
+                                                        <td>Delete</td>
                                                     </tr>
+                                                    @endforeach
                                                 </tbody>
                                             </table>
                                         </td>
@@ -161,8 +161,7 @@
             success: function(response) {
                 if (response.success) {
                     // alert('Country added successfully!');
-                    // location.reload(); // Refresh to see the updated table
-                    window.location.href = "{{ url()->current() }}?country_added=1";
+                    location.reload(); // Refresh to see the updated table
                 } else {
                     alert(response.message || 'Something went wrong');
                 }
@@ -175,10 +174,11 @@
 
     function addNewDestination(event){
         var selectdestination = $(event.target).find('option:selected');
-        var destinationName = selectdestination.text();
+        var destinationName = selectdestination.val();
         var crmDestinationId = selectdestination.data('id');
+        var country_id = selectdestination.data('country');
 
-        // console.log(destinationName);
+        // console.log(destinationName, crmDestinationId);
         // console.log(crmDestinationId);
         if(!destinationName || !crmDestinationId){
             alert('please select a valid destination');
@@ -190,12 +190,13 @@
             type: "POST",
             data: {
                 _token: '{{ csrf_token() }}',
+                country_id: country_id,
                 destination_name: destinationName,
-                crm_destination_name: crmDestinationId
+                crm_destination_id: crmDestinationId
             },
             success: function(response) {
                 if(response.success) {
-                    window.location.href = "{{ url()->current() }}?country_added=1";
+                  location.reload();
                 }else{
                     alert(response.message || 'Something Went Wrong');
                 }
