@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Interfaces\TripCategoryRepositoryInterface;
 use Illuminate\Support\Facades\DB;
-use App\Models\{TripCategory, TripCategoryBanner, TripCategoryDestination};
+use App\Models\{TripCategory, TripCategoryBanner, TripCategoryDestination, Country, Destination};
 
 class TripcategoryController extends Controller
 {
@@ -201,48 +201,16 @@ class TripcategoryController extends Controller
     }
 
     //destinations
-    public function destinationIndex(Request $request, $trip_cat_id){
+    public function destinationIndex($trip_cat_id){
+        $countries  = Country::where('status', 1)->get(); // Get active countries
         $trip       = TripCategory::findOrFail($trip_cat_id);
-        $keyword    = $request->keyword;
-        $query      = TripCategoryDestination::query();
-
-        $query->when($keyword, function($query) use ($keyword) {
-            $query->where('destination_id', 'like', '%'.$keyword.'%');
-        });
-        $data = $query->orderBy('id', 'asc')->paginate(25);
-        return view('admin.tripcategory.destinationIndex', compact('data', 'trip'));
+        return view('admin.tripcategory.destinationIndex', compact('countries', 'trip'));
     }
 
-    public function destinationCreate($trip_cat_id) {
-        $trip  = TripCategory::findOrFail($trip_cat_id);
-        return view('admin.tripcategory.destinationCreate', compact('trip'));
+    public function getDestinationsByCountry($id) {
+        $destinations = Destination::where('country_id', $id)->where('status', 1)->get();
     }
-
-    public function destinationStore(Request $request) {
-        $request->validate([
-            'destination_id' => 'required|unique:trip_category_destinations,destination_id',
-            // 'trip_cat_id'    => 'required',
-        ],[
-            'destination_id.required'  => 'Destination field is required',
-            'destination_id.unique'    => 'This Destination has already been taken'
-        ]);
-        
-        $data = $request->all();
-        $this->TripCategoryRepository->destination_create($data);
-        return redirect()->route('admin.tripcategorydestination.list.all', ['trip_cat_id' => $request->trip_cat_id])->with('success', 'New destination created');  
-    }
-
-    public function destinationStatus(Request $request, $id)
-    {
-        $data = TripCategoryDestination::find($id);
-        $data->status = ($data->status == 1) ? 0 : 1;
-        $data->update();
-        return response()->json([
-            'status'    => 200,
-            'message'   => 'Status updated',
-        ]);
-    }
-
+   
     public function destinationDelete(Request $request) {
         $tripdestination = TripCategoryDestination::find($request->id);
 

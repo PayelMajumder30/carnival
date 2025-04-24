@@ -60,6 +60,19 @@ class DestinationController extends Controller
 
     }
 
+    public function countryStatus(Request $request, $id) {
+        $data = Country::find($id);
+        $data->status = ($data->status == 1) ? 0 : 1;
+        $data->update();
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Status updated',
+        ]);
+    }
+
+
+    // Country wise Destination //
+
     public function destinationAdd(Request $request)
     {
         $validated = $request->validate([
@@ -77,4 +90,80 @@ class DestinationController extends Controller
         session()->flash('success', 'Destination added successfully');
         return response()->json(['success'=> true]);
     }
+
+
+    public function destinationStatus(Request $request, $id) {
+       
+        $destination = Destination::find($id);
+        if (!$destination) {
+            return response()->json([
+                'status'  => 404,
+                'message' => 'Destination not found',
+            ]);
+        }
+        // Toggle status
+        $destination->status = $destination->status == 1 ? 0 : 1;
+        $destination->save();
+    
+        return response()->json([
+            'status'  => 200,
+            'message' => 'Status updated',
+        ]);
+    }
+
+
+    public function destinationDelete(Request $request) {
+        $countryDestination = Destination::findOrFail($request->id);
+        if(!$countryDestination) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Countrywise destination not found',
+            ]);
+        }
+        $imagePath = $countryDestination->image;
+        // Delete banner from db
+        $countryDestination->delete();
+        // If file is exist then remove from target directory
+        if (!empty($imagePath) && file_exists(public_path($imagePath))) {
+            unlink(public_path($imagePath));
+        }
+        // Return suceess response with message
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Countrywise destination has been deleted successfully',
+        ]);
+    }
+
+    
+    public function createDestImage(Request $request) {
+        $request->validate([
+            'id'    => 'required|exists:destinations,id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ]);
+
+        $destination = Destination::find($request->id);
+
+        if($request->hasFile('image') && $request->file('image')->isValid()) {
+            $file       = $request->file('image');
+            $fileName   = time(). rand(10000, 99999). '.'. $file->extension();
+            $filePath   = 'uploads/country_wise_dest/' . $fileName;
+
+            $file->move(public_path('uploads/country_wise_dest'), $fileName);
+    
+            $destination->image = $filePath;
+            $destination->save();
+
+            return response()->json([
+                'status' => 200,
+                'message' => "Image uploaded",
+                'image_url' => asset($filePath),
+            ]);
+        }
+
+        return response()->json([
+            'status' => 500,
+            'message' => 'Failed to upload image',
+        ]); 
+    }
+    
 }

@@ -53,6 +53,7 @@ function statusToggle(route) {
     });
 }
 
+
 //for active one status
 function statusAllToggle(route) {
     $.ajax({
