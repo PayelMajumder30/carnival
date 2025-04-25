@@ -98,7 +98,7 @@
                     <a href="{{ route('admin.destination.list.all')}}"
                         class="nav-link {{ (request()->is('admin/master-module/destination*')) ? 'active active_nav_link' : ''}}">
                         <i class="far fa-circle nav-icon"></i>
-                        <p>Destination</p>
+                        <p>Destinations</p>
                     </a>
                 </li>
                 @endif

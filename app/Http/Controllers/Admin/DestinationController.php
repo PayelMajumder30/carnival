@@ -25,8 +25,7 @@ class DestinationController extends Controller
             } else {
                 $new_country = [];
             }
-            
-            
+              
         $data = Country::orderBy('country_name', 'ASC')->get();
         $existing_country = $data->pluck('crm_country_id')->toArray();
 
@@ -57,7 +56,7 @@ class DestinationController extends Controller
 
         session()->flash('success', 'Country Added Successfully');
         return response()->json(['success' => true]);
-
+        
     }
 
     public function destinationAdd(Request $request)

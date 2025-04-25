@@ -28,6 +28,7 @@ if (!function_exists('GetDestinationBycountryId')) {
         return $new_country;
     }
 }
+
 if (!function_exists('slugGenerate')) {
     function slugGenerate($title, $table) {
         $slug = Str::slug($title, '-');
