@@ -54,10 +54,8 @@ class DestinationController extends Controller
             'status' => 1,
         ]);
 
-
         session()->flash('success', 'Country Added Successfully');
         return response()->json(['success' => true]);
-
     }
 
     public function countryStatus(Request $request, $id) {

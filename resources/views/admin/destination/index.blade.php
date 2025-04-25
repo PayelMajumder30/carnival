@@ -148,7 +148,7 @@
                                                             <form method="POST" enctype="multipart/form-data" id="uploadForm-{{ $desti_item->id }}" class="d-inline">
                                                                 @csrf
                                                                 <input type="hidden" name="id" value="{{ $desti_item->id }}">
-                                                                <label for="imageInput-{{ $desti_item->id }}" class="btn btn-sm btn-primary mr-1 mb-0" title="Change Image">
+                                                                <label for="imageInput-{{ $desti_item->id }}" class="btn btn-sm btn-info mr-1 mb-0" title="Change Image">
                                                                     <i class="fa fa-image"></i>
                                                                 </label>
                                                                 <input type="file" name="image" class="d-none" id="imageInput-{{ $desti_item->id }}"

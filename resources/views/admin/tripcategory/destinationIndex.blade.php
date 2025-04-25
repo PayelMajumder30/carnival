@@ -53,7 +53,21 @@
                                 </tr>
                             </thead>
                             <tbody id="destination-table-body" class="text-center">
-                              
+                              @foreach($tripCategoryDestination as $index => $item)
+                                <tr>
+                                    <td>{{ $index+1}}</td>
+                                    <td>{{$item->tripdestination->destination_name}}</td>
+                                    <td>
+                                        <img src="{{ asset($item->tripdestination->image)}}"  width="50" height="40" alt="No image">
+                                    </td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>
+                                        <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deletetripDesti({{$item->id}})" data-toggle="tooltip" title="Delete">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                              @endforeach
                             </tbody>
                             
                         </table>
@@ -89,8 +103,7 @@
                                 <select name="destination_id" id="destination_id" class="form-control">
                                     <option value="">-- Select Destination --</option>
                                 </select>
-                            </div>
-                        
+                            </div>                      
                             <input type="button" class="btn btn-primary" value="Add Destination" onclick="addDestination()" />
                         </form>                        
                     </div>
@@ -102,8 +115,10 @@
 @endsection
 
 @section('script')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
-    function deleteDestination(destId) {
+    function deletetripDesti(destId) {
         Swal.fire({
             icon: 'warning',
             title: "Are you sure you want to delete this?",
@@ -136,30 +151,33 @@
         });
     }
 
+
     function showDestiations() {
         const countryId = $('#country_id').val();
+        const tripCatId = $('#trip_cat_id').val(); // Ensure this input exists in your Blade
+
         $.ajax({
-            url: "{{URL::to('/admin/master-module/tripcategory/destination/by-country')}}" + '/' + countryId,
+            url: "{{ URL::to('/admin/master-module/tripcategory/destination/by-country') }}/" + countryId + "/" + tripCatId,
             type: 'GET',
-            success: function (data){
-                if (data.status != 200) {
-                    toastFire('error', data.message);
+            success: function (data) {
+                $("#destination_id").html("<option value=''>-- Select Destination --</option>");
+
+                if (data.status != 200 || data.destinations.length === 0) {
+                   
+                    $('#destination-group').hide();
+                    toastr.error(data.message || 'No destinations found for selected country.');
                 } else {
-                    $("#destination_id").html("<option value=''>-- Select Destination --</option>");
-                    if (data.destinations.length == 0) {
-                        toastFire('error', 'No destinations found');
-                        $('#destination-group').hide();
-                    } else {
-                        toastFire('success', data.message);
-                        data.destinations.map((destination) => {
-                            $('#destination_id').append(new Option(destination.destination_name, destination.id))
-                        })
-                        $('#destination-group').show();
-                    }
+                  
+                    data.destinations.forEach(destination => {
+                        $('#destination_id').append(new Option(destination.destination_name, destination.id));
+                    });
+                    $('#destination-group').show();
+                    toastr.success(data.message || 'Destinations fetched successfully.');
                 }
             }
         });
     }
+
 
     function addDestination() {
         var formData = $("#add-destination-form").serializeArray();
@@ -173,18 +191,26 @@
                 } else {
                     toastFire('success', data.message);
                     console.log('Added destination', data.destination);
+                    const rowCount = $('destination-table-body tr').length +1;
                     const newDestination = data.destination;
+                    const BASE_URL  = "{{ asset('') }}";
+                    const imagePath = BASE_URL + newDestination.tripdestination.image;
                     // Appened added destination
                     $("#destination-table-body").append("<tr>\
-                        <td></td>\
-                        <td>" + newDestination.tripdestination.destination_name + " <td>\
+                        <td>"+ rowCount +"</td>\
+                        <td>" + newDestination.tripdestination.destination_name + " </td>\
+                        <td><img src='" + imagePath + "' width='50' height='40'></td>\
+                        <td><span class='badge badge-success'>Active</span></td>\
+                        <td><a href='javascript:void(0);' class='btn btn-sm btn-dark mr-1' onclick='deletetripDesti(" + newDestination.id + ")'><i class='fa fa-trash'></i></a></td>\
                     </tr>");
+
+                    setTimeout(function() {
+                        window.location.href = "{{ route('admin.tripcategorydestination.list.all', $trip->id) }}";
+                    }, 1000);
                 }
             }
         });
-    }
-   
-   
+    } 
 </script>
 
 @endsection

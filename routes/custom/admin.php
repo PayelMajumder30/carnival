@@ -107,7 +107,7 @@ Route::name('admin.')->group(function() {
 
                 //trip category destination
                 Route::get('/destination/{trip_cat_id}', [TripcategoryController::class, 'destinationIndex'])->name('tripcategorydestination.list.all');
-                Route::get('destination/by-country/{country_id}', [TripcategoryController::class, 'getDestinationsByCountry'])->name('tripcategorydestination.getDestination');
+                Route::get('destination/by-country/{country_id}/{trip_cat_id}', [TripcategoryController::class, 'getDestinationsByCountry'])->name('tripcategorydestination.getDestination');
                 // Route::get('/destination/add-country', [TripcategoryController::class, 'countryAdd'])->name('tripcategory.countryAdd');
                 Route::post('destination/add', [TripcategoryController::class, 'destinationAdd'])->name('tripcategorydestination.destinationAdd');
                 Route::post('destination/delete', [TripcategoryController::class, 'destinationDelete'])->name('tripcategory.destinationDelete');
