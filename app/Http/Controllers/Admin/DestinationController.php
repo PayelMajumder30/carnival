@@ -24,8 +24,7 @@ class DestinationController extends Controller
                 $new_country = $countryData['data'];
             } else {
                 $new_country = [];
-            }
-            
+            }          
             
         $data = Country::orderBy('country_name', 'ASC')->get();
         $existing_country = $data->pluck('crm_country_id')->toArray();

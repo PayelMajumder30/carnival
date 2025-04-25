@@ -198,7 +198,7 @@ class TripcategoryController extends Controller
     }
 
 
-    //destinations
+    //trip category destinations
     public function destinationIndex($trip_cat_id, Request $request){
         $countries  = Country::where('status', 1)->get(); // Get active countries
         $trip       = TripCategory::findOrFail($trip_cat_id);
@@ -211,7 +211,7 @@ class TripcategoryController extends Controller
             });
         }
 
-        $tripCategoryDestination = $query->get();
+        $tripCategoryDestination = $query->paginate(25);
         return view('admin.tripcategory.destinationIndex', compact('countries', 'trip', 'tripCategoryDestination'));
     }
 
