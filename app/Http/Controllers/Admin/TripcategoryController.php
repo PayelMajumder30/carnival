@@ -250,7 +250,7 @@ class TripcategoryController extends Controller
             'destination_id' => $request->destination_id,
             'status'         => 1,
         ]);
-        $destintion = TripCategoryDestination::with('tripdestination')->where('id', $tripCategoryDestination->id)->first();
+        $destination = TripCategoryDestination::with('tripdestination')->where('id', $tripCategoryDestination->id)->first();
         return response()->json([
             'status'  => 201,
             'message' => 'Destination has been added successfully.',
