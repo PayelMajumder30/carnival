@@ -18,20 +18,21 @@
                         <div class="row">
                             <div class="col-md-6"></div>
                             <div class="col-md-6">
-                                <form action="" method="get">
+                                <form action="{{ route('admin.destination.list.all') }}" method="get">
                                     <div class="d-flex justify-content-end">
                                         <div class="form-group ml-2">
-                                            <select name="keyword" class="form-control form-control-sm filter" id="countrySelect">
+                                            <select name="country_filter" class="form-control form-control-sm filter" id="countrySelect">
                                                 <option value="">Select Country</option>
-                                                {{-- @foreach($showCountry as $id => $name)
-                                                    <option value="{{ $id }}" {{ request()->input('keyword') == $id ? 'selected' : '' }}>
+                                                @foreach($showCountry as $name)
+                                                    <option value="{{ $name }}" {{ request()->input('country_filter') == $name ? 'selected' : '' }}>
                                                         {{ $name }}
                                                     </option>
-                                                @endforeach --}}
+                                                @endforeach
                                             </select>
                                         </div>
                                         <div class="form-group ml-2">
-                                            <input type="search" class="form-control form-control-sm" name="keyword" id="keyword" value="{{ request()->input('keyword') }}" placeholder="Search something...">
+                                            <input type="search" class="form-control form-control-sm" name="keyword" id="keyword"
+                                                value="{{ request()->input('keyword') }}" placeholder="Search destination...">
                                         </div>
                                         <div class="form-group ml-2">
                                             <div class="btn-group">
@@ -248,9 +249,8 @@
             }
         });
     }
-
-    //for delete destination
-    function deleteDesti(destiId) {
+     //for delete destination
+     function deleteDesti(destiId) {
         //alert(destiId);
       Swal.fire({
           icon: 'warning',
@@ -312,5 +312,18 @@
             }
         });
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+            var selects = document.getElementsByClassName('filter');
+
+            Array.from(selects).forEach(function(select) {
+                select.addEventListener('change', function () {
+                    var form = select.closest('form');
+                    if (form) {
+                        form.submit();
+                    }
+                });
+            });
+        });
 </script>
 @endsection

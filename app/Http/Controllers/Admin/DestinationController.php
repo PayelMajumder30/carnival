@@ -7,30 +7,56 @@ use Illuminate\Http\Request;
 use App\Models\Country;
 use App\Models\Destination;
 
+
 class DestinationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
 
         $Url = env('CRM_BASEPATH').'api/crm/active/country';
-            $ch = curl_init($Url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);;
+        $ch = curl_init($Url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);;
 
-            $countryResponse = curl_exec($ch);
-            curl_close($ch);
+        $countryResponse = curl_exec($ch);
+        curl_close($ch);
 
-            $countryData = json_decode($countryResponse, true);
-            if ($countryData['status']==true) {
-                $new_country = $countryData['data'];
-            } else {
-                $new_country = [];
-            }
-            
-            
-        $data = Country::orderBy('country_name', 'ASC')->get();
+        $countryData = json_decode($countryResponse, true);
+        //dd($countryData);
+        if ($countryData['status']==true) {
+            $new_country = $countryData['data'];
+        } else {
+            $new_country = [];
+        }
+       // dd($new_country);
+
+       $showCountry = Country::select('country_name')
+        ->orderBy('country_name')
+        ->pluck('country_name');
+
+        $country_filter = $request->input('country_filter');
+        $keyword = $request->input('keyword');
+
+        if ($country_filter) {
+            $data = Country::where('country_name', 'like', '%' . $country_filter . '%')
+                ->orderBy('country_name', 'ASC')
+                ->get();
+        } elseif ($keyword) {
+            $data = Country::select('countries.*')
+            ->whereHas('destinations', function($query) use ($keyword) {
+                $query->where('destination_name', 'like', '%' . $keyword . '%');
+            })
+            ->orWhere('countries.country_name', 'like', '%' . $keyword . '%')
+            ->with('destinations') // Optional: eager load destinations if you need them
+            // ->distinct()
+            ->orderBy('countries.country_name', 'ASC')
+            ->get();
+        } else {
+            $data = Country::orderBy('country_name', 'ASC')->get();
+        }
+
         $existing_country = $data->pluck('crm_country_id')->toArray();
 
-        return view('admin.destination.index', compact('data','new_country', 'existing_country'));
+        return view('admin.destination.index', compact('new_country', 'existing_country', 'data', 'showCountry'));
     }
 
     public function show(Request $request)
@@ -165,3 +191,6 @@ class DestinationController extends Controller
     }
     
 }
+
+    
+
