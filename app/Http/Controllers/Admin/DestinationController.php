@@ -7,29 +7,56 @@ use Illuminate\Http\Request;
 use App\Models\Country;
 use App\Models\Destination;
 
+
 class DestinationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
 
         $Url = env('CRM_BASEPATH').'api/crm/active/country';
-            $ch = curl_init($Url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);;
+        $ch = curl_init($Url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);;
 
-            $countryResponse = curl_exec($ch);
-            curl_close($ch);
+        $countryResponse = curl_exec($ch);
+        curl_close($ch);
 
-            $countryData = json_decode($countryResponse, true);
-            if ($countryData['status']==true) {
-                $new_country = $countryData['data'];
-            } else {
-                $new_country = [];
-            }
-              
-        $data = Country::orderBy('country_name', 'ASC')->get();
+        $countryData = json_decode($countryResponse, true);
+        //dd($countryData);
+        if ($countryData['status']==true) {
+            $new_country = $countryData['data'];
+        } else {
+            $new_country = [];
+        }
+       // dd($new_country);
+
+       $showCountry = Country::select('country_name')
+        ->orderBy('country_name')
+        ->pluck('country_name');
+
+        $country_filter = $request->input('country_filter');
+        $keyword = $request->input('keyword');
+
+        if ($country_filter) {
+            $data = Country::where('country_name', 'like', '%' . $country_filter . '%')
+                ->orderBy('country_name', 'ASC')
+                ->get();
+        } elseif ($keyword) {
+            $data = Country::select('countries.*')
+            ->whereHas('destinations', function($query) use ($keyword) {
+                $query->where('destination_name', 'like', '%' . $keyword . '%');
+            })
+            ->orWhere('countries.country_name', 'like', '%' . $keyword . '%')
+            ->with('destinations') // Optional: eager load destinations if you need them
+            // ->distinct()
+            ->orderBy('countries.country_name', 'ASC')
+            ->get();
+        } else {
+            $data = Country::orderBy('country_name', 'ASC')->get();
+        }
+
         $existing_country = $data->pluck('crm_country_id')->toArray();
 
-        return view('admin.destination.index', compact('data','new_country', 'existing_country'));
+        return view('admin.destination.index', compact('new_country', 'existing_country', 'data', 'showCountry'));
     }
 
     public function show(Request $request)
@@ -53,11 +80,22 @@ class DestinationController extends Controller
             'status' => 1,
         ]);
 
-
         session()->flash('success', 'Country Added Successfully');
         return response()->json(['success' => true]);
-        
     }
+
+    public function countryStatus(Request $request, $id) {
+        $data = Country::find($id);
+        $data->status = ($data->status == 1) ? 0 : 1;
+        $data->update();
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Status updated',
+        ]);
+    }
+
+
+    // Country wise Destination //
 
     public function destinationAdd(Request $request)
     {
@@ -76,4 +114,83 @@ class DestinationController extends Controller
         session()->flash('success', 'Destination added successfully');
         return response()->json(['success'=> true]);
     }
+
+
+    public function destinationStatus(Request $request, $id) {
+       
+        $destination = Destination::find($id);
+        if (!$destination) {
+            return response()->json([
+                'status'  => 404,
+                'message' => 'Destination not found',
+            ]);
+        }
+        // Toggle status
+        $destination->status = $destination->status == 1 ? 0 : 1;
+        $destination->save();
+    
+        return response()->json([
+            'status'  => 200,
+            'message' => 'Status updated',
+        ]);
+    }
+
+
+    public function destinationDelete(Request $request) {
+        $countryDestination = Destination::findOrFail($request->id);
+        if(!$countryDestination) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Countrywise destination not found',
+            ]);
+        }
+        $imagePath = $countryDestination->image;
+        // Delete banner from db
+        $countryDestination->delete();
+        // If file is exist then remove from target directory
+        if (!empty($imagePath) && file_exists(public_path($imagePath))) {
+            unlink(public_path($imagePath));
+        }
+        // Return suceess response with message
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Countrywise destination has been deleted successfully',
+        ]);
+    }
+
+    
+    public function createDestImage(Request $request) {
+        $request->validate([
+            'id'    => 'required|exists:destinations,id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ]);
+
+        $destination = Destination::find($request->id);
+
+        if($request->hasFile('image') && $request->file('image')->isValid()) {
+            $file       = $request->file('image');
+            $fileName   = time(). rand(10000, 99999). '.'. $file->extension();
+            $filePath   = 'uploads/country_wise_dest/' . $fileName;
+
+            $file->move(public_path('uploads/country_wise_dest'), $fileName);
+    
+            $destination->image = $filePath;
+            $destination->save();
+
+            return response()->json([
+                'status' => 200,
+                'message' => "Image uploaded",
+                'image_url' => asset($filePath),
+            ]);
+        }
+
+        return response()->json([
+            'status' => 500,
+            'message' => 'Failed to upload image',
+        ]); 
+    }
+    
 }
+
+    
+

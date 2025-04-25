@@ -45,7 +45,7 @@ Route::name('admin.')->group(function() {
                Route::post('/delete', [SocialMediaController::class, 'delete'])->name('social_media.delete');
            });
            //blogs
-           Route::prefix('blog')->group(function() {
+            Route::prefix('blog')->group(function() {
                 Route::get('/', [BlogController::class, 'index'])->name('blog.list.all');
                 Route::get('/create', [BlogController::class, 'create'])->name('blog.create');
                 Route::post('/store', [BlogController::class, 'store'])->name('blog.store');
@@ -105,11 +105,11 @@ Route::name('admin.')->group(function() {
                 Route::get('banner/status/{id}', [TripcategoryController::class, 'bannerStatus'])->name('tripcategory.bannerStatus'); 
                 Route::post('banner/delete', [TripcategoryController::class, 'bannerDelete'])->name('tripcategory.bannerDelete');
 
-                //destination
+                //trip category destination
                 Route::get('/destination/{trip_cat_id}', [TripcategoryController::class, 'destinationIndex'])->name('tripcategorydestination.list.all');
-                Route::get('destination/create/{trip_cat_id}', [TripcategoryController::class, 'destinationCreate'])->name('tripcategory.destinationCreate');
-                Route::post('destination/store', [TripcategoryController::class, 'destinationStore'])->name('tripcategory.destinationStore');
-                Route::get('destination/status/{id}', [TripcategoryController::class, 'destinationStatus'])->name('tripcategory.destinationStatus'); 
+                Route::get('destination/by-country/{country_id}/{trip_cat_id}', [TripcategoryController::class, 'getDestinationsByCountry'])->name('tripcategorydestination.getDestination');
+                // Route::get('/destination/add-country', [TripcategoryController::class, 'countryAdd'])->name('tripcategory.countryAdd');
+                Route::post('destination/add', [TripcategoryController::class, 'destinationAdd'])->name('tripcategorydestination.destinationAdd');
                 Route::post('destination/delete', [TripcategoryController::class, 'destinationDelete'])->name('tripcategory.destinationDelete');
             });
 
@@ -124,11 +124,16 @@ Route::name('admin.')->group(function() {
                 Route::post('/delete', [OfferController::class, 'delete'])->name('offers.delete');
             });
 
+            //Master modeule/destination
             Route::prefix('country/destinations')->group(function(){
-                Route::post('/country/add',[DestinationController::class, 'countryAdd'])->name('country.add');
-                Route::post('/destination/add',[DestinationController::class, 'destinationAdd'])->name('destination.add');
                 Route::get('/',[DestinationController::class, 'index'])->name('destination.list.all');
+                Route::post('/country/add',[DestinationController::class, 'countryAdd'])->name('country.add');
+                Route::get('/country/status/{id}', [DestinationController::class, 'countryStatus'])->name('country.status'); 
+                Route::post('/destination/add',[DestinationController::class, 'destinationAdd'])->name('destination.add'); 
+                Route::post('/destination/create-image', [DestinationController::class, 'createDestImage'])->name('destination.createImage'); 
+                Route::get('/destination/status/{id}', [DestinationController::class, 'destinationStatus'])->name('destination.status');  
                 Route::get('/country_show',[DestinationController::class, 'show'])->name('destination.show');
+                Route::post('/delete', [DestinationController::class, 'destinationDelete'])->name('destination.delete');
                 
             });
         });

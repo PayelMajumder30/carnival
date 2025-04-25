@@ -15,4 +15,8 @@ class TripCategoryDestination extends Model
     public function tripcategory(){
         return $this->belongsTo(TripCategory::class, 'trip_cat_id', 'id');
     }
+
+    public function tripdestination(){
+        return $this->belongsTo(Destination::class, 'destination_id', 'id');
+    }
 }

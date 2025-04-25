@@ -17,7 +17,7 @@ class Country extends Model
 
     public function destinations()
     {
-        return $this->hasMany(Destination::class);
+        return $this->hasMany(Destination::class, 'country_id');
     }
 
 }

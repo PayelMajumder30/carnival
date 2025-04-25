@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Interfaces\TripCategoryRepositoryInterface;
 use Illuminate\Support\Facades\DB;
-use App\Models\{TripCategory, TripCategoryBanner, TripCategoryDestination};
+use App\Models\{TripCategory, TripCategoryBanner, TripCategoryDestination, Country, Destination};
 
 class TripcategoryController extends Controller
 {
@@ -102,17 +102,14 @@ class TripcategoryController extends Controller
         ]);
     }
 
+    //trip category banner
     public function bannerIndex(Request $request, $trip_cat_id) {
-       // $trip = TripCategory::where('id',$trip_cat_id)->first();
-        // dd($trip);
-
         $trip   = TripCategory::findOrFail($trip_cat_id);
         $banner = TripCategoryBanner::where('trip_cat_id', $trip_cat_id)->paginate(25);
         return view('admin.tripcategory.bannerIndex', compact('trip', 'banner'));   
     }
 
-    public function bannerCreate($trip_cat_id) {
-        
+    public function bannerCreate($trip_cat_id) {       
         $trip  = TripCategory::findOrFail($trip_cat_id);
         return view('admin.tripcategory.bannerCreate', compact('trip'));
     }
@@ -200,49 +197,48 @@ class TripcategoryController extends Controller
         ]);
     }
 
+
     //destinations
-    public function destinationIndex(Request $request, $trip_cat_id){
+    public function destinationIndex($trip_cat_id, Request $request){
+        $countries  = Country::where('status', 1)->get(); // Get active countries
         $trip       = TripCategory::findOrFail($trip_cat_id);
-        $keyword    = $request->keyword;
-        $query      = TripCategoryDestination::query();
+        $query      = TripCategoryDestination::with('tripdestination')->where('trip_cat_id', $trip_cat_id);
 
-        $query->when($keyword, function($query) use ($keyword) {
-            $query->where('destination_id', 'like', '%'.$keyword.'%');
-        });
-        $data = $query->orderBy('id', 'asc')->paginate(25);
-        return view('admin.tripcategory.destinationIndex', compact('data', 'trip'));
+        if($request->has('keyword') && $request->keyword != '') {
+            $keyword = $request->keyword;
+            $query->whereHas('tripdestination', function($q) use ($keyword) {
+                $q->where('destination_name', 'like', '%' . $keyword . '%');
+            });
+        }
+
+        $tripCategoryDestination = $query->get();
+        return view('admin.tripcategory.destinationIndex', compact('countries', 'trip', 'tripCategoryDestination'));
     }
 
-    public function destinationCreate($trip_cat_id) {
-        $trip  = TripCategory::findOrFail($trip_cat_id);
-        return view('admin.tripcategory.destinationCreate', compact('trip'));
-    }
+    public function getDestinationsByCountry($country_id, $trip_cat_id) {
 
-    public function destinationStore(Request $request) {
-        $request->validate([
-            'destination_id' => 'required|unique:trip_category_destinations,destination_id',
-            // 'trip_cat_id'    => 'required',
-        ],[
-            'destination_id.required'  => 'Destination field is required',
-            'destination_id.unique'    => 'This Destination has already been taken'
-        ]);
+        $assignedDestinationIds = TripCategoryDestination::where('trip_cat_id', $trip_cat_id)->pluck('destination_id')->toArray();
         
-        $data = $request->all();
-        $this->TripCategoryRepository->destination_create($data);
-        return redirect()->route('admin.tripcategorydestination.list.all', ['trip_cat_id' => $request->trip_cat_id])->with('success', 'New destination created');  
-    }
+        $destinations = Destination::
+            select(['id', 'destination_name', 'image'])
+            ->where('country_id', $country_id)
+            ->where('status', 1)
+            ->whereNotIn('id', $assignedDestinationIds)
+            ->get();
 
-    public function destinationStatus(Request $request, $id)
-    {
-        $data = TripCategoryDestination::find($id);
-        $data->status = ($data->status == 1) ? 0 : 1;
-        $data->update();
+        if ($destinations->isEmpty()) {
+            return response()->json([
+                'status'  => 404,
+                'message' => 'Destination not found',
+            ]);
+        }
         return response()->json([
-            'status'    => 200,
-            'message'   => 'Status updated',
+            'status'  => 200,
+            'message' => 'Destinations fetched successfully.',
+            'destinations' => $destinations,
         ]);
     }
-
+   
     public function destinationDelete(Request $request) {
         $tripdestination = TripCategoryDestination::find($request->id);
 
@@ -257,6 +253,20 @@ class TripcategoryController extends Controller
         return response()->json([
             'status'    => 200,
             'message'   => 'Destination deleted succesfully',
+        ]);
+    }
+
+    public function destinationAdd(Request $request) {
+        $tripCategoryDestination = TripCategoryDestination::create([
+            'trip_cat_id'    => $request->trip_cat_id,
+            'destination_id' => $request->destination_id,
+            'status'         => 1,
+        ]);
+        $destination = TripCategoryDestination::with('tripdestination')->where('id', $tripCategoryDestination->id)->first();
+        return response()->json([
+            'status'  => 201,
+            'message' => 'Destination has been added successfully.',
+            'destination' => $destination,
         ]);
     }
     

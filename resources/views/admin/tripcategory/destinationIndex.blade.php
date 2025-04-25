@@ -52,46 +52,29 @@
                                     <th style="width: 100px">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @forelse ($data as $index => $item)
-                                    <tr class="text-center">
-                                        <td>{{ $index + 1 }}</td> <!-- Serial number -->
-                                        <td>{{ $item->destination_id }}</td> <!-- Adjust this if you have a relation like $item->destination->name -->
-                            
-                                        <!-- Placeholder for image if available -->
-                                        <td>
-                                          
-                                        </td>
-                            
-                                        <!-- Status toggle -->
-                                        <td>
-                                            <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
-                                                <input type="checkbox" class="custom-control-input" id="customSwitch{{ $item->id }}"
-                                                    {{ $item->status == 1 ? 'checked' : '' }}
-                                                    onchange="statusToggle('{{ route('admin.tripcategory.destinationStatus', $item->id) }}')">
-                                                <label class="custom-control-label" for="customSwitch{{ $item->id }}"></label>
-                                            </div>
-                                        </td>
-                            
-                                        <!-- Placeholder for actions -->
-                                        <td>
-                                            <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deleteDestination({{$item->id}})" data-toggle="tooltip" title="Delete">
-                                                <i class="fa fa-trash"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="5" class="text-center">No records found</td>
-                                    </tr>
-                                @endforelse
+                            <tbody id="destination-table-body" class="text-center">
+                              @foreach($tripCategoryDestination as $index => $item)
+                                <tr>
+                                    <td>{{ $index+1}}</td>
+                                    <td>{{$item->tripdestination->destination_name}}</td>
+                                    <td>
+                                        <img src="{{ asset($item->tripdestination->image)}}"  width="50" height="40" alt="No image">
+                                    </td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>
+                                        <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deletetripDesti({{$item->id}})" data-toggle="tooltip" title="Delete">
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                              @endforeach
                             </tbody>
                             
                         </table>
 
-                        <div class="pagination-container">
+                        {{-- <div class="pagination-container">
                             {{$data->appends($_GET)->links()}}
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -101,24 +84,28 @@
                         <h4>New Destination</h4>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.tripcategory.destinationStore')}}" method="post" enctype="multipart/form-data">@csrf
+                        <form id="add-destination-form">
+                            @csrf
+                            <input type="hidden" name="trip_cat_id" id="trip_cat_id" value="{{ $trip->id }}">
+                        
                             <div class="form-group">
-                                {{-- <div class="col-md-6"> --}}
-                                 <label for="destination_id">Assigned Destination Name</label>
-                                 <select name="destination_id" id="destination_id" class="form-control">
-                                    <option value="">Select Destination</option>
-                                    <option value="destination1">Destination 1</option>
-                                    <option value="destination2">Destination 2</option>
-                                    <option value="destination3">Destination 3</option>
-                                 </select>
-                                 @error('destination_id')
-                                    <p class="text-danger">{{$message}}</p>
-                                 @enderror
-                                {{-- </div> --}}
+                                <label for="country_id">Add Country</label>
+                                <select name="country_id" id="country_id" class="form-control" onchange="showDestiations()">
+                                    <option value="">-- Select Country --</option>
+                                    @foreach($countries as $country)
+                                        <option value="{{ $country->id }}">{{ $country->country_name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <input type="hidden" name="trip_cat_id" value="{{ $trip->id}}">
-                            <button type="submit" class="btn btn-primary">Upload</button>
-                        </form>
+                        
+                            <div class="form-group" id="destination-group" style="display: none;">
+                                <label for="destination_id">Assigned Destination</label>
+                                <select name="destination_id" id="destination_id" class="form-control">
+                                    <option value="">-- Select Destination --</option>
+                                </select>
+                            </div>                      
+                            <input type="button" class="btn btn-primary" value="Add Destination" onclick="addDestination()" />
+                        </form>                        
                     </div>
                 </div>
             </div>
@@ -128,8 +115,10 @@
 @endsection
 
 @section('script')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
-    function deleteDestination(destId) {
+    function deletetripDesti(destId) {
         Swal.fire({
             icon: 'warning',
             title: "Are you sure you want to delete this?",
@@ -161,6 +150,67 @@
             }
         });
     }
+
+
+    function showDestiations() {
+        const countryId = $('#country_id').val();
+        const tripCatId = $('#trip_cat_id').val(); // Ensure this input exists in your Blade
+
+        $.ajax({
+            url: "{{ URL::to('/admin/master-module/tripcategory/destination/by-country') }}/" + countryId + "/" + tripCatId,
+            type: 'GET',
+            success: function (data) {
+                $("#destination_id").html("<option value=''>-- Select Destination --</option>");
+
+                if (data.status != 200 || data.destinations.length === 0) {
+                   
+                    $('#destination-group').hide();
+                    toastr.error(data.message || 'No destinations found for selected country.');
+                } else {
+                  
+                    data.destinations.forEach(destination => {
+                        $('#destination_id').append(new Option(destination.destination_name, destination.id));
+                    });
+                    $('#destination-group').show();
+                    toastr.success(data.message || 'Destinations fetched successfully.');
+                }
+            }
+        });
+    }
+
+
+    function addDestination() {
+        var formData = $("#add-destination-form").serializeArray();
+        $.ajax({
+            url: "{{ route('admin.tripcategorydestination.destinationAdd') }}",
+            type: 'POST',
+            data: formData,
+            success: function (data){
+                if (data.status != 201) {
+                    toastFire('error', 'Unable to add destination');
+                } else {
+                    toastFire('success', data.message);
+                    console.log('Added destination', data.destination);
+                    const rowCount = $('destination-table-body tr').length +1;
+                    const newDestination = data.destination;
+                    const BASE_URL  = "{{ asset('') }}";
+                    const imagePath = BASE_URL + newDestination.tripdestination.image;
+                    // Appened added destination
+                    $("#destination-table-body").append("<tr>\
+                        <td>"+ rowCount +"</td>\
+                        <td>" + newDestination.tripdestination.destination_name + " </td>\
+                        <td><img src='" + imagePath + "' width='50' height='40'></td>\
+                        <td><span class='badge badge-success'>Active</span></td>\
+                        <td><a href='javascript:void(0);' class='btn btn-sm btn-dark mr-1' onclick='deletetripDesti(" + newDestination.id + ")'><i class='fa fa-trash'></i></a></td>\
+                    </tr>");
+
+                    setTimeout(function() {
+                        window.location.href = "{{ route('admin.tripcategorydestination.list.all', $trip->id) }}";
+                    }, 1000);
+                }
+            }
+        });
+    } 
 </script>
 
 @endsection

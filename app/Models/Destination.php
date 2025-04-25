@@ -21,4 +21,8 @@ class Destination extends Model
     {
         return $this->belongsTo(Country::class);
     }
+
+    public function tripcategorydestination() {
+        return $this->hasMany(TripCategoryDestination::class, 'destination_id');
+    }
 }
