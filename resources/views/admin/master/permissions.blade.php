@@ -61,6 +61,7 @@
                                             <input type="checkbox" id="master_modules" name="roles[]" value="MASTER MODULES" data-parent="" {{ in_array('MASTER MODULES', $permissions) ? 'checked' : '' }}>
                                             <label for="master_modules">MASTER MODULES</label>
                                             <ul>
+
                                                 <li>
                                                     <input type="checkbox" id="classes" name="roles[]" value="classes" data-parent="MASTER MODULES" {{ in_array('classes', $permissions) ? 'checked' : '' }}>
                                                     <label for="classes">Classes</label>

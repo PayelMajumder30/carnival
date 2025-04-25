@@ -93,6 +93,7 @@
                     </a>
                 </li>
                 @endif
+
                 @if(in_array('destination', $RolePass))
                 <li class="nav-item">
                     <a href="{{ route('admin.destination.list.all')}}"

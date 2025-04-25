@@ -76,7 +76,7 @@
                         
                             <div class="form-group">
                                 <label for="country_id">Add Country</label>
-                                <select name="country_id" id="country_id" class="form-control">
+                                <select name="country_id" id="country_id" class="form-control" onchange="showDestiations()">
                                     <option value="">-- Select Country --</option>
                                     @foreach($countries as $country)
                                         <option value="{{ $country->id }}">{{ $country->country_name }}</option>
@@ -91,7 +91,7 @@
                                 </select>
                             </div>
                         
-                            <button type="submit" class="btn btn-primary">Add Destination</button>
+                            <input type="button" class="btn btn-primary" value="Add Destination" onclick="addDestination()" />
                         </form>                        
                     </div>
                 </div>
@@ -132,6 +132,54 @@
                         }
                     }
                 });
+            }
+        });
+    }
+
+    function showDestiations() {
+        const countryId = $('#country_id').val();
+        $.ajax({
+            url: "{{URL::to('/admin/master-module/tripcategory/destination/by-country')}}" + '/' + countryId,
+            type: 'GET',
+            success: function (data){
+                if (data.status != 200) {
+                    toastFire('error', data.message);
+                } else {
+                    $("#destination_id").html("<option value=''>-- Select Destination --</option>");
+                    if (data.destinations.length == 0) {
+                        toastFire('error', 'No destinations found');
+                        $('#destination-group').hide();
+                    } else {
+                        toastFire('success', data.message);
+                        data.destinations.map((destination) => {
+                            $('#destination_id').append(new Option(destination.destination_name, destination.id))
+                        })
+                        $('#destination-group').show();
+                    }
+                }
+            }
+        });
+    }
+
+    function addDestination() {
+        var formData = $("#add-destination-form").serializeArray();
+        $.ajax({
+            url: "{{ route('admin.tripcategorydestination.destinationAdd') }}",
+            type: 'POST',
+            data: formData,
+            success: function (data){
+                if (data.status != 201) {
+                    toastFire('error', 'Unable to add destination');
+                } else {
+                    toastFire('success', data.message);
+                    console.log('Added destination', data.destination);
+                    const newDestination = data.destination;
+                    // Appened added destination
+                    $("#destination-table-body").append("<tr>\
+                        <td></td>\
+                        <td>" + newDestination.tripdestination.destination_name + " <td>\
+                    </tr>");
+                }
             }
         });
     }

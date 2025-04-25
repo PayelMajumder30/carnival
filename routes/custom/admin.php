@@ -45,7 +45,7 @@ Route::name('admin.')->group(function() {
                Route::post('/delete', [SocialMediaController::class, 'delete'])->name('social_media.delete');
            });
            //blogs
-           Route::prefix('blog')->group(function() {
+            Route::prefix('blog')->group(function() {
                 Route::get('/', [BlogController::class, 'index'])->name('blog.list.all');
                 Route::get('/create', [BlogController::class, 'create'])->name('blog.create');
                 Route::post('/store', [BlogController::class, 'store'])->name('blog.store');
@@ -107,8 +107,9 @@ Route::name('admin.')->group(function() {
 
                 //trip category destination
                 Route::get('/destination/{trip_cat_id}', [TripcategoryController::class, 'destinationIndex'])->name('tripcategorydestination.list.all');
-                Route::get('/destination/by-country/{id}', [TripcategoryController::class, 'getDestinationsByCountry']);
-                Route::get('/destination/add-country', [TripcategoryController::class, 'countryAdd'])->name('tripcategory.countryAdd');
+                Route::get('destination/by-country/{country_id}', [TripcategoryController::class, 'getDestinationsByCountry'])->name('tripcategorydestination.getDestination');
+                // Route::get('/destination/add-country', [TripcategoryController::class, 'countryAdd'])->name('tripcategory.countryAdd');
+                Route::post('destination/add', [TripcategoryController::class, 'destinationAdd'])->name('tripcategorydestination.destinationAdd');
                 Route::post('destination/delete', [TripcategoryController::class, 'destinationDelete'])->name('tripcategory.destinationDelete');
             });
 

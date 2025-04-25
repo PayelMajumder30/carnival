@@ -207,8 +207,24 @@ class TripcategoryController extends Controller
         return view('admin.tripcategory.destinationIndex', compact('countries', 'trip'));
     }
 
-    public function getDestinationsByCountry($id) {
-        $destinations = Destination::where('country_id', $id)->where('status', 1)->get();
+    public function getDestinationsByCountry($country_id) {
+        $destinations = Destination::
+            select(['id', 'destination_name', 'image'])
+            ->where('country_id', $country_id)
+            ->where('status', 1)
+            ->get();
+
+        if (!$destinations) {
+            return response()->json([
+                'status'  => 404,
+                'message' => 'Destination not found',
+            ]);
+        }
+        return response()->json([
+            'status'  => 200,
+            'message' => 'Destinations fetched successfully.',
+            'destinations' => $destinations,
+        ]);
     }
    
     public function destinationDelete(Request $request) {
@@ -225,6 +241,20 @@ class TripcategoryController extends Controller
         return response()->json([
             'status'    => 200,
             'message'   => 'Destination deleted succesfully',
+        ]);
+    }
+
+    public function destinationAdd(Request $request) {
+        $tripCategoryDestination = TripCategoryDestination::create([
+             'trip_cat_id'   => $request->trip_cat_id,
+            'destination_id' => $request->destination_id,
+            'status'         => 1,
+        ]);
+        $destintion = TripCategoryDestination::with('tripdestination')->where('id', $tripCategoryDestination->id)->first();
+        return response()->json([
+            'status'  => 201,
+            'message' => 'Destination has been added successfully.',
+            'destination' => $destination,
         ]);
     }
     
