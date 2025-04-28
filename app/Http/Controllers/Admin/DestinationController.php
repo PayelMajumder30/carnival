@@ -115,9 +115,38 @@ class DestinationController extends Controller
         return response()->json(['success'=> true]);
     }
 
+   
+    public function createDestImage(Request $request) {
+        $request->validate([
+            'id'    => 'required|exists:destinations,id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ]);
 
-    public function destinationStatus(Request $request, $id) {
-       
+        $destination = Destination::find($request->id);
+
+        if($request->hasFile('image') && $request->file('image')->isValid()) {
+            $file       = $request->file('image');
+            $fileName   = time(). rand(10000, 99999). '.'. $file->extension();
+            $filePath   = 'uploads/country_wise_dest/' . $fileName;
+
+            $file->move(public_path('uploads/country_wise_dest'), $fileName);    
+            $destination->image = $filePath;
+            $destination->save();
+
+            return response()->json([
+                'status' => 200,
+                'message' => "Image uploaded",
+                'image_url' => asset($filePath),
+            ]);
+        }
+
+        return response()->json([
+            'status' => 500,
+            'message' => 'Failed to upload image',
+        ]); 
+    }
+
+    public function destinationStatus(Request $request, $id) {      
         $destination = Destination::find($id);
         if (!$destination) {
             return response()->json([
@@ -134,7 +163,6 @@ class DestinationController extends Controller
             'message' => 'Status updated',
         ]);
     }
-
 
     public function destinationDelete(Request $request) {
         $countryDestination = Destination::findOrFail($request->id);
@@ -158,37 +186,6 @@ class DestinationController extends Controller
         ]);
     }
 
-    
-    public function createDestImage(Request $request) {
-        $request->validate([
-            'id'    => 'required|exists:destinations,id',
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
-        ]);
-
-        $destination = Destination::find($request->id);
-
-        if($request->hasFile('image') && $request->file('image')->isValid()) {
-            $file       = $request->file('image');
-            $fileName   = time(). rand(10000, 99999). '.'. $file->extension();
-            $filePath   = 'uploads/country_wise_dest/' . $fileName;
-
-            $file->move(public_path('uploads/country_wise_dest'), $fileName);
-    
-            $destination->image = $filePath;
-            $destination->save();
-
-            return response()->json([
-                'status' => 200,
-                'message' => "Image uploaded",
-                'image_url' => asset($filePath),
-            ]);
-        }
-
-        return response()->json([
-            'status' => 500,
-            'message' => 'Failed to upload image',
-        ]); 
-    }
     
 }
 

@@ -58,7 +58,11 @@
                                     <td>{{ $index+1}}</td>
                                     <td>{{$item->tripdestination->destination_name}}</td>
                                     <td>
-                                        <img src="{{ asset($item->tripdestination->image)}}"  width="50" height="40" alt="No image">
+                                        @if (!empty($item->tripdestination->image) && file_exists(public_path($item->tripdestination->image)))
+                                            <img src="{{ asset($item->tripdestination->image) }}" style="height: 50px" class="img-thumbnail" alt="destination-image">
+                                        @else
+                                            <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" style="height: 50px" class="img-thumbnail" alt="placeholder-image">
+                                        @endif
                                     </td>
                                     <td><span class="badge badge-success">Active</span></td>
                                     <td>

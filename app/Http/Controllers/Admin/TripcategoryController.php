@@ -56,7 +56,12 @@ class TripcategoryController extends Controller
 
     public function update(Request $request, $id){
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => 'required|string|max:255|unique:trip_categories,title,' . $id,
+        ], [
+            'title.required' => 'The title field is required.',
+            'title.string'   => 'The title must be a string.',
+            'title.max'      => 'The title may not be greater than 255 characters.',
+            'title.unique'   => 'This title already exists in the trip categories.',
         ]);
 
         $this->TripCategoryRepository->update($id, $request->all());
@@ -102,7 +107,8 @@ class TripcategoryController extends Controller
         ]);
     }
 
-    //trip category banner
+    //trip category/banner
+
     public function bannerIndex(Request $request, $trip_cat_id) {
         $trip   = TripCategory::findOrFail($trip_cat_id);
         $banner = TripCategoryBanner::where('trip_cat_id', $trip_cat_id)->paginate(25);
@@ -141,7 +147,6 @@ class TripcategoryController extends Controller
         return redirect()->back()->with('success', 'Trip category Banner created successfully.');    
     }
 
- 
     public function bannerEdit($banner_id) {
         $tripCategoryBanner = TripCategoryBanner::findOrFail($banner_id);
         return view('admin.tripcategory.bannerEdit', compact('tripCategoryBanner'));
@@ -198,7 +203,8 @@ class TripcategoryController extends Controller
     }
 
 
-    //trip category destinations
+    //trip category/destinations
+
     public function destinationIndex($trip_cat_id, Request $request){
         $countries  = Country::where('status', 1)->get(); // Get active countries
         $trip       = TripCategory::findOrFail($trip_cat_id);
