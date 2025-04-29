@@ -15,7 +15,7 @@ class DestinationController extends Controller
 
         $Url = env('CRM_BASEPATH').'api/crm/active/country';
         $ch = curl_init($Url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);;
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $countryResponse = curl_exec($ch);
         curl_close($ch);

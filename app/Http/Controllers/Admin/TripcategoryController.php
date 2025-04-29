@@ -263,9 +263,17 @@ class TripcategoryController extends Controller
     }
 
     public function destinationAdd(Request $request) {
+
+        $request->validate([
+            'trip_cat_id'    => 'required|integer',
+            'destination_id' => 'required|integer',
+            'start_price'    => 'required|numeric|min:0',
+        ]);
+
         $tripCategoryDestination = TripCategoryDestination::create([
             'trip_cat_id'    => $request->trip_cat_id,
             'destination_id' => $request->destination_id,
+            'start_price'    => $request->start_price,
             'status'         => 1,
         ]);
         $destination = TripCategoryDestination::with('tripdestination')->where('id', $tripCategoryDestination->id)->first();

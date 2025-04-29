@@ -18,6 +18,8 @@ Route::name('admin.')->group(function() {
         Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
         Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+        Route::get('/password/edit',[AuthController::class, 'edit'])->name('dashboard.changePassword');
+        Route::post('password/update',[AuthController::class, 'update'])->name('dashboard.updatePassword');
 
        
         // settings

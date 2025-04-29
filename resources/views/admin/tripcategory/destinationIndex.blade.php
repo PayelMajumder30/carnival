@@ -48,6 +48,7 @@
                                     <th>#</th>
                                     <th>Destination Name</th>
                                     <th>Image</th>
+                                    <th>Starting Price</th>
                                     <th>status</th>
                                     <th style="width: 100px">Action</th>
                                 </tr>
@@ -64,6 +65,7 @@
                                             <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" style="height: 50px" class="img-thumbnail" alt="placeholder-image">
                                         @endif
                                     </td>
+                                    <td>{{env('CURRENCY')}}{{number_format($item->start_price, 2)}}</td>
                                     <td><span class="badge badge-success">Active</span></td>
                                     <td>
                                         <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deletetripDesti({{$item->id}})" data-toggle="tooltip" title="Delete">
@@ -107,7 +109,13 @@
                                 <select name="destination_id" id="destination_id" class="form-control">
                                     <option value="">-- Select Destination --</option>
                                 </select>
-                            </div>                      
+                            </div> 
+                            
+                            <div class="form-group" id="start-price-group" style="display: none;">
+                                <label for="start_price">Starting Price</label>
+                                <input type="number" name="start_price" id="start_price" class="form-control" placeholder="Enter starting price">
+                            </div>
+
                             <input type="button" class="btn btn-primary" value="Add Destination" onclick="addDestination()" />
                         </form>                        
                     </div>
@@ -119,8 +127,7 @@
 @endsection
 
 @section('script')
-<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 <script>
     function deletetripDesti(destId) {
         Swal.fire({
@@ -166,9 +173,9 @@
             success: function (data) {
                 $("#destination_id").html("<option value=''>-- Select Destination --</option>");
 
-                if (data.status != 200 || data.destinations.length === 0) {
-                   
+                if (data.status != 200 || data.destinations.length === 0) {                  
                     $('#destination-group').hide();
+                    $('#start-price-group').hide();
                     toastr.error(data.message || 'No destinations found for selected country.');
                 } else {
                   
@@ -176,6 +183,7 @@
                         $('#destination_id').append(new Option(destination.destination_name, destination.id));
                     });
                     $('#destination-group').show();
+                    $('#start-price-group').show();
                     toastr.success(data.message || 'Destinations fetched successfully.');
                 }
             }
@@ -184,7 +192,22 @@
 
 
     function addDestination() {
+       
+        const destinationId = $('#destination_id').val();
+        const startPrice = $('#start_price').val();
+
+        if(!destinationId) {
+            toastr.error("Please select a destination before adding a starting price.");
+            return;
+        }
+
+        if(!startPrice || isNaN(startPrice) || Number(startPrice) <= 0) {
+            toastr.error("Please enter a Valid Starting Price.");
+            return;
+        }
+
         var formData = $("#add-destination-form").serializeArray();
+
         $.ajax({
             url: "{{ route('admin.tripcategorydestination.destinationAdd') }}",
             type: 'POST',
@@ -195,15 +218,16 @@
                 } else {
                     toastFire('success', data.message);
                     console.log('Added destination', data.destination);
-                    const rowCount = $('destination-table-body tr').length +1;
+                    const rowCount = $('#destination-table-body tr').length + 1;
                     const newDestination = data.destination;
                     const BASE_URL  = "{{ asset('') }}";
                     const imagePath = BASE_URL + newDestination.tripdestination.image;
-                    // Appened added destination
+
                     $("#destination-table-body").append("<tr>\
                         <td>"+ rowCount +"</td>\
                         <td>" + newDestination.tripdestination.destination_name + " </td>\
                         <td><img src='" + imagePath + "' width='50' height='40'></td>\
+                        <td>" + newDestination.start_price + "</td>\
                         <td><span class='badge badge-success'>Active</span></td>\
                         <td><a href='javascript:void(0);' class='btn btn-sm btn-dark mr-1' onclick='deletetripDesti(" + newDestination.id + ")'><i class='fa fa-trash'></i></a></td>\
                     </tr>");
