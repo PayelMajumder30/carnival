@@ -18,8 +18,11 @@ Route::name('admin.')->group(function() {
         Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
         Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-        Route::get('/password/edit',[AuthController::class, 'edit'])->name('dashboard.changePassword');
-        Route::post('password/update',[AuthController::class, 'update'])->name('dashboard.updatePassword');
+        Route::get('/password/edit',[AuthController::class, 'PasswordEdit'])->name('dashboard.changePassword');
+        Route::post('password/update',[AuthController::class, 'PasswordUpdate'])->name('dashboard.updatePassword');
+
+        Route::get('/profile-edit',[AuthController::class, 'profileEdit'])->name('dashboard.edit');
+        Route::post('/profile-update',[AuthController::class, 'profileUpdate'])->name('dashboard.update');
 
        
         // settings
@@ -111,6 +114,7 @@ Route::name('admin.')->group(function() {
                 Route::get('/destination/{trip_cat_id}', [TripcategoryController::class, 'destinationIndex'])->name('tripcategorydestination.list.all');
                 Route::get('destination/by-country/{country_id}/{trip_cat_id}', [TripcategoryController::class, 'getDestinationsByCountry'])->name('tripcategorydestination.getDestination');
                 Route::post('destination/add', [TripcategoryController::class, 'destinationAdd'])->name('tripcategorydestination.destinationAdd');
+                Route::post('destination/update-price', [TripcategoryController::class, 'updatePrice'])->name('tripcategory.updatePrice');
                 Route::post('destination/delete', [TripcategoryController::class, 'destinationDelete'])->name('tripcategory.destinationDelete');
             });
 

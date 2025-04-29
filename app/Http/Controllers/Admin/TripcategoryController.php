@@ -283,6 +283,19 @@ class TripcategoryController extends Controller
             'destination' => $destination,
         ]);
     }
-    
-    
+
+    public function updatePrice(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:trip_category_destinations,id',
+            'start_price' => 'required|numeric|min:0',
+        ]);
+
+        $item = TripCategoryDestination::find($request->id);
+        $item->start_price = $request->start_price;
+        $item->save();
+
+        return redirect()->back()->with('success', 'Price Updated Successfully');
+    }
+
 }

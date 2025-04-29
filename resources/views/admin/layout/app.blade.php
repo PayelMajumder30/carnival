@@ -108,13 +108,15 @@
 
         <aside class="control-sidebar control-sidebar-dark">
             <div class="p-3">
-                <h5>Profile</h5>
+                
                 {{-- <p>Change Password</p> --}}
                 <p>
                     <a href="{{ route('admin.dashboard.changePassword') }}" class="text-white">
                         Change Password
                     </a>
                 </p>
+                <h5><a href="{{ route('admin.dashboard.edit') }}">Update Profile</a></h5>
+                
             </div>
         </aside>
 
@@ -135,7 +137,7 @@
     <script src="{{ asset('backend-assets/js/adminlte.min.js') }}"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('backend-assets/js/custom.js') }}"></script>
-    
+
     <script src="{{ asset('backend-assets/plugins/jquery/toastr.min.js') }}"></script>
     {{-- <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script> --}}
 

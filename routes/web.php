@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Front;
+// namespace App\Http\Controllers\Front;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -168,4 +168,4 @@ Route::get('/', function () {
     return redirect()->route('admin.login');
 });
 
-Route::get('/{slug}', [IndexController::class, 'dynamicPage'])->name('dynamicPage');
+// Route::get('/{slug}', [IndexController::class, 'dynamicPage'])->name('dynamicPage');

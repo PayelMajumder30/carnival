@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Lead;
+use App\Models\Admin;
 
 class AuthController extends Controller
 {
@@ -64,10 +65,10 @@ class AuthController extends Controller
     }
 
 
-    public function edit(){
+    public function PasswordEdit(){
         return view('admin.dashboard.changePassword');
     }
-    public function update(Request $request){
+    public function PasswordUpdate(Request $request){
         $request->validate([
             'password'  => 'required|confirmed',
             'password_confirmation'  => 'required',
@@ -78,5 +79,31 @@ class AuthController extends Controller
         $user->password = bcrypt($request->password);
         $user->save();
         return redirect()->route('admin.dashboard.changePassword')->with('success', 'Password changed successfully.');
+}
+    public function profileEdit()
+    {
+        $admin = Auth::guard('admin')->user();
+        return view('admin.dashboard.edit',compact('admin'));
+    }
+
+    public function profileUpdate(Request $request){
+
+        $admin = Auth::guard('admin')->user();
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:admins,email,' . $admin->id,
+            'mobile_no' => 'required|digits:10',
+            ], [
+            'mobile_no.digits' => 'Mobile number should be exactly 10 digits.',
+        ]);
+
+        $admin->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'mobile_no' => $request->mobile_no,
+        ]);
+        //dd($admin);
+        return back()->with('success','Profile Update Successfully');
     }
 }

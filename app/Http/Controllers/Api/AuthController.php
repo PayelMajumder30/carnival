@@ -133,4 +133,9 @@ class AuthController extends Controller
         return redirect()->intended()->with('success', 'Logout successfull');
     }
     */
+
+    public function profile()
+    {
+        return view('admin.dashboard.profile');
+    }
 }

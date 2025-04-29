@@ -71,6 +71,9 @@
                                         <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deletetripDesti({{$item->id}})" data-toggle="tooltip" title="Delete">
                                             <i class="fa fa-trash"></i>
                                         </a>
+                                        <a href="javascript:void(0)" class="btn btn-sm btn-info mr-1 edit-price-btn" data-toggle="modal" data-target="#editPriceModal" data-id="{{ $item->id }}" data-price="{{ $item->start_price }}" title="Edit">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
                                     </td>
                                 </tr>
                               @endforeach
@@ -78,7 +81,36 @@
                             
                         </table>
 
-                         <div class="pagination-container">
+                        <!-- Edit Start Price Modal -->
+                        <div class="modal fade" id="editPriceModal" tabindex="-1" role="dialog" aria-labelledby="editPriceModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <form method="POST" action="{{ route('admin.tripcategory.updatePrice') }}">
+                                    @csrf
+                                    <input type="hidden" name="id" id="modal-destination-id">
+                            
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Update Start Price</h5>
+                                            <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                                        </div>
+                                
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                            <label for="modal-start-price">Start Price</label>
+                                            <input type="number" step="0.01" class="form-control" name="start_price" id="modal-start-price" required>
+                                            </div>
+                                        </div>   
+                                
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+  
+                        <div class="pagination-container">
                             {{$tripCategoryDestination->appends($_GET)->links()}}
                         </div> 
                     </div>
@@ -239,6 +271,16 @@
             }
         });
     } 
+
+  $(document).on('click', '.edit-price-btn', function () {
+    var id = $(this).data('id');
+    var price = $(this).data('price');
+
+    $('#modal-destination-id').val(id);
+    $('#modal-start-price').val(price);
+  });
+
+
 </script>
 
 @endsection
