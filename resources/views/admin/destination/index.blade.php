@@ -56,7 +56,7 @@
                                     <option value="" selected hidden>Add New Country</option>
                                     @forelse ($new_country as $country_item)
                                         @if(!in_array($country_item['id'], $existing_country))
-                                        <option value="{{ucwords($country_item['country_name'])}}" data-id="{{$country_item['id']}}">{{ucwords($country_item['country_name'])}}</option>
+                                            <option value="{{ucwords($country_item['country_name'])}}" data-id="{{$country_item['id']}}">{{ucwords($country_item['country_name'])}}</option>
                                         @endif
                                     @empty
                                         <option value="">No new data found</option>

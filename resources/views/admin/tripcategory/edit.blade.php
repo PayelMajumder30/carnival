@@ -15,7 +15,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.tripcategory.update', $data->id) }}" method="post" enctype="multipart/form-data">@csrf
+                        <form action="{{ route('admin.tripcategory.update', $data->id) }}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method('POST')
                             <div class="form-group">

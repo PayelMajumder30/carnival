@@ -162,4 +162,10 @@ Route::get('/clear-cache', function() {
 Route::prefix('admin')->group(function() {
     require 'custom/admin.php';
 });
-// Route::get('/{slug}', [IndexController::class, 'dynamicPage'])->name('dynamicPage');
+
+//for redirect to admin page
+Route::get('/', function () {
+    return redirect()->route('admin.login');
+});
+
+Route::get('/{slug}', [IndexController::class, 'dynamicPage'])->name('dynamicPage');
