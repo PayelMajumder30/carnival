@@ -19,8 +19,8 @@ Route::name('admin.')->group(function() {
         Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-        Route::get('/admin/profile',[AuthController::class, 'edit'])->name('dashboard.edit');
-        Route::post('admin/profile',[AuthController::class, 'update'])->name('dashboard.update');
+        Route::get('/admin/profile',[AuthController::class, 'profileEdit'])->name('dashboard.edit');
+        Route::post('admin/profile',[AuthController::class, 'profileUpdate'])->name('dashboard.update');
 
        
         // settings

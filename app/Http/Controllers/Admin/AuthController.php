@@ -64,13 +64,13 @@ class AuthController extends Controller
         // return redirect()->intended()->with('success', 'Logout successfull');
     }
 
-    public function edit()
+    public function profileEdit()
     {
         $admin = Auth::guard('admin')->user();
         return view('admin.dashboard.edit',compact('admin'));
     }
 
-    public function update(Request $request){
+    public function profileUpdate(Request $request){
 
         $admin = Auth::guard('admin')->user();
 
