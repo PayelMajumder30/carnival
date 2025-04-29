@@ -106,7 +106,7 @@
 
         <aside class="control-sidebar control-sidebar-dark">
             <div class="p-3">
-                <h5>Profile</h5>
+                <h5><a href="{{ route('admin.dashboard.edit') }}">Update Profile</a></h5>
                 <p>Change Password</p>
             </div>
         </aside>

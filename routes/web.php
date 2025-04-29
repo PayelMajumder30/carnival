@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Front;
+// namespace App\Http\Controllers\Front;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -162,4 +162,4 @@ Route::get('/clear-cache', function() {
 Route::prefix('admin')->group(function() {
     require 'custom/admin.php';
 });
-Route::get('/{slug}', [IndexController::class, 'dynamicPage'])->name('dynamicPage');
+// Route::get('/{slug}', [IndexController::class, 'dynamicPage'])->name('dynamicPage');

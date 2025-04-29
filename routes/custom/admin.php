@@ -19,6 +19,9 @@ Route::name('admin.')->group(function() {
         Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+        Route::get('/admin/profile',[AuthController::class, 'edit'])->name('dashboard.edit');
+        Route::post('admin/profile',[AuthController::class, 'update'])->name('dashboard.update');
+
        
         // settings
         Route::get('/settings', [ContentController::class, 'settings'])->name('settings');
@@ -110,6 +113,7 @@ Route::name('admin.')->group(function() {
                 Route::get('destination/by-country/{country_id}/{trip_cat_id}', [TripcategoryController::class, 'getDestinationsByCountry'])->name('tripcategorydestination.getDestination');
                 // Route::get('/destination/add-country', [TripcategoryController::class, 'countryAdd'])->name('tripcategory.countryAdd');
                 Route::post('destination/add', [TripcategoryController::class, 'destinationAdd'])->name('tripcategorydestination.destinationAdd');
+                Route::post('destination/update-price', [TripcategoryController::class, 'updatePrice'])->name('tripcategory.updatePrice');
                 Route::post('destination/delete', [TripcategoryController::class, 'destinationDelete'])->name('tripcategory.destinationDelete');
             });
 

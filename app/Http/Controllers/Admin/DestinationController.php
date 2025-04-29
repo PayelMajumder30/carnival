@@ -46,8 +46,7 @@ class DestinationController extends Controller
                 $query->where('destination_name', 'like', '%' . $keyword . '%');
             })
             ->orWhere('countries.country_name', 'like', '%' . $keyword . '%')
-            ->with('destinations') // Optional: eager load destinations if you need them
-            // ->distinct()
+            ->with('destinations') 
             ->orderBy('countries.country_name', 'ASC')
             ->get();
         } else {
