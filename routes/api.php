@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,46 +16,34 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+//master module //Blog
+Route::prefix('blogs')->group(function (){
+    Route::get('/',[ApiController::class, 'blogIndex']);
+    Route::get('/{id}',[ApiController::class, 'blogShow']);
 });
 
-// login
-Route::name('api.')->group(function() {
-    Route::prefix('user')->name('user.')->group(function() {
-        Route::middleware('guest:web', 'PreventBackHistory')->group(function() {
-            // user
-            // Route::view('/login', 'front.auth.login')->name('login');
-            // Route::view('/register', 'front.auth.register')->name('register');
-            Route::post('/create', [AuthController::class, 'create'])->name('create');
-            Route::post('/check', [AuthController::class, 'check'])->name('check');
-            Route::post('/check/mobile', [AuthController::class, 'checkMobile'])->name('check.mobile');
-        });
-    });
+//master module/ partner
+Route::prefix('partners')->group(function (){
+    Route::get('/', [ApiController::class, 'partnerIndex']);
+    Route::get('/{id}', [ApiController::class, 'partnerShow']);
 });
 
-// pincode
-Route::get('/pincode/status', [PincodeController::class, 'status'])->name('pincode.status');
-Route::post('/pincode/store', [PincodeController::class, 'store'])->name('pincode.store');
+//master module / why choose us
+Route::prefix('why-choose-us')->group(function () {
+    Route::get('/', [ApiController::class, 'whyChooseUsIndex']);
+    Route::get('/{id}', [ApiController::class, 'whyChooseUsShow']);
+});
 
-// coupon
-Route::get('/coupon/status', [CouponController::class, 'status'])->name('coupon.status');
-Route::get('/coupon/remove', [CouponController::class, 'remove'])->name('coupon.remove');
+//master module/ trip category
+Route::prefix('trip-category')->group(function () {
+    Route::get('/', [ApiController::class, 'tripIndex']);
+    Route::get('/{id}', [ApiController::class, 'tripShow']);
+});
 
-// address
-Route::post('address/store', [AddressController::class, 'store'])->name('address.store');
-Route::post('address/default', [AddressController::class, 'default'])->name('address.default');
-Route::post('address/detail', [AddressController::class, 'detail'])->name('address.detail');
-Route::post('address/update', [AddressController::class, 'update'])->name('address.update');
+//website settings 
+Route::prefix('website-settings')->group(function (){
+    Route::get('/', [ApiController::class, 'settingIndex']);
+    Route::get('/{id}',[ApiController::class, 'settingShow']);
+});
 
-// cart
-Route::post('cart/add', [CartController::class, 'add'])->name('cart.add');
 
-// wishlist
-Route::post('wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
-
-// review interact
-Route::post('review/interact', [ReviewController::class, 'check'])->name('review.toggle');
-
-// guest cart
-// Route::post('guest/cart/add', [GuestCartController::class, 'add'])->name('guest.cart.add');

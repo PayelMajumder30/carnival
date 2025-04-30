@@ -1,0 +1,153 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\{TripCategory, Partner, WhyChooseUs, Setting, Blog};
+
+
+class ApiController extends Controller
+{
+
+    //master module //blog
+
+    public function blogIndex()
+    {
+        $data = Blog::orderBy('id', 'asc')->get();
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'data' => $data
+        ]);
+    }
+
+    public function blogShow($id)
+    {
+        $blogs = Blog::find($id);
+
+        if(!$blogs){
+            return response()->json(['status' => 404, 'message' => 'Not found']);
+        }
+        return response()->json(['status' => 200, 'data' => $blogs]);
+    }
+
+     //master module /partners
+    public function partnerIndex()
+    {
+        $data = Partner::orderBy('id', 'asc')->get();
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'data' => $data
+        ]);
+    }
+ 
+    public function partnerShow($id)
+    {
+        $partners = Partner::find($id);
+
+        if(!$partners) {
+            return response()->json(['status' => 404, 'message' => 'Not Found']);
+        }
+        return response()->json(['status' => 200, 'data' => $partners]);
+    }
+
+    //master module//why-choose-us
+    public function whyChooseUsIndex()
+    {
+        $data = WhyChooseUs::orderBy('positions','asc')->get();
+        return response()->json([
+            'status' => 200,
+            'success' => true,
+            'data' => $data
+        ]);
+    }
+
+    public function whyChooseUsShow($id)
+    {
+        $whyChooseUs = WhyChooseUs::find($id);
+
+        if(!$whyChooseUs)
+        {
+            return response()->json(['status' => 404, 'message' => 'Not Found']);
+        }
+        return response()->json(['status' => 200, 'data' => $whyChooseUs]);
+    }
+    
+   //master module/ trip category
+    public function tripIndex()
+    {
+        $data = TripCategory::orderBy('positions', 'asc')->get();
+        return response()->json([
+            'status'    => 200,
+            'success'   => true,
+            'data'      => $data
+        ]);
+    }
+
+    public function tripShow($id)
+    {
+        $tripCategory = TripCategory::find($id);
+        if (!$tripCategory) {
+            return response()->json(['status' => 404, 'success' => false, 'message' => 'Not found']);
+        }
+        return response()->json(['status' => 200, 'success' => true, 'data' => $tripCategory]);
+    }
+
+    //website settings
+    public function settingIndex()
+    {
+        $data = Setting::orderBy('id', 'asc')->get();
+        $result = [];
+        foreach($data as $key=>$item){
+            if($item->id==1){
+                $result['official_number'] = $item->content;
+            }
+            if($item->id==2){
+                $result['official_number_alternative'] = $item->content;
+            }
+            if($item->id==3){
+                $result['official_email'] = $item->content;
+            }
+            if($item->id==11){
+                $result['official_email_alternative'] = $item->content;
+            }
+            if($item->id==4){
+                $result['company_name'] = $item->content;
+            }
+            if($item->id==5){
+                $result['company_name_small'] = $item->content;
+            }
+            if($item->id==6){
+                $result['company_description'] = $item->content;
+            }
+            if($item->id==7){
+                $result['company_full_address'] = $item->content;
+            }
+            if($item->id==8){
+                $result['google_map_link'] = $item->content;
+            }
+            if($item->id==9){
+                $result['website_link'] = $item->content;
+            }
+            if($item->id==10){
+                $result['official_whatsapp_number'] = $item->content;
+            }
+        }
+        if(count($result)>0){
+            return response()->json([
+                'status' => 200,
+                'success' => true,
+                'data' => $result
+            ]);
+        }else{
+            return response()->json([
+                'status' => 400,
+                'success' => false,
+                'message' => "Data not found!"
+            ]);
+        }
+        
+    }
+}
