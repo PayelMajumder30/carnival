@@ -65,10 +65,10 @@ class AuthController extends Controller
     }
 
 
-    public function PasswordEdit(){
+    public function passwordEdit(){
         return view('admin.dashboard.changePassword');
     }
-    public function PasswordUpdate(Request $request){
+    public function passwordUpdate(Request $request){
         $request->validate([
             'password'  => 'required|confirmed',
             'password_confirmation'  => 'required',

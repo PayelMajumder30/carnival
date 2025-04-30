@@ -18,8 +18,8 @@ Route::name('admin.')->group(function() {
         Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
         Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-        Route::get('/password/edit',[AuthController::class, 'PasswordEdit'])->name('dashboard.changePassword');
-        Route::post('password/update',[AuthController::class, 'PasswordUpdate'])->name('dashboard.updatePassword');
+        Route::get('/password/edit',[AuthController::class, 'passwordEdit'])->name('dashboard.changePassword');
+        Route::post('password/update',[AuthController::class, 'passwordUpdate'])->name('dashboard.updatePassword');
 
         Route::get('/profile-edit',[AuthController::class, 'profileEdit'])->name('dashboard.edit');
         Route::post('/profile-update',[AuthController::class, 'profileUpdate'])->name('dashboard.update');
@@ -118,8 +118,8 @@ Route::name('admin.')->group(function() {
                 Route::post('destination/delete', [TripcategoryController::class, 'destinationDelete'])->name('tripcategory.destinationDelete');
             });
 
-             //offer list
-             Route::prefix('offers')->group(function() {
+            //offer list
+            Route::prefix('offers')->group(function() {
                 Route::get('/', [OfferController::class, 'index'])->name('offers.list.all');
                 Route::get('/create', [OfferController::class, 'create'])->name('offers.create');
                 Route::post('/store', [OfferController::class, 'store'])->name('offers.store');
