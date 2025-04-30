@@ -64,8 +64,6 @@ class AuthController extends Controller
         // return redirect()->intended()->with('success', 'Logout successfull');
     }
 
-<<<<<<< HEAD
-=======
 
     public function PasswordEdit(){
         return view('admin.dashboard.changePassword');
@@ -82,7 +80,6 @@ class AuthController extends Controller
         $user->save();
         return redirect()->route('admin.dashboard.changePassword')->with('success', 'Password changed successfully.');
 }
->>>>>>> 1eeaa93410e5d2652ca5f1c1868747da5c6fb8a1
     public function profileEdit()
     {
         $admin = Auth::guard('admin')->user();

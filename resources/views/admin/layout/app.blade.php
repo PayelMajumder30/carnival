@@ -116,10 +116,7 @@
                     </a>
                 </p>
                 <h5><a href="{{ route('admin.dashboard.edit') }}">Update Profile</a></h5>
-<<<<<<< HEAD
-=======
                 
->>>>>>> 1eeaa93410e5d2652ca5f1c1868747da5c6fb8a1
             </div>
         </aside>
 
