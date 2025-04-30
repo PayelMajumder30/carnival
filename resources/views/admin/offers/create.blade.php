@@ -121,10 +121,6 @@
 @endsection
 
 @section('script')
-
-@endsection
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function(){
         function updateDiscountField() {
@@ -144,5 +140,9 @@
         updateDiscountField(); // Run on page load
     });
 </script>
+@endsection
+
+
+
 
 

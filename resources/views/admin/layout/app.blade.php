@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="{{ asset('backend-assets/plugins/fontawesome-free/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('backend-assets/css/adminlte.min.css') }}">
     <link rel="stylesheet" href="{{ asset('backend-assets/css/style.css') }}">
+    
+    <link rel="stylesheet" href="{{ asset('backend-assets/plugins/fontawesome-free/css/toastr.min.css') }}">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.ckeditor.com/ckeditor5/30.0.0/classic/ckeditor.js"></script>
@@ -106,7 +108,18 @@
 
         <aside class="control-sidebar control-sidebar-dark">
             <div class="p-3">
+                
+                {{-- <p>Change Password</p> --}}
+                <p>
+                    <a href="{{ route('admin.dashboard.changePassword') }}" class="text-white">
+                        Change Password
+                    </a>
+                </p>
                 <h5><a href="{{ route('admin.dashboard.edit') }}">Update Profile</a></h5>
+<<<<<<< HEAD
+=======
+                
+>>>>>>> 1eeaa93410e5d2652ca5f1c1868747da5c6fb8a1
             </div>
         </aside>
 
@@ -120,14 +133,15 @@
         </footer>
     </div>
     <form action="{{ route('admin.logout') }}" id="logout-form" method="post" class="d-none">@csrf</form>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    {{-- <script src="{{ asset('backend-assets/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('backend-assets/js/jquery-ui.min.js') }}"></script>  --}}
+    <script src="{{ asset('backend-assets/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('backend-assets/js/jquery-ui.min.js') }}"></script> 
     <script src="{{ asset('backend-assets/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('backend-assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('backend-assets/js/adminlte.min.js') }}"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('backend-assets/js/custom.js') }}"></script>
+
+    <script src="{{ asset('backend-assets/plugins/jquery/toastr.min.js') }}"></script>
     {{-- <script src="https://cdn.ckeditor.com/ckeditor5/41.0.0/classic/ckeditor.js"></script> --}}
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>

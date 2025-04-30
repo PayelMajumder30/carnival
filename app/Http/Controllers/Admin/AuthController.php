@@ -64,6 +64,25 @@ class AuthController extends Controller
         // return redirect()->intended()->with('success', 'Logout successfull');
     }
 
+<<<<<<< HEAD
+=======
+
+    public function PasswordEdit(){
+        return view('admin.dashboard.changePassword');
+    }
+    public function PasswordUpdate(Request $request){
+        $request->validate([
+            'password'  => 'required|confirmed',
+            'password_confirmation'  => 'required',
+        ]);
+
+        $user = Auth::guard('admin')->user();
+
+        $user->password = bcrypt($request->password);
+        $user->save();
+        return redirect()->route('admin.dashboard.changePassword')->with('success', 'Password changed successfully.');
+}
+>>>>>>> 1eeaa93410e5d2652ca5f1c1868747da5c6fb8a1
     public function profileEdit()
     {
         $admin = Auth::guard('admin')->user();

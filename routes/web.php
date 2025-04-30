@@ -168,4 +168,4 @@ Route::get('/', function () {
     return redirect()->route('admin.login');
 });
 
-Route::get('/{slug}', [IndexController::class, 'dynamicPage'])->name('dynamicPage');
+// Route::get('/{slug}', [IndexController::class, 'dynamicPage'])->name('dynamicPage');
