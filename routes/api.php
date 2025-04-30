@@ -16,8 +16,24 @@ use App\Http\Controllers\Api\ApiController;
 |
 */
 
+ //master module/ social media
+ Route::prefix('social-media')->group(function () {
+    Route::get('/', [ApiController::class, 'socialmediaIndex']);
+    Route::get('/{id}', [ApiController::class, 'socialmediaShow']);
+ });
+
+  //master module/ Banner
+  Route::prefix('banner')->group(function () {
+    Route::get('/', [ApiController::class, 'bannerIndex']);
+    Route::get('/{id}', [ApiController::class, 'bannerShow']);
+  });
+
 //master module/ trip category
 Route::prefix('trip-category')->group(function () {
-    Route::get('/', [ApiController::class, 'index']);
-    Route::get('/{id}', [ApiController::class, 'show']);
+    Route::get('/', [ApiController::class, 'tripIndex']);
+    Route::get('/{id}', [ApiController::class, 'tripShow']);
+    ROute::get('/{trip_cat_id}/destinations', [ApiController::class, 'getDestinationsByTripCategory']);
 });
+
+
+
