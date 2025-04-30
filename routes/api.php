@@ -27,13 +27,36 @@ use App\Http\Controllers\Api\ApiController;
     Route::get('/', [ApiController::class, 'bannerIndex']);
     Route::get('/{id}', [ApiController::class, 'bannerShow']);
   });
+//master module //Blog
+Route::prefix('blogs')->group(function (){
+    Route::get('/',[ApiController::class, 'blogIndex']);
+    Route::get('/{id}',[ApiController::class, 'blogShow']);
+});
+
+//master module/ partner
+Route::prefix('partners')->group(function (){
+    Route::get('/', [ApiController::class, 'partnerIndex']);
+    Route::get('/{id}', [ApiController::class, 'partnerShow']);
+});
+
+//master module / why choose us
+Route::prefix('why-choose-us')->group(function () {
+    Route::get('/', [ApiController::class, 'whyChooseUsIndex']);
+    Route::get('/{id}', [ApiController::class, 'whyChooseUsShow']);
+});
 
 //master module/ trip category
 Route::prefix('trip-category')->group(function () {
     Route::get('/', [ApiController::class, 'tripIndex']);
     Route::get('/{id}', [ApiController::class, 'tripShow']);
-    ROute::get('/{trip_cat_id}/destinations', [ApiController::class, 'getDestinationsByTripCategory']);
+    Route::get('/{trip_cat_id}/destinations', [ApiController::class, 'getDestinationsByTripCategory']);
 });
 
+
+//website settings 
+Route::prefix('website-settings')->group(function (){
+    Route::get('/', [ApiController::class, 'settingIndex']);
+    Route::get('/{id}',[ApiController::class, 'settingShow']);
+});
 
 
