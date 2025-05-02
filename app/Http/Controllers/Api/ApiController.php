@@ -11,7 +11,6 @@ class ApiController extends Controller
 {
 
     //master module //blog
-
     public function blogIndex()
     {
         $data = Blog::orderBy('id', 'asc')->get();
