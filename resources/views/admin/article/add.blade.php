@@ -54,7 +54,6 @@
                                     <p class="small text-danger">{{ $message }}</p> 
                                 @enderror
                             </div>
-                            
                                 <div class="col">
                                     <div class="form-group">
                                         <label for="meta_description">Meta Description</label>

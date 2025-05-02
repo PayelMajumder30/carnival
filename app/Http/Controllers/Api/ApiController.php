@@ -11,7 +11,6 @@ class ApiController extends Controller
 {
 
     //master module //blog
-
     public function blogIndex()
     {
         $data = Blog::orderBy('id')->get();
@@ -45,10 +44,17 @@ class ApiController extends Controller
     public function partnerIndex()
     {
         $data = Partner::orderBy('id', 'asc')->get();
+        $result = [];
+        foreach($data as $key=>$item){
+           $result[$key] =[
+            // 'id'=>$item->id,
+            'title'=>ucwords($item->title),
+            'image'=>asset($item->image),
+           ];
+        }
         return response()->json([
-            'status' => 200,
-            'success' => true,
-            'data' => $data
+            'status' => true,
+            'data' => $result
         ]);
     }
  
@@ -57,19 +63,28 @@ class ApiController extends Controller
         $partners = Partner::find($id);
 
         if(!$partners) {
-            return response()->json(['status' => 404, 'message' => 'Not Found']);
+            return response()->json(['status' => false, 'message' => 'Not Found']);
         }
-        return response()->json(['status' => 200, 'data' => $partners]);
+        $partners->image = asset($partners->image);
+        return response()->json(['status' => true, 'data' => $partners]);
     }
 
     //master module//why-choose-us
     public function whyChooseUsIndex()
     {
         $data = WhyChooseUs::orderBy('positions','asc')->get();
+        $result = [];
+        foreach($data as $key=>$item)
+        {
+            $result[$key] = [
+                'id' => $item->id,
+                'title' =>ucwords($item->title),
+                'image' =>asset($item->image)
+            ];
+        }
         return response()->json([
-            'status' => 200,
-            'success' => true,
-            'data' => $data
+            'status' => true,
+            'data' => $result
         ]);
     }
 
@@ -79,9 +94,10 @@ class ApiController extends Controller
 
         if(!$whyChooseUs)
         {
-            return response()->json(['status' => 404, 'message' => 'Not Found']);
+            return response()->json(['status' => false, 'message' => 'Not Found']);
         }
-        return response()->json(['status' => 200, 'data' => $whyChooseUs]);
+        $whyChooseUs->image = asset($whyChooseUs->image);
+        return response()->json(['status' => true, 'data' => $whyChooseUs]);
     }
     
    //master module/ trip category
@@ -140,8 +156,7 @@ class ApiController extends Controller
 
         if(!$tripCategory) {
         return response()->json([
-            'status'    => 404,
-            'success'   => false,
+            'status'   => false,
             'message'   => 'Trip category not found.',
             'data'      => [],
         ]);
@@ -162,8 +177,7 @@ class ApiController extends Controller
         }
         
         return response()->json([
-            'status'    => 200,
-            'success'   => true,
+            'status'   => true,
             'message'   => 'Destinations fetched successfully.',
             'data'      => $destinations,
         ]);
@@ -190,10 +204,10 @@ class ApiController extends Controller
     public function socialmediaShow($id) {
         $data = SocialMedia::find($id);
         if(!$data) {
-            return response()->json(['status' => 404, 'success'=>false, 'message' => 'Not found']);
+            return response()->json(['status'=>false, 'message' => 'Not found']);
         }
         $data->image = asset($data->image);
-        return response()->json(['status' => 200, 'success'=>true, 'data' => $data]);
+        return response()->json(['status'=>true, 'data' => $data]);
     }
 
 
@@ -257,14 +271,12 @@ class ApiController extends Controller
         }
         if(count($result)>0){
             return response()->json([
-                'status' => 200,
-                'success' => true,
+                'status' => true,
                 'data' => $result
             ]);
         }else{
             return response()->json([
-                'status' => 400,
-                'success' => false,
+                'status' => false,
                 'message' => "Data not found!"
             ]);
         }
