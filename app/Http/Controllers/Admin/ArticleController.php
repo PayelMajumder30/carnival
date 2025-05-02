@@ -30,7 +30,7 @@ class ArticleController extends Controller
         });
     
         // Paginate results
-        $articles = $query->latest('id')->paginate(25);
+        $articles = $query->orderBy('id', 'asc')->paginate(25);
     
         return view('admin.article.index', compact('articles'));
     }
@@ -43,36 +43,39 @@ class ArticleController extends Controller
 
     public function store(Request $request)
         {
-                $request->validate([
-                    'title'             => 'required|string|max:255',
-                    'sub_title'         => 'nullable|string|max:255',
-                    'content'           => 'required|string',
-                    'meta_type'         => 'nullable|string',
-                    'meta_description'  => 'nullable|string',
-                    'meta_keywords'     => 'nullable|string',
-                    'image'             => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
-                ]);
+        $request->validate([
+            'title'             => 'required|string|max:255',
+            'sub_title'         => 'nullable|string|max:255',
+            'content'           => 'required|string',
+            'meta_type'         => 'nullable|string',
+            'meta_description'  => 'nullable|string',
+            'meta_keywords'     => 'nullable|string',
+            'image'             => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+        ]);
 
-                // Prepare the request data
-                $data = $request->all();
-               // Handle Image Upload
-                if ($request->hasFile('image') && $request->file('image')->isValid()) {
-                    $file       = $request->file('image');
-                    $extension  = $file->extension(); // Alternative to getClientOriginalExtension()
-                    $fileName   = time() . rand(10000, 99999) . '.' . $extension;
-                    $filePath   = 'uploads/articles/' . $fileName; // Save path in DB
+        // Prepare the request data
+        $data = $request->all();
 
-                    // Move file to public/uploads/articles directory
-                    $file->move(public_path('uploads/articles'), $fileName);
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $file       = $request->file('image');
+            $extension  = $file->extension();
+            $fileName   = time() . rand(10000, 99999) . '.' . $extension;
+            $filePath   = 'uploads/articles/' . $fileName;
+        
+            // ✅ Ensure the folder exists
+            $destinationPath = public_path('uploads/articles');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0755, true);
+            }
+        
+            $file->move($destinationPath, $fileName);
+        
+            $data['image'] = $filePath;
+        }        
 
-                    // Add image path to data before sending it to the repository
-                    $data['image'] = $filePath;
-                }
-
-                $this->articleRepository->create($data);
-                return redirect()->route('admin.article.list.all')->with('success', 'Article created successfully.');
-            //dd($request->all());
-                
+        $this->articleRepository->create($data);
+        return redirect()->route('admin.article.list.all')->with('success', 'Article created successfully.');
+        //dd($request->all());        
     }
 
     public function show($id)
