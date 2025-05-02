@@ -23,10 +23,11 @@ use App\Http\Controllers\Api\ApiController;
  });
 
   //master module/ Banner
-  Route::prefix('banner')->group(function () {
-    Route::get('/', [ApiController::class, 'bannerIndex']);
-    Route::get('/{id}', [ApiController::class, 'bannerShow']);
+  Route::prefix('pageBanner')->group(function () {
+    Route::get('/', [ApiController::class, 'pageBannerIndex']);
+    Route::get('/{id}', [ApiController::class, 'pageBannerShow']);
   });
+  
 //master module //Blog
 Route::prefix('blogs')->group(function (){
     Route::get('/',[ApiController::class, 'blogIndex']);

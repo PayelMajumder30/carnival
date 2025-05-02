@@ -40,13 +40,14 @@
                                     <p class="small text-danger">{{ $message }}</p> 
                                 @enderror
                             </div>
+
                             <div class="form-group">
                                 <label for="image">Image</label>
                                 <input type="file" class="form-control" name="image" id="image">
-                                @error('image')
-                                    <p class="small text-danger">{{ $message }}</p>
-                                @enderror
+                                <p class="small text-muted">Size: less than 1 mb</p>
+                                @error('image') <p class="small text-danger">{{ $message }}</p> @enderror
                             </div>
+
                             <div class="form-group">
                                 <label for="meta_type">Meta Title</label>
                                 <input type="text" class="form-control" name="meta_type" id="meta_type" placeholder="Enter Meta Type" value="{{ old('meta_type') }}">
@@ -71,6 +72,7 @@
                                     <p class="small text-danger">{{ $message }}</p> 
                                 @enderror
                             </div>
+                            <input type="hidden" name="id" value="{{ $data->id}}">
                             <button type="submit" class="btn btn-primary">Create Blog</button>
                         </form>
                     </div>

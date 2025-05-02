@@ -55,15 +55,15 @@
                                 @forelse ($blogs as $index => $item)
                                     <tr class="text-left align-middle">
                                         <td>{{ $index+1 }}</td>
-                                        <td>
-                                            @if ($item->image)
-                                                <img src="{{ Storage::url($item->image) }}" alt="Blog Image" style="width: 50px; height: auto;">
+                                        <td>    
+                                            @if (!empty($item->image) && file_exists(public_path($item->image)))
+                                                <img src="{{ asset($item->image) }}" alt="blog-image" style="height: 50px" class="img-thumbnail mr-2">
                                             @else
-                                                <span>No Image</span>
-                                            @endif
+                                                <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="no-image" style="height: 50px" class="mr-2">
+                                            @endif                                           
                                         </td> <!-- Display blog image -->
                                         <td>{{ $item->title }}</td>
-                                        <td>{{ $item->short_desc }}</td>
+                                        <td>{{ \Str::limit(strip_tags($item->short_desc), 200, '...') }}</td>
                                         <td> 
                                             <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
                                                 <input type="checkbox" class="custom-control-input" id="customSwitch{{$item->id}}" {{ ($item->status == 1) ? 'checked' : '' }} onchange="statusToggle('{{ route('admin.blog.status', $item->id) }}')">
@@ -78,7 +78,7 @@
                                                 <a href="{{ route('admin.blog.edit', $item->id) }}" class="btn btn-sm btn-dark" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
-                                                <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn" data-toggle="tooltip" title="Delete" data-id="{{ $item->id }}">
+                                                <a href="javascript: void(0)" class="btn btn-sm btn-danger" onclick="deleteBlog({{$item->id}})" data-toggle="tooltip" title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </div>
@@ -102,24 +102,36 @@
 @section('script')
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    $(document).ready(function() {
-        $('.delete-btn').click(function() {
-            var itemId = $(this).data('id');
-            
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = 'blog/delete/' + itemId; // Replace '/delete/' with your actual delete route
-                }
-            });
-        });
-    });
+    function deleteBlog(socialId) {
+      Swal.fire({
+          icon: 'warning',
+          title: "Are you sure you want to delete this?",
+          text: "You won't be able to revert this!",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Delete",
+      }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+              $.ajax({
+                  url: "{{ route('admin.blog.delete')}}",
+                  type: 'POST',
+                  data: {
+                      "id": socialId,
+                      "_token": '{{ csrf_token() }}',
+                  },
+                  success: function (data){
+                      if (data.status != 200) {
+                          toastFire('error', data.message);
+                      } else {
+                          toastFire('success', data.message);
+                          location.reload();
+                      }
+                  }
+              });
+          }
+      });
+  }
 </script>
 @endsection

@@ -54,7 +54,7 @@
                                         <td>
                                             <div class="text-center">
                                                 @if (!empty($item->image) && file_exists(public_path($item->image)))
-                                                    <img src="{{ asset($item->image) }}" alt="banner-image" style="height: 50px" class="img-thumbnail mr-2">
+                                                    <img src="{{ asset($item->image) }}" alt="social-media-image" style="height: 50px" class="img-thumbnail mr-2">
                                                 @else
                                                     <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="social-media-image" style="height: 50px" class="mr-2">
                                                 @endif

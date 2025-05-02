@@ -56,9 +56,9 @@ Route::name('admin.')->group(function() {
                 Route::post('/store', [BlogController::class, 'store'])->name('blog.store');
                 Route::get('/show/{id}', [BlogController::class, 'show'])->name('blog.show');
                 Route::get('/edit/{id}', [BlogController::class, 'edit'])->name('blog.edit');
-                Route::post('/update/{id}', [BlogController::class, 'update'])->name('blog.update');
+                Route::post('/update', [BlogController::class, 'update'])->name('blog.update');
                 Route::get('/status/{id}', [BlogController::class, 'BlogStatus'])->name('blog.status'); 
-                Route::get('/delete/{id}', [BlogController::class, 'delete'])->name('blog.delete');
+                Route::post('/delete', [BlogController::class, 'delete'])->name('blog.delete');
             });
             //partners
             Route::prefix('partners')->group(function() {

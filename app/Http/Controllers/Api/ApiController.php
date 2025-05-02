@@ -14,11 +14,18 @@ class ApiController extends Controller
 
     public function blogIndex()
     {
-        $data = Blog::orderBy('id', 'asc')->get();
+        $data = Blog::orderBy('id')->get();
+        $result = [];
+        foreach($data as $key=>$item){
+            $result[$key]=[
+                'title'=>ucwords($item->title),
+                'image'=>asset($item->image),
+            ];
+        }
         return response()->json([
-            'status' => 200,
-            'success' => true,
-            'data' => $data
+            'status'    => 200,
+            'success'   => true,
+            'data'      => $result
         ]);
     }
 
@@ -27,9 +34,11 @@ class ApiController extends Controller
         $blogs = Blog::find($id);
 
         if(!$blogs){
-            return response()->json(['status' => 404, 'message' => 'Not found']);
+            return response()->json(['status' => false, 'message' => 'Not found']);
         }
-        return response()->json(['status' => 200, 'data' => $blogs]);
+
+        $blogs->image = asset($blogs->image);
+        return response()->json(['status' => true, 'data' => $blogs]);
     }
 
      //master module /partners
@@ -78,21 +87,50 @@ class ApiController extends Controller
    //master module/ trip category
     public function tripIndex()
     {
-        $data = TripCategory::orderBy('positions', 'asc')->get();
+        $data = TripCategory::with(['tripcategorybanner' => function($query) {
+                $query->where('status', 1)->orderBy('id');
+            }])->orderBy('positions')->get();
+
+        $result = [];
+        foreach($data as $key) {
+            $activeBanner = $key->tripcategorybanner->first();
+            $result[] = [
+                'id'    => $key->id,
+                'title' => ucwords($key->title),
+                'image' => $activeBanner ? asset($activeBanner->image) : null,
+            ];
+        }
+
         return response()->json([
-            'status'    => 200,
-            'success'   => true,
-            'data'      => $data
+            'status'   => true,
+            'data'     => $result
         ]);
     }
 
     public function tripShow($id)
     {
-        $tripCategory = TripCategory::find($id);
-        if (!$tripCategory) {
-            return response()->json(['status' => 404, 'success' => false, 'message' => 'Not found']);
+        $data = TripCategory::with(['tripcategorybanner' => function($query) {
+            $query->where('status', 1)->orderBy('id');
+        }])->find($id);
+
+        if(!$data) {
+            return response()->json([
+                'status'    => false,
+                'message'   => 'Trip category Banner not found'
+            ]);
         }
-        return response()->json(['status' => 200, 'success' => true, 'data' => $tripCategory]);
+        $activeBanner = $data->tripcategorybanner->first();
+
+        $result = [
+            'id'     => $data->id,
+            'title'  => ucwords($data->title),
+            'image'  => $activeBanner ? asset($activeBanner->image) : null,
+        ];
+
+        return response()->json([
+            'status'   => true,
+            'data'     => $result
+        ]);
     }
 
     
@@ -116,10 +154,10 @@ class ApiController extends Controller
 
         if($destinations->isEmpty()) {
             return response()->json([
-                'status'    => 200,
+                'status'    => 400,
                 'success'   => false,
                 'message'   => 'No destinations found for this trip category.',
-                'data'      => []
+              
             ]);
         }
         
@@ -135,10 +173,17 @@ class ApiController extends Controller
     //master module/ social media
     public function socialmediaIndex() {
         $data = SocialMedia::orderBy('id')->get();
+        $result = [];
+        foreach($data as $key=>$item){
+            $result[$key]=[
+                'title'=>ucwords($item->title),
+                'image'=>asset($item->image),
+            ];
+        }
         return response()->json([
             'status'    => 200,
             'success'   => true,
-            'data'      => $data
+            'data'      => $result
         ]);
     }
 
@@ -147,27 +192,27 @@ class ApiController extends Controller
         if(!$data) {
             return response()->json(['status' => 404, 'success'=>false, 'message' => 'Not found']);
         }
+        $data->image = asset($data->image);
         return response()->json(['status' => 200, 'success'=>true, 'data' => $data]);
     }
 
 
     //master module/ banner
-    public function bannerIndex() {
+    public function pageBannerIndex() {
         $data = Banner::orderBy('id')->get();
         return response()->json([
-            'status'    => 200,
-            'success'   => true,
-            'data'      => $data
+            'status'   => true,
+            'data'     => $data
         ]);
     }
 
-    public function bannerShow($id) {
+    public function pageBannerShow($id) {
         $data = Banner::find($id);
-
+        
         if(!$data) {
-            return response()->json(['status' => 404, 'success' => false, 'message' => 'Not found']);
+            return response()->json(['status' => false, 'message' => 'Not found']);
         }
-        return response()->json(['status' => 200, 'success' => true, 'data' => $data]);
+        return response()->json(['status' => true, 'data' => $data]);
     }
 
     //website settings

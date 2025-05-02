@@ -21,39 +21,26 @@ class BlogRepository implements BlogRepositoryInterface
     }
 
     public function create(array $data)
-{
-    // Generate the slug based on the title
-    $slug = slugGenerate($data['title'], 'blogs');
+    {
+        // Generate the slug based on the title
+        $slug = slugGenerate($data['title'], 'blogs');
+        // Prepare the blog data
+        $blogData = [
+            'admin_id'          => auth()->id(),  // Assuming the admin is logged in
+            'title'             => $data['title'],
+            'slug'              => $slug,
+            'short_desc'        => $data['short_desc'] ?? '',
+            'desc'              => $data['desc'] ?? '',
+            'meta_type'         => $data['meta_type'] ?? null,
+            'meta_description'  => $data['meta_description'] ?? null,
+            'meta_keywords'     => $data['meta_keywords'] ?? null,
+            'status'            => $data['status'] ?? 1, // Default to 1 (active)
+            'image'             => $data['image'] ?? null, // Store the image path
+        ];
 
-    // Initialize image path to null
-    $imagePath = null;
-
-    // Check if the image exists in the data array
-    if (isset($data['image'])) {
-        $image = $data['image']; // Get the image from the data array
-        $extension = $image->getClientOriginalExtension(); // Get the file extension
-        $filename = time() . '-' . uniqid() . '.' . $extension; // Generate a unique filename
-        $imagePath = $image->storeAs('blogs', $filename, 'public'); // Store the image
+        // Create the blog and return the created instance
+        return Blog::create($blogData);
     }
-
-    // Prepare the blog data
-    $blogData = [
-        'admin_id' => auth()->id(),  // Assuming the admin is logged in
-        'title' => $data['title'],
-        'slug' => $slug,
-        'short_desc' => $data['short_desc'] ?? null,
-        'desc' => $data['desc'],
-        'meta_type' => $data['meta_type'] ?? null,
-        'meta_description' => $data['meta_description'] ?? null,
-        'meta_keywords' => $data['meta_keywords'] ?? null,
-        'status' => $data['status'] ?? 1, // Default to 1 (active)
-        'image' => $imagePath, // Store the image path
-    ];
-
-    
-    // Create the blog and return the created instance
-    return Blog::create($blogData);
-}
 
 
     public function update($id, array $data)
@@ -64,22 +51,17 @@ class BlogRepository implements BlogRepositoryInterface
         // Retrieve the existing image path (if any)
         $imagePath = $blog->image;
 
-        // Check if image is present in the data array and handle the file upload
-        if (isset($data['image'])) {
-            // If there's an existing image, delete it from storage
-            if ($imagePath) {
-                Storage::disk('public')->delete($imagePath);
+        if (isset($data['image']) && $data['image']->isValid()) {
+            // If there's an existing image, delete it from public/uploads/social
+            if (!empty($imagePath) && file_exists(public_path($imagePath))) {
+                unlink(public_path($imagePath));
             }
-
-            // Get the uploaded image from the data array
-            $image = $data['image'];
-
-            // Generate a unique filename
-            $extension = $image->getClientOriginalExtension();
-            $filename = time() . '-' . uniqid() . '.' . $extension;
-
-            // Store the image in the 'blogs' directory on the public disk
-            $imagePath = $image->storeAs('blogs', $filename, 'public');
+            $image      = $data['image'];
+            $extension  = $image->getClientOriginalExtension();
+            $filename   = time() . rand(10000, 99999) . '.' . $extension;
+            $filePath   = 'uploads/blogs/' . $filename;
+            $image->move(public_path('uploads/blogs'), $filename);
+            $imagePath  = $filePath;
         }
 
         // Generate slug if it's not already provided
@@ -92,8 +74,8 @@ class BlogRepository implements BlogRepositoryInterface
             'admin_id' => auth()->id(),
             'title' => $data['title'],
             'slug' => $data['slug'],
-            'short_desc' => $data['short_desc'] ?? null,
-            'desc' => $data['desc'],
+            'short_desc' => $data['short_desc'] ?? '',
+            'desc' => $data['desc'] ?? '',
             'meta_type' => $data['meta_type'] ?? null,
             'meta_description' => $data['meta_description'] ?? null,
             'meta_keywords' => $data['meta_keywords'] ?? null,
@@ -107,13 +89,17 @@ class BlogRepository implements BlogRepositoryInterface
         return $blog;
     }
 
-
-
-
     public function delete($id)
     {
+        //dd($id);
         $blog = Blog::findOrFail($id);
-        $blog->delete();
-        return true;
+        if($blog->image && file_exists(public_path($blog->image))) {
+            unlink(public_path($blog->image));
+        }
+        if($blog->delete()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

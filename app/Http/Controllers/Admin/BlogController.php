@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Interfaces\BlogRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\Blog;
 
 class BlogController extends Controller
@@ -42,17 +43,31 @@ class BlogController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-                'short_desc' => 'nullable|string|max:255',
-                'desc' => 'required|string',
-                'meta_type' => 'nullable|string',
-                'meta_description' => 'nullable|string',
-                'meta_keywords' => 'nullable|string',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+            'title' => ['required',
+                'string',
+                'max:255',
+                Rule::unique('blogs', 'title'),
+            ],
+            'short_desc'    => 'nullable|string|max:255',
+            'desc'          => 'required|string',
+            'meta_type'     => 'nullable|string',
+            'meta_description'  => 'nullable|string',
+            'meta_keywords'     => 'nullable|string',
+            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
         ]);
         
+        $data = $request->all();
 
-        $this->blogRepository->create($request->all());
+        if($request->hasFile('image') && $request->file('image')->isvalid()) {
+            $file       = $request->file('image');
+            $extension  = $file->extension();
+            $fileName   = time() . rand(10000, 99999) . '.' . $extension;
+            $filePath   = 'uploads/blogs/' . $fileName;
+            $file->move(public_path('uploads/blogs'), $fileName);
+            $data['image'] = $filePath;
+        }
+
+        $this->blogRepository->create($data);
         return redirect()->route('admin.blog.list.all')->with('success', 'Blog created successfully.');
     }
 
@@ -68,20 +83,35 @@ class BlogController extends Controller
         return view('admin.blog.edit', compact('data'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        // dd("dgfcdysgy");
+        $id = $request->input('id');
         $request->validate([
-            'title' => 'required|string|max:255',
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('blogs', 'title')->ignore($id),
+            ],
             'short_desc' => 'nullable|string|max:255',
             'desc' => 'required|string',
             'meta_type' => 'nullable|string',
             'meta_description' => 'nullable|string',
             'meta_keywords' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+        ], [
+            'title.required' => 'The title field is required.',
+            'title.unique' => 'This title has already been used.',
+            'title.max' => 'The title must not exceed 255 characters.',
+            'desc.required' => 'Please enter a blog description.',
+            'short_desc.max' => 'Short description must not exceed 255 characters.',
+            'image.image' => 'The uploaded file must be an image.',
+            'image.mimes' => 'Image must be a type of: jpeg, png, jpg, gif, svg.',
+            'image.max' => 'Image must not be larger than 2MB.',
         ]);
     
         $this->blogRepository->update($id, $request->all());
+    
         return redirect()->route('admin.blog.list.all')->with('success', 'Blog updated successfully.');
     }
 
@@ -95,10 +125,28 @@ class BlogController extends Controller
             'message' => 'Status updated',
         ]);
     }
-    
-    public function delete($id)
-    {
-        $this->blogRepository->delete($id);
-        return redirect()->route('admin.blog.list.all')->with('success', 'Blog deleted successfully.');
+
+    public function delete(Request $request) {
+        // Get Blog data by ID
+        $blog = Blog::findOrFail($request->id);
+        // If Blog is not found then return status 404 with error message
+        if (!$blog) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Blog is not found',
+            ]);
+        }
+        $imagePath = $blog->image;
+        // Delete Blog from db
+        $blog->delete();
+        // If file is exist ithen remove from target directory
+        if (!empty($imagePath) && file_exists(public_path($imagePath))) {
+            unlink(public_path($imagePath));
+        }
+        // Return suceess response with message
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Blog has been deleted successfully',
+        ]);
     }
 }
