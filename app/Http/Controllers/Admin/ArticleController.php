@@ -73,7 +73,7 @@ class ArticleController extends Controller
         return redirect()->route('admin.article.list.all')->with('success', 'Article created successfully.');
         //dd($request->all());        
     }
-
+ 
     public function show($id)
     {
         $article = $this->articleRepository->findById($id);
