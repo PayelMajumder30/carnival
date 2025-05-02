@@ -55,23 +55,19 @@ class ArticleController extends Controller
 
         // Prepare the request data
         $data = $request->all();
-
+        // Handle Image Upload
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file       = $request->file('image');
-            $extension  = $file->extension();
+            $extension  = $file->extension(); // Alternative to getClientOriginalExtension()
             $fileName   = time() . rand(10000, 99999) . '.' . $extension;
-            $filePath   = 'uploads/articles/' . $fileName;
-        
-            // ✅ Ensure the folder exists
-            $destinationPath = public_path('uploads/articles');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
-        
-            $file->move($destinationPath, $fileName);
-        
+            $filePath   = 'uploads/articles/' . $fileName; // Save path in DB
+
+            // Move file to public/uploads/articles directory
+            $file->move(public_path('uploads/articles'), $fileName);
+
+            // Add image path to data before sending it to the repository
             $data['image'] = $filePath;
-        }        
+        }
 
         $this->articleRepository->create($data);
         return redirect()->route('admin.article.list.all')->with('success', 'Article created successfully.');

@@ -195,8 +195,7 @@ class ApiController extends Controller
             ];
         }
         return response()->json([
-            'status'    => 200,
-            'success'   => true,
+            'status'   => true,
             'data'      => $result
         ]);
     }
