@@ -30,7 +30,7 @@ class ArticleController extends Controller
         });
     
         // Paginate results
-        $articles = $query->orderBy('id', 'asc')->paginate(25);
+        $articles = $query->latest('id')->paginate(25);
     
         return view('admin.article.index', compact('articles'));
     }
@@ -42,42 +42,36 @@ class ArticleController extends Controller
     }
 
     public function store(Request $request)
-        {
-        $request->validate([
-            'title'             => 'required|string|max:255',
-            'sub_title'         => 'nullable|string|max:255',
-            'content'           => 'required|string',
-            'meta_type'         => 'nullable|string',
-            'meta_description'  => 'nullable|string',
-            'meta_keywords'     => 'nullable|string',
-            'image'             => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
-        ]);
-
-        // Prepare the request data
-        $data = $request->all();
-        // Handle Image Upload
-        if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $file       = $request->file('image');
-            $extension  = $file->extension(); // Alternative to getClientOriginalExtension()
-            $fileName   = time() . rand(10000, 99999) . '.' . $extension;
-            $filePath   = 'uploads/articles/' . $fileName; // Save path in DB
-
-            // Move file to public/uploads/articles directory
-            $file->move(public_path('uploads/articles'), $fileName);
-
-            // Add image path to data before sending it to the repository
-            $data['image'] = $filePath;
-        }
-
-        $this->articleRepository->create($data);
-        return redirect()->route('admin.article.list.all')->with('success', 'Article created successfully.');
-        //dd($request->all());        
-    }
- 
-    public function show($id)
     {
-        $article = $this->articleRepository->findById($id);
-        return view('admin.article.show', compact('article'));
+    $request->validate([
+    'title' => 'required|string|max:255',
+    'sub_title' => 'nullable|string|max:255',
+    'content' => 'required|string',
+    'meta_type' => 'nullable|string',
+    'meta_description' => 'nullable|string',
+    'meta_keywords' => 'nullable|string',
+    'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+    ]);
+   
+    // Prepare the request data
+    $data = $request->all();
+    // Handle Image Upload
+    if ($request->hasFile('image') && $request->file('image')->isValid()) {
+    $file = $request->file('image');
+    $extension = $file->extension(); // Alternative to getClientOriginalExtension()
+    $fileName = time() . rand(10000, 99999) . '.' . $extension;
+    $filePath = 'uploads/articles/' . $fileName; // Save path in DB
+   
+    // Move file to public/uploads/articles directory
+    $file->move(public_path('uploads/articles'), $fileName);
+   
+    // Add image path to data before sending it to the repository
+    $data['image'] = $filePath;
+    }
+   
+    $this->articleRepository->create($data);
+    return redirect()->route('admin.article.list.all')->with('success', 'Article created successfully.');
+    //dd($request->all()); 
     }
 
     public function edit($id)

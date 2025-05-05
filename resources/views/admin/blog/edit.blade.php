@@ -45,8 +45,13 @@
                             <div class="form-group">
                                 <label for="image">Image</label>
                                 <input type="file" class="form-control" name="image" id="image">
-                                @if($data->image)
-                                    <img src="{{ asset('storage/' . $data->image) }}" alt="Blog Image" width="100">
+                                @if (!empty($data->image))
+                                    @if (!empty($data->image) && file_exists(public_path($data->image)))
+                                        <img src="{{ asset($data->image) }}" alt="blog-img" class="img-thumbnail mr-3" style="height: 50px">
+                                    @else
+                                        <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="blog-image" style="height: 50px" class="mr-2">
+                                    @endif
+                                    <br>
                                 @endif
                                 @error('image')
                                     <p class="small text-danger">{{ $message }}</p>
@@ -77,7 +82,7 @@
                                 @enderror
                             </div>
                             <div class="form-group">
-                                <label for="status">Status *</label>
+                                <label for="status">Status <span style="color: red;">*</span></label>
                                 <select class="form-control" name="status" id="status">
                                     <option value="1" {{ $data->status == 1 ? 'selected' : '' }}>Active</option>
                                     <option value="0" {{ $data->status == 0 ? 'selected' : '' }}>Inactive</option>

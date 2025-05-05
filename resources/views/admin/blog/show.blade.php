@@ -21,7 +21,7 @@
                         @if($blog->image)
                             <div class="form-group">
                                 <label for="image">Image</label>
-                                <img src="{{ Storage::url($blog->image) }}" alt="Blog Image" class="img-fluid" style="max-width: 20%; height: 20%;">
+                                <img src="{{ asset($blog->image) }}" alt="Blog Image" class="img-fluid" style="max-width: 20%; height: 20%;">
                             </div>
                         @endif
                         <div class="form-group">

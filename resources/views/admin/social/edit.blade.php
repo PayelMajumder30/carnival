@@ -27,9 +27,9 @@
                                 <div class="col-md-6">
                                     @if (!empty($data->image))
                                         @if (!empty($data->image) && file_exists(public_path($data->image)))
-                                            <img src="{{ asset($data->image) }}" alt="social-img" class="img-thumbnail mr-3" style="height: 50px">
+                                            <img src="{{ asset($data->image) }}" alt="social-media-img" class="img-thumbnail mr-3" style="height: 50px">
                                         @else
-                                            <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="social-image" style="height: 50px" class="mr-2">
+                                            <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="social-media-image" style="height: 50px" class="mr-2">
                                         @endif
                                         <br>
                                     @endif

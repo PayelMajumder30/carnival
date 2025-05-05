@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Interfaces\BlogRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\Blog;
 
 class BlogController extends Controller
@@ -42,17 +43,31 @@ class BlogController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
-                'short_desc' => 'nullable|string|max:255',
-                'desc' => 'required|string',
-                'meta_type' => 'nullable|string',
-                'meta_description' => 'nullable|string',
-                'meta_keywords' => 'nullable|string',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+            'title' => ['required',
+                'string',
+                'max:255',
+                Rule::unique('blogs', 'title'),
+            ],
+            'short_desc'    => 'nullable|string|max:255',
+            'desc'          => 'required|string',
+            'meta_type'     => 'nullable|string',
+            'meta_description'  => 'nullable|string',
+            'meta_keywords'     => 'nullable|string',
+            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
         ]);
         
+        $data = $request->all();
 
-        $this->blogRepository->create($request->all());
+        if($request->hasFile('image') && $request->file('image')->isvalid()) {
+            $file       = $request->file('image');
+            $extension  = $file->extension();
+            $fileName   = time() . rand(10000, 99999) . '.' . $extension;
+            $filePath   = 'uploads/blogs/' . $fileName;
+            $file->move(public_path('uploads/blogs'), $fileName);
+            $data['image'] = $filePath;
+        }
+
+        $this->blogRepository->create($data);
         return redirect()->route('admin.blog.list.all')->with('success', 'Blog created successfully.');
     }
 
@@ -73,11 +88,11 @@ class BlogController extends Controller
         $id = $request->input('id');
         $request->validate([
             'title' => [
-            'required',
-            'string',
-            'max:255',
-            Rule::unique('blogs', 'title')->ignore($id),
-        ],
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('blogs', 'title')->ignore($id),
+            ],
             'short_desc' => 'nullable|string|max:255',
             'desc' => 'required|string',
             'meta_type' => 'nullable|string',
@@ -96,7 +111,7 @@ class BlogController extends Controller
         ]);
         
         $this->blogRepository->update($id, $request->all());
-        
+    
         return redirect()->route('admin.blog.list.all')->with('success', 'Blog updated successfully.');
     }
 
@@ -110,15 +125,14 @@ class BlogController extends Controller
             'message' => 'Status updated',
         ]);
     }
-    
     public function delete(Request $request) {
         // Get Blog data by ID
         $blog = Blog::findOrFail($request->id);
         // If Blog is not found then return status 404 with error message
         if (!$blog) {
             return response()->json([
-            'status' => 404,
-            'message' => 'Blog is not found',
+                'status'    => 404,
+                'message'   => 'Blog is not found',
             ]);
         }
         $imagePath = $blog->image;
@@ -126,12 +140,12 @@ class BlogController extends Controller
         $blog->delete();
         // If file is exist ithen remove from target directory
         if (!empty($imagePath) && file_exists(public_path($imagePath))) {
-             unlink(public_path($imagePath));
+            unlink(public_path($imagePath));
         }
         // Return suceess response with message
         return response()->json([
-            'status' => 200,
-            'message' => 'Blog has been deleted successfully',
+            'status'    => 200,
+            'message'   => 'Blog has been deleted successfully',
         ]);
     }
 }
