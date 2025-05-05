@@ -250,7 +250,7 @@
         });
     }
      //for delete destination
-     function deleteDesti(destiId) {
+    function deleteDesti(destiId) {
         //alert(destiId);
       Swal.fire({
           icon: 'warning',
@@ -279,7 +279,7 @@
                       }
                   }
               });
-          }
+          } 
       });
     }
 

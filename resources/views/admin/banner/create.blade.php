@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('page-title', 'Create banner')
+@section('page-title', 'Create Banner Sliders')
 
 @section('section')
 <section class="content">
