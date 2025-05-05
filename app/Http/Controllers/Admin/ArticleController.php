@@ -43,15 +43,15 @@ class ArticleController extends Controller
 
     public function store(Request $request)
     {
-    $request->validate([
-    'title' => 'required|string|max:255',
-    'sub_title' => 'nullable|string|max:255',
-    'content' => 'required|string',
-    'meta_type' => 'nullable|string',
-    'meta_description' => 'nullable|string',
-    'meta_keywords' => 'nullable|string',
-    'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
-    ]);
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'sub_title' => 'nullable|string|max:255',
+            'content' => 'required|string',
+            'meta_type' => 'nullable|string',
+            'meta_description' => 'nullable|string',
+            'meta_keywords' => 'nullable|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+        ]);
    
     // Prepare the request data
     $data = $request->all();
@@ -72,6 +72,12 @@ class ArticleController extends Controller
     $this->articleRepository->create($data);
     return redirect()->route('admin.article.list.all')->with('success', 'Article created successfully.');
     //dd($request->all()); 
+    }
+
+    public function show($id)
+    {
+        $article = $this->articleRepository->findById($id);
+        return view('admin.article.show', compact('article'));
     }
 
     public function edit($id)
