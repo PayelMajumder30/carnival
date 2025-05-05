@@ -72,7 +72,7 @@
                                     <p class="small text-danger">{{ $message }}</p> 
                                 @enderror
                             </div>
-                            <input type="hidden" name="id" value="{{ $data->id}}">
+                            
                             <button type="submit" class="btn btn-primary">Create Blog</button>
                         </form>
                     </div>
