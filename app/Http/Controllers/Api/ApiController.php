@@ -13,10 +13,23 @@ class ApiController extends Controller
     //master module //blog
     public function blogIndex()
     {
-        $data = Blog::orderBy('id', 'asc')->get();
+        $data = Blog::orderBy('id')->get();
+        $result = [];
+        foreach($data as $key=>$item){
+            $result[$key]=[
+            'id' => $item->id,
+            'title' =>ucwords($item->title),
+            'short_desc' => $item->short_desc,
+            'desc' => $item->desc,
+            'meta_type' => $item->meta_type,
+            'meta_description' => $item->meta_description,
+            'meta_keywords' => $item->meta_keywords,
+            'image'=>asset($item->image),
+            ];
+        }
         return response()->json([
             'status' => true,
-            'data' => $data
+            'data' => $result
         ]);
     }
 
@@ -37,7 +50,7 @@ class ApiController extends Controller
         $result = [];
         foreach($data as $key=>$item){
            $result[$key] =[
-            // 'id'=>$item->id,
+            'id'=>$item->id,
             'title'=>ucwords($item->title),
             'image'=>asset($item->image),
            ];
@@ -69,7 +82,10 @@ class ApiController extends Controller
             $result[$key] = [
                 'id' => $item->id,
                 'title' =>ucwords($item->title),
-                'image' =>asset($item->image)
+                'image' =>asset($item->image),
+                'desc' =>$item->desc,
+                'status' =>$item->status,
+                'positions' =>$item->positions,
             ];
         }
         return response()->json([
@@ -150,8 +166,10 @@ class ApiController extends Controller
         foreach($data as $key=>$item)
         {
             $result[$key] = [
+                'id' =>$item->id,
                 'title' =>ucwords($item->title),
-                'image' =>asset($item->image)
+                'image' =>asset($item->image),
+                'link' =>$item->link
             ];
         }
         return response()->json([
