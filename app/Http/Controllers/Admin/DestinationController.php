@@ -21,6 +21,9 @@ class DestinationController extends Controller
         curl_close($ch);
 
         $countryData = json_decode($countryResponse, true);
+        // if (!is_array($countryData) || !array_key_exists('status', $countryData)) {
+        //     dd('Invalid response from API:', $countryResponse);
+        // }
         //dd($countryData);
         if ($countryData['status']==true) {
             $new_country = $countryData['data'];

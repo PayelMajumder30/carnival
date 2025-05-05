@@ -78,7 +78,7 @@ class ApiController extends Controller
     //master module /partners
     public function partnerIndex()
     {
-        $data = Partner::where('status', 1)->orderBy('id')->get();
+        $data = Partner::orderBy('id')->get();
         $result = [];
         foreach($data as $key=>$item){
            $result[$key] =[

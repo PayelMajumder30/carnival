@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('page-title', 'Edit Blog')
+@section('page-title', 'Update Blog')
 
 @section('section')
 <section class="content">

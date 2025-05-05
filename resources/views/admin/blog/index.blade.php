@@ -63,7 +63,7 @@
                                             @endif                                           
                                         </td> <!-- Display blog image -->
                                         <td>{{ $item->title }}</td>
-                                        <td>{{ \Str::limit(strip_tags($item->short_desc), 200, '...') }}</td>
+                                        <td>{{ \Str::limit(($item->short_desc), 200, '...') }}</td>
                                         <td> 
                                             <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
                                                 <input type="checkbox" class="custom-control-input" id="customSwitch{{$item->id}}" {{ ($item->status == 1) ? 'checked' : '' }} onchange="statusToggle('{{ route('admin.blog.status', $item->id) }}')">
