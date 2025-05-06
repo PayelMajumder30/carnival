@@ -15,7 +15,7 @@
     <div class="login-box">
         <div class="login-logo">
             <a href="{{ url('/') }}">
-                <img src="{{ asset('backend-assets/images/logo.jpg') }}" alt="logo" style="height: 100px">
+                <img src="{{ asset('backend-assets/images/favicon.png') }}" alt="logo" style="height: 100px">
             </a>
         </div>
 

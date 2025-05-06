@@ -112,7 +112,7 @@ class TripcategoryController extends Controller
     public function bannerIndex(Request $request, $trip_cat_id) {
         $trip   = TripCategory::findOrFail($trip_cat_id);
         $banner = TripCategoryBanner::where('trip_cat_id', $trip_cat_id)->paginate(25);
-        return view('admin.tripcategory.bannerIndex', compact('trip', 'banner'));   
+        return view('admin.tripcategory.bannerindex', compact('trip', 'banner'));   
     }
 
     public function bannerCreate($trip_cat_id) {       
