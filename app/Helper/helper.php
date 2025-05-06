@@ -123,7 +123,7 @@ if (!function_exists('FinalFormSubmitMail')) {
             $mail->isHTML(true);
             $mail->Subject = 'Application Form Received';
             $mail->Body = '<html><body>
-                <p>Thank you for applying for the position of <em>'.$data->applied_post.'</em> at Techno India Group World School.</p>
+                
                 <p>Your application has been received.</p>
                 <p>Please note your Application ID: <strong>'.$data->registration_id.'</strong>.</p>
                 <p>In case of any query related to your application, please feel free to contact us on <strong>&lt;mobile number&gt;</strong>.</p>

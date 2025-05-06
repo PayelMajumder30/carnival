@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $settings[4]->content }} - @yield('page-title')</title>
-    <link rel="icon" type="image/x-icon" href="{{ asset('backend-assets/images/logo.jpg') }}"> 
+    <link rel="icon" type="image/x-icon" href="{{ asset('backend-assets/images/favicon.png') }}"> 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
@@ -58,7 +58,7 @@
 
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a href="{{ url('/') }}" class="brand-link text-center admin_web_logo" target="_blank">
-                <!-- <img src="{{ asset('backend-assets/images/full_logo.png') }}" alt="AdminLTE Logo" class="elevation-3" style="height: 45px;opacity: .8"> -->
+                <!-- <img src="{{ asset('backend-assets/images/favicon.png') }}" alt="AdminLTE Logo" class="elevation-3" style="height: 45px;opacity: .8"> -->
                 {{-- <span class="brand-text font-weight-light">Admin</span> --}}
             </a>
 
