@@ -115,8 +115,9 @@
                         Change Password
                     </a>
                 </p>
-                <h5><a href="{{ route('admin.dashboard.edit') }}">Update Profile</a></h5>
-                
+                <p>
+                    <a href="{{ route('admin.dashboard.edit') }}" class="text-white">Update Profile</a>
+                </p>
             </div>
         </aside>
 
