@@ -19,12 +19,8 @@ class DestinationController extends Controller
 
         $countryResponse = curl_exec($ch);
         curl_close($ch);
-
         $countryData = json_decode($countryResponse, true);
-        // if (!is_array($countryData) || !array_key_exists('status', $countryData)) {
-        //     dd('Invalid response from API:', $countryResponse);
-        // }
-        //dd($countryData);
+        //dd($)
         if ($countryData['status']==true) {
             $new_country = $countryData['data'];
         } else {
@@ -187,8 +183,7 @@ class DestinationController extends Controller
             'message'   => 'Countrywise destination has been deleted successfully',
         ]);
     }
-
-    
+ 
 }
 
     

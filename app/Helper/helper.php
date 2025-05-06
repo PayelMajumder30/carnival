@@ -20,6 +20,7 @@ if (!function_exists('GetDestinationBycountryId')) {
         curl_close($ch);
 
         $countryData = json_decode($countryResponse, true);
+        // dd($countryData);
         if ($countryData['status']==true) {
             $new_country = $countryData['data'];
         } else {
