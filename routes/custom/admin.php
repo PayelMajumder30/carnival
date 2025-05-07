@@ -98,6 +98,7 @@ Route::name('admin.')->group(function() {
                 Route::get('/edit/{id}', [TripcategoryController::class, 'edit'])->name('tripcategory.edit');
                 Route::post('/update/{id}', [TripcategoryController::class, 'update'])->name('tripcategory.update');
                 Route::get('/status/{id}', [TripcategoryController::class, 'status'])->name('tripcategory.status'); 
+                Route::get('/isHighlight/{id}', [TripcategoryController::class, 'isHighlight'])->name('tripcategory.isHighlight');
                 Route::post('/delete', [TripcategoryController::class, 'delete'])->name('tripcategory.delete');
                 Route::post('/sort', [TripcategoryController::class, 'sort'])->name('tripcategory.sort');
 

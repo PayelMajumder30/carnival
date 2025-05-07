@@ -11,7 +11,7 @@ class TripCategory extends Model
 
     protected $table = "trip_categories";
     protected $fillable = [
-        'title', 'status'
+        'title', 'short_desc', 'is_highlighted', 'status'
     ];
 
     public function tripcategorybanner() {

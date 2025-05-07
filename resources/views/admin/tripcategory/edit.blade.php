@@ -19,11 +19,13 @@
                             @csrf
                             @method('POST')
                             <div class="form-group">
-                                {{-- <div class="col-md-6" style="margin-top: 50px;"> --}}
                                     <label for="title">Title <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control" name="title" id="title" placeholder="Enter social title.." value="{{ old('title') ? old('title') : $data->title }}">
+                                    <input type="text" class="form-control" name="title" id="title" placeholder="Enter trip category title.." value="{{ old('title') ? old('title') : $data->title }}">
                                     @error('title') <p class="small text-danger">{{ $message }}</p> @enderror
-                                {{-- </div> --}}
+                                    
+                                    <label for="short_desc">Short Description </label>
+                                    <input type="text" class="form-control" name="short_desc" id="short_desc" placeholder="Enter trip category short description.." value="{{ old('short_desc') ? old('short_desc') : $data->short_desc }}">
+                                    @error('short_desc') <p class="small text-danger">{{ $message }}</p> @enderror
                             </div>
 
                             <input type="hidden" name="id" value="{{ $data->id }}">

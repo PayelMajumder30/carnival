@@ -36,7 +36,8 @@ class TripcategoryController extends Controller
     {
         // dd($request->all());
         $request->validate([
-            'title'  => 'required|string|max:255|unique:trip_categories,title',
+            'title'      => 'required|string|max:255|unique:trip_categories,title',
+            'short_desc' => 'nullable|string|max:200',
         ], [
             'title.required' => 'The title field is required.',
             'title.string'   => 'The title must be a string.',
@@ -56,7 +57,8 @@ class TripcategoryController extends Controller
 
     public function update(Request $request, $id){
         $request->validate([
-            'title' => 'required|string|max:255|unique:trip_categories,title,' . $id,
+            'title'      => 'required|string|max:255|unique:trip_categories,title,' . $id,
+            'short_desc' => 'nullable|string|max:200',
         ], [
             'title.required' => 'The title field is required.',
             'title.string'   => 'The title must be a string.',
@@ -65,7 +67,7 @@ class TripcategoryController extends Controller
         ]);
 
         $this->TripCategoryRepository->update($id, $request->all());
-        return redirect()->route('admin.tripcategory.list.all')->with('success', 'Trip category title updated successfully.');
+        return redirect()->route('admin.tripcategory.list.all')->with('success', 'Trip category updated successfully.');
     }
 
     public function status(Request $request, $id) {
@@ -76,6 +78,48 @@ class TripcategoryController extends Controller
             'status'    => 200,
             'message'   => 'status updated',
         ]);
+    }
+
+    public function isHighlight(Request $request, $id) {
+        $category = TripCategory::find($id);
+        if (!$category) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Trip Category not found',
+            ]);
+        }        
+        // Toggle off if already highlighted
+        if ($category->is_highlighted == 1) {
+            $category->is_highlighted = 0; 
+            $category->save();
+        
+            return response()->json([
+                'status'    => 200,
+                'message'   => 'Highlight removed successfully.',
+            ]);
+        }       
+        // Count how many are currently highlighted
+        $highlightedCount = TripCategory::where('is_highlighted', 1)->count();
+        
+        if ($highlightedCount >= 2) {
+            // Turn off the oldest highlighted category
+            $oldest = TripCategory::where('is_highlighted', 1)
+                ->orderBy('updated_at', 'asc')
+                ->first();
+        
+            if ($oldest) {
+                $oldest->is_highlighted = 0;
+                $oldest->save();
+            }
+        }       
+        // Now highlight the selected one
+        $category->is_highlighted = 1;
+        $category->save();
+        
+        return response()->json([
+            'status' => 200,
+            'message' => 'Highlight activated successfully.',
+        ]);       
     }
 
     public function delete(Request $request){
@@ -108,7 +152,6 @@ class TripcategoryController extends Controller
     }
 
     //trip category/banner
-
     public function bannerIndex(Request $request, $trip_cat_id) {
         $trip   = TripCategory::findOrFail($trip_cat_id);
         $banner = TripCategoryBanner::where('trip_cat_id', $trip_cat_id)->paginate(25);
@@ -126,9 +169,7 @@ class TripcategoryController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
         ]);
     
-        $data = $request->all(); 
-        // dd($data);
-        // $data['trip_cat_id'] = $request->trip_cat_id;   
+        $data = $request->all();   
         // Handle Image Upload
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
             $file       = $request->file('image');
@@ -149,7 +190,7 @@ class TripcategoryController extends Controller
 
     public function bannerEdit($banner_id) {
         $tripCategoryBanner = TripCategoryBanner::findOrFail($banner_id);
-        return view('admin.tripcategory.bannerEdit', compact('tripCategoryBanner'));
+        return view('admin.tripcategory.banneredit', compact('tripCategoryBanner'));
     }
 
     public function bannerUpdate(Request $request) {
@@ -179,7 +220,7 @@ class TripcategoryController extends Controller
     }
 
     public function bannerDelete(Request $request) {
-        // Get banner data by ID
+
         $tripCategoryBanner = TripCategoryBanner::findOrFail($request->id);
         // If banner is not found then return status 404 with error message
         if (!$tripCategoryBanner) {
@@ -189,7 +230,7 @@ class TripcategoryController extends Controller
             ]);
         }
         $imagePath = $tripCategoryBanner->image;
-        // Delete banner from db
+
         $tripCategoryBanner->delete();
         // If file is exist then remove from target directory
         if (!empty($imagePath) && file_exists(public_path($imagePath))) {

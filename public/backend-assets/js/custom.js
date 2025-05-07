@@ -71,6 +71,23 @@ function statusAllToggle(route) {
     });
 }
 
+//for active two status
+function highlightToggle(route) {
+    $.ajax({
+        url: route,
+        success: function(resp) {
+            if(resp.status == 200) {
+                toastFire('success', resp.message);
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
+            } else {
+                toastFire('error', resp.message);
+            }
+        }
+    })
+}
+
 // product status change
 function productStatus(route, status, prodId) {
     $.ajax({
