@@ -21,7 +21,8 @@ class TripCategoryRepository implements TripCategoryRepositoryInterface
     public function create(array $data)
         { 
             $tripcatData = [     
-                'title' => $data['title'],    
+                'title'       => ucwords($data['title']),
+                'short_desc'  => $data['short_desc'],
             ];
             // Create the category media and return the created instance
             return TripCategory::create($tripcatData);
@@ -32,7 +33,8 @@ class TripCategoryRepository implements TripCategoryRepositoryInterface
             // Find the category media by ID
             $tripcat     = TripCategory::findOrFail($id);      
             $updateData  = [            
-                'title'  => $data['title'],
+                'title'        => ucwords($data['title']),
+                'short_desc'   => $data['short_desc'],
             ];
             $tripcat->update($updateData);
             return $tripcat;

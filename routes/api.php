@@ -50,7 +50,7 @@ use App\Http\Controllers\Api\ApiController;
     Route::prefix('trip-category')->group(function () {
         Route::get('/', [ApiController::class, 'tripIndex']);
         Route::get('/{id}', [ApiController::class, 'tripShow']);
-        Route::get('/{trip_cat_id}/destinations', [ApiController::class, 'getDestinationsByTripCategory']);
+        //Route::get('/{trip_cat_id}/destinations', [ApiController::class, 'getDestinationsByTripCategory']);
     });
 
 

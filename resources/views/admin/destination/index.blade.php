@@ -190,20 +190,20 @@
                                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                                     </div>
                                                     <div class="modal-body">
-                                            
+
                                                         <div class="form-group">
-                                                        <label for="logo">Upload Logo</label>
-                                                        <input type="file" class="form-control" name="logo" required>
+                                                            <label for="image">Upload Image</label>
+                                                            <input type="file" class="form-control" name="image">
                                                         </div>
                                             
                                                         <div class="form-group">
-                                                        <label for="image">Upload Image</label>
-                                                        <input type="file" class="form-control" name="image" required>
+                                                            <label for="logo">Upload Logo</label>
+                                                            <input type="file" class="form-control" name="logo">
                                                         </div>
                                             
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="submit" class="btn btn-primary">Update</button>
+                                                        <button type="submit" class="btn btn-primary">Create</button>
                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                                     </div>
                                                     </div>

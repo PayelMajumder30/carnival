@@ -41,7 +41,8 @@
                         <div class="d-flex font-weight-bold text-center border-bottom py-2 bg-light">
                             <div class="col-1">#</div>
                             <div class="col-3 text-left">Title</div>
-                            <div class="col-5">Status</div>
+                            <div class="col-2">Highlighted Status</div>
+                            <div class="col-3">Status</div>
                             <div class="col-3">Action</div>
                         </div>
                         
@@ -51,7 +52,16 @@
                                     <div class="d-flex text-center align-items-center">
                                         <div class="col-1">{{ $index + $data->firstItem() }}</div>
                                         <div class="col-3 text-left">{{ $item->title }}</div>
-                                        <div class="col-5">
+                                        <div class="col-2">
+                                            <div class="custom-control custom-switch" data-toggle="tooltip" title="Toggle Highlight"> 
+                                                <input type="checkbox" class="custom-control-input" 
+                                                    id="highlightSwitch{{ $item->id }}" 
+                                                    {{ $item->is_highlighted == 1 ? 'checked' : '' }} 
+                                                    onchange="highlightToggle('{{ route('admin.tripcategory.isHighlight', $item->id) }}')"> 
+                                                <label class="custom-control-label" for="highlightSwitch{{ $item->id }}"></label> 
+                                            </div>
+                                        </div>                                       
+                                        <div class="col-3">
                                             <div class="custom-control custom-switch" data-toggle="tooltip" title="Toggle status">
                                                 <input type="checkbox" class="custom-control-input"
                                                     id="customSwitch{{$item->id}}"

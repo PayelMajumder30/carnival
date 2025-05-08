@@ -133,14 +133,42 @@ class ApiController extends Controller
             }])->orderBy('positions')->get();
 
         $result = [];
-        foreach($data as $key) {
-            $activeBanner = $key->tripcategorybanner->first();
+        foreach($data as $index=>$data_item) {
+            $activeBanner = $data_item->tripcategorybanner->first();
             $result[] = [
-                'id'    => $key->id,
-                'title' => ucwords($key->title),
-                'image' => $activeBanner ? asset($activeBanner->image) : null,
+                'id'              => $data_item->id,
+                'is_highlighted'  => $data_item->is_highlighted,
+                'title'           => ucwords($data_item->title),
+                'short_desc'      => $data_item->short_desc,
+                'image'           => $activeBanner ? asset($activeBanner->image) : null,
             ];
-        }
+
+            $tripCategory = TripCategory::find($data_item->id);
+
+            $destinationsData = TripCategoryDestination::with('tripdestination')
+                    ->where('trip_cat_id', $data_item->id)
+                    ->where('status', 1)
+                    ->get();
+
+                if(!empty($destinationsData)){
+                    $destinationsData->transform(function ($item) {
+                        if ($item->tripdestination && $item->tripdestination->image) {
+                            $item->tripdestination->image = asset($item->tripdestination->image);
+                        }
+                        return $item;
+                    });
+                    $destinations = [];
+                    foreach($destinationsData as $key=>$destination) {
+                        $destinations[$key]=[
+                            'name'=>$destination->tripdestination?$destination->tripdestination->destination_name:"N/A",
+                            'logo'=>$destination->tripdestination?$destination->tripdestination->image:null,
+                            'image'=>$destination->tripdestination?$destination->tripdestination->image:null,
+                            'start_price'=>$destination->start_price,
+                        ];
+                    }
+                    $result[$index]['destinations'] = $destinations;
+                }          
+            }
 
         return response()->json([
             'status'   => true,
@@ -163,9 +191,11 @@ class ApiController extends Controller
         $activeBanner = $data->tripcategorybanner->first();
 
         $result = [
-            'id'     => $data->id,
-            'title'  => ucwords($data->title),
-            'image'  => $activeBanner ? asset($activeBanner->image) : null,
+            'id'               => $data->id,
+            'is_highlighted'   => $data->is_highlighted,
+            'title'            => ucwords($data->title),
+            'short_desc'       => $data->short_desc,
+            'image'            => $activeBanner ? asset($activeBanner->image) : null,
         ];
 
         return response()->json([
@@ -176,36 +206,42 @@ class ApiController extends Controller
 
     
     //master module/ trip category/ destination
-    public function getDestinationsByTripCategory($trip_cat_id) {
-       $tripCategory = TripCategory::find($trip_cat_id);
+    // public function getDestinationsByTripCategory($trip_cat_id) {
+    //    $tripCategory = TripCategory::find($trip_cat_id);
 
-        if(!$tripCategory) {
-        return response()->json([
-            'status'   => false,
-            'message'   => 'Trip category not found.',
-            'data'      => [],
-        ]);
-       }
+    //     if(!$tripCategory) {
+    //     return response()->json([
+    //         'status'   => false,
+    //         'message'   => 'Trip category not found.',
+    //         'data'      => [],
+    //     ]);
+    //    }
 
-        $destinations = TripCategoryDestination::with('tripdestination')
-            ->where('trip_cat_id', $trip_cat_id)
-            ->where('status', 1)
-            ->get();
+    //     $destinations = TripCategoryDestination::with('tripdestination')
+    //         ->where('trip_cat_id', $trip_cat_id)
+    //         ->where('status', 1)
+    //         ->get();
 
-        if($destinations->isEmpty()) {
-            return response()->json([
-                'status'   => false,
-                'message'   => 'No destinations found for this trip category.',
+    //     if($destinations->isEmpty()) {
+    //         return response()->json([
+    //             'status'   => false,
+    //             'message'   => 'No destinations found for this trip category.',
               
-            ]);
-        }
-        
-        return response()->json([
-            'status'   => true,
-            'message'   => 'Destinations fetched successfully.',
-            'data'      => $destinations,
-        ]);
-    }
+    //         ]);
+    //     }
+
+    //     $destinations->transform(function ($item) {
+    //         if ($item->tripdestination && $item->tripdestination->image) {
+    //             $item->tripdestination->image = asset($item->tripdestination->image);
+    //         }
+    //         return $item;
+    //     });
+    //     return response()->json([
+    //         'status'   => true,
+    //         'message'   => 'Destinations fetched successfully.',
+    //         'data'      => $destinations,
+    //     ]);
+    // }
 
 
     //master module/ social media

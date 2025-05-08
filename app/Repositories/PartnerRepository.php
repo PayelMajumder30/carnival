@@ -24,7 +24,7 @@ class PartnerRepository implements PartnerRepositoryInterface
             // Initialize image path to null
             $imagePath = $data['image'] ?? null;   
             $partnerData = [     
-                'title'     => $data['title'],                 
+                'title'     => ucwords($data['title']),                 
                 'image'     => $imagePath, // Store the image path
             ];
 
@@ -53,7 +53,7 @@ class PartnerRepository implements PartnerRepositoryInterface
             }
           
             $updateData = [            
-                'title'     => $data['title'],
+                'title'     => ucwords($data['title']),
                 'image'     => $imagePath, // Assign the image path
             ];
             $partner->update($updateData);

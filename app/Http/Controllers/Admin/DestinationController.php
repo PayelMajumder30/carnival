@@ -117,27 +117,12 @@ class DestinationController extends Controller
     public function createDestImage(Request $request) {
         $request->validate([
             'id'    => 'required|exists:destinations,id',
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $destination = Destination::find($request->id);
 
-        // if($request->hasFile('image') && $request->file('image')->isValid()) {
-        //     $file       = $request->file('image');
-        //     $fileName   = time(). rand(10000, 99999). '.'. $file->extension();
-        //     $filePath   = 'uploads/country_wise_dest/' . $fileName;
-
-        //     $file->move(public_path('uploads/country_wise_dest'), $fileName);    
-        //     $destination->image = $filePath;
-        //     $destination->save();
-
-        //     return response()->json([
-        //         'status' => 200,
-        //         'message' => "Image uploaded",
-        //         'image_url' => asset($filePath),
-        //     ]);
-        // }
 
         //image and logo upload
         if($request->hasFile('image') && $request->file('image')->isValid())
@@ -161,6 +146,7 @@ class DestinationController extends Controller
         }
 
         $destination->save();
+
 
         // return response()->json([
         //     'status' => 200,
