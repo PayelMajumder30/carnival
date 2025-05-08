@@ -149,14 +149,25 @@ class ApiController extends Controller
                     ->where('trip_cat_id', $data_item->id)
                     ->where('status', 1)
                     ->get();
-                    
-                if(!empty($destinationsData)){
+
+                // if(!empty($destinationsData)){
+                //     $destinationsData->transform(function ($item) {
+                //         if ($item->tripdestination && $item->tripdestination->image) {
+                //             $item->tripdestination->image = asset($item->tripdestination->image);
+                //         }
+                //         return $item;
+                //     });
+                if (!empty($destinationsData)) {
                     $destinationsData->transform(function ($item) {
-                    if ($item->tripdestination && $item->tripdestination->image && $item->tripdestination->logo) {
-                    $item->tripdestination->image = asset($item->tripdestination->image);
-                    $item->tripdestination->logo = asset($item->tripdestination->logo);
-                    }
-                    return $item;
+                        if ($item->tripdestination) {
+                            if ($item->tripdestination->image) {
+                                $item->tripdestination->image = asset($item->tripdestination->image);
+                            }
+                            if ($item->tripdestination->logo) {
+                                $item->tripdestination->logo = asset($item->tripdestination->logo);
+                            }
+                        }
+                        return $item;
                     });
                     $destinations = [];
                     foreach($destinationsData as $key=>$destination) {
