@@ -20,14 +20,14 @@ class DestinationController extends Controller
         $countryResponse = curl_exec($ch);
         curl_close($ch);
         $countryData = json_decode($countryResponse, true);
-        //dd($)
+        //dd(env('CRM_BASEPATH'));
         if ($countryData['status']==true) {
             $new_country = $countryData['data'];
         } else {
             $new_country = [];
         }
        // dd($new_country);
-
+       
        $showCountry = Country::select('country_name')
         ->orderBy('country_name')
         ->pluck('country_name');
@@ -118,30 +118,57 @@ class DestinationController extends Controller
         $request->validate([
             'id'    => 'required|exists:destinations,id',
             'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $destination = Destination::find($request->id);
 
-        if($request->hasFile('image') && $request->file('image')->isValid()) {
-            $file       = $request->file('image');
-            $fileName   = time(). rand(10000, 99999). '.'. $file->extension();
-            $filePath   = 'uploads/country_wise_dest/' . $fileName;
+        // if($request->hasFile('image') && $request->file('image')->isValid()) {
+        //     $file       = $request->file('image');
+        //     $fileName   = time(). rand(10000, 99999). '.'. $file->extension();
+        //     $filePath   = 'uploads/country_wise_dest/' . $fileName;
 
-            $file->move(public_path('uploads/country_wise_dest'), $fileName);    
-            $destination->image = $filePath;
-            $destination->save();
+        //     $file->move(public_path('uploads/country_wise_dest'), $fileName);    
+        //     $destination->image = $filePath;
+        //     $destination->save();
 
-            return response()->json([
-                'status' => 200,
-                'message' => "Image uploaded",
-                'image_url' => asset($filePath),
-            ]);
+        //     return response()->json([
+        //         'status' => 200,
+        //         'message' => "Image uploaded",
+        //         'image_url' => asset($filePath),
+        //     ]);
+        // }
+
+        //image and logo upload
+        if($request->hasFile('image') && $request->file('image')->isValid())
+        {
+            $image = $request->file('image');
+            $imageName = time(). rand(10000, 99999). '.'. $image->extension();
+            $imagePath = 'uploads/country_wise_dest/' . $imageName;
+
+            $image->move(public_path('uploads/country_wise_dest'), $imageName);
+            $destination->image = $imagePath;
         }
 
-        return response()->json([
-            'status' => 500,
-            'message' => 'Failed to upload image',
-        ]); 
+        if($request->hasFile('logo') && $request->file('logo')->isValid())
+        {
+            $logo = $request->file('logo');
+            $logoName = time(). rand(10000, 99999). '_logo.'. $logo->extension();
+            $logoPath = 'uploads/country_wise_dest/' . $logoName;
+
+            $logo->move(public_path('uploads/country_wise_dest'), $logoName);
+            $destination->logo = $logoPath;
+        }
+
+        $destination->save();
+
+        // return response()->json([
+        //     'status' => 200,
+        //     'message' => 'Image uploaded successfully' . ($request->hasFile('logo') ? ' with logo.' : '.'),
+        //     'image_url' => asset($destination->image),
+        //     'logo_url' => $destination->logo ? asset($destination->logo) : null,
+        // ]); 
+        return redirect()->back()->with('success', 'Image and logo Updated Successfully');
     }
 
     public function destinationStatus(Request $request, $id) {      
@@ -171,11 +198,16 @@ class DestinationController extends Controller
             ]);
         }
         $imagePath = $countryDestination->image;
+        $logoPath = $countryDestination->logo;
         // Delete banner from db
         $countryDestination->delete();
         // If file is exist then remove from target directory
         if (!empty($imagePath) && file_exists(public_path($imagePath))) {
             unlink(public_path($imagePath));
+        }
+
+        if (!empty($logoPath) && file_exists(public_path($logoPath))) {
+            unlink(public_path($logoPath));
         }
         // Return suceess response with message
         return response()->json([

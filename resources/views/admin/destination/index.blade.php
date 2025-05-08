@@ -111,6 +111,7 @@
                                             <table class="table table-sm table-hover">
                                                 <thead>
                                                     <tr class="text-center">
+                                                        <th>Logo</th>
                                                         <th>Name</th>
                                                         <th>Image</th>
                                                         <th>Status</th>
@@ -120,6 +121,15 @@
                                                 <tbody>
                                                     @foreach ($country_wise_destinations as $desti_item)
                                                     <tr class="text-center">
+                                                        <td>
+                                                            <div class="text-center">
+                                                                @if (!empty($desti_item->logo) && file_exists(public_path($desti_item->logo)))
+                                                                    <img src="{{ asset($desti_item->logo) }}" alt="destination-logo" style="height: 40px; width: 40px;" class="rounded-circle">
+                                                                @else
+                                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="placeholder-logo" style="height: 40px; width: 40px;" class="rounded-circle">
+                                                                @endif
+                                                            </div>
+                                                        </td>
                                                         <td>{{$desti_item->destination_name}}</td>
                                                         <td id="image-col-{{ $desti_item->id }}">
                                                             <div class="text-center">
@@ -146,21 +156,60 @@
                                                                 <i class="fa fa-plus"></i>
                                                             </a> --}}
                                                             
-                                                            <form method="POST" enctype="multipart/form-data" id="uploadForm-{{ $desti_item->id }}" class="d-inline">
+                                                            {{-- <form method="POST" enctype="multipart/form-data" id="uploadForm-{{ $desti_item->id }}" class="d-inline">
                                                                 @csrf
                                                                 <input type="hidden" name="id" value="{{ $desti_item->id }}">
                                                                 <label for="imageInput-{{ $desti_item->id }}" class="btn btn-sm btn-info mr-1 mb-0" title="Change Image">
-                                                                    <i class="fa fa-image"></i>
+                                                                    <i class="fa fa-edit"></i>
                                                                 </label>
                                                                 <input type="file" name="image" class="d-none" id="imageInput-{{ $desti_item->id }}"
                                                                          onchange="uploadImage({{ $desti_item->id }})">
-                                                            </form>
-                                                            
+                                                            </form> --}}
+
+
+                                                            {{-- modal for upload image and logo  --}}
+                                                            <a href="javascript:void(0)" class="btn btn-sm btn-info edit-media-btn" data-toggle="modal" data-target="#editMediaModal" data-id="{{ $desti_item->id }}"
+                                                                data-name="{{ $desti_item->name }}" title="Edit Logo & Image"><i class="fa fa-edit"></i>
+                                                            </a> 
                                                         </td>
                                                     </tr>
                                                     @endforeach
                                                 </tbody>
                                             </table>
+
+                                            <!-- Upload Modal -->
+                                            
+                                            <div class="modal fade" id="editMediaModal" tabindex="-1" role="dialog" aria-labelledby="editMediaModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                <form method="POST" enctype="multipart/form-data" id="editMediaForm" action="{{ route('admin.destination.createImage') }}">
+                                                    @csrf
+                                                    <input type="hidden" name="id" id="modal-destination-id">
+                                                    <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Update Logo & Image</h5>
+                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                            
+                                                        <div class="form-group">
+                                                        <label for="logo">Upload Logo</label>
+                                                        <input type="file" class="form-control" name="logo" required>
+                                                        </div>
+                                            
+                                                        <div class="form-group">
+                                                        <label for="image">Upload Image</label>
+                                                        <input type="file" class="form-control" name="image" required>
+                                                        </div>
+                                            
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-primary">Update</button>
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                    </div>
+                                                </form>
+                                                </div>
+                                            </div>
                                         </td>
                                         <td></td>
                                     </tr>
@@ -312,6 +361,11 @@
             }
         });
     }
+
+    $(document).on('click', '.edit-media-btn', function () {
+        let id = $(this).data('id');
+        $('#modal-destination-id').val(id);
+    });
 
     document.addEventListener('DOMContentLoaded', function () {
             var selects = document.getElementsByClassName('filter');
