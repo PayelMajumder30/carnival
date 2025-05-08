@@ -169,7 +169,7 @@
 
                                                             {{-- modal for upload image and logo  --}}
                                                             <a href="javascript:void(0)" class="btn btn-sm btn-info edit-media-btn" data-toggle="modal" data-target="#editMediaModal" data-id="{{ $desti_item->id }}"
-                                                                data-name="{{ $desti_item->name }}" title="Edit Logo & Image"><i class="fa fa-edit"></i>
+                                                                data-name="{{ $desti_item->name }}" title="Edit Logo & Image"><i class="fa fa-image"></i>
                                                             </a> 
                                                         </td>
                                                     </tr>
@@ -193,12 +193,18 @@
 
                                                         <div class="form-group">
                                                             <label for="image">Upload Image</label>
-                                                            <input type="file" class="form-control" name="image">
+                                                            <input type="file" class="form-control" name="image" id="image">
+                                                            @error('image')
+                                                            <small class="text-danger">{{ $message }}</small>
+                                                            @enderror
                                                         </div>
                                             
                                                         <div class="form-group">
                                                             <label for="logo">Upload Logo</label>
-                                                            <input type="file" class="form-control" name="logo">
+                                                            <input type="file" class="form-control" name="logo" id="logo">
+                                                            @error('logo')
+                                                            <small class="text-danger">{{ $message }}</small>
+                                                            @enderror
                                                         </div>
                                             
                                                     </div>
@@ -379,5 +385,7 @@
                 });
             });
         });
+
+
 </script>
 @endsection

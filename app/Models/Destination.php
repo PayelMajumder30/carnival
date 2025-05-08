@@ -14,6 +14,7 @@ class Destination extends Model
         'crm_destination_id',
         'destination_name',
         'image',
+        'logo',
         'status',
     ];
 

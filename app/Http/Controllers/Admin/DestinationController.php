@@ -118,7 +118,10 @@ class DestinationController extends Controller
         $request->validate([
             'id'    => 'required|exists:destinations,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'logo'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+        ], [
+            'image.max'   => 'Upload image must not be more than 2MB.',
+            'logo.max'    => 'Logo must not be more than 2MB.',
         ]);
 
         $destination = Destination::find($request->id);
