@@ -159,7 +159,7 @@ class DestinationController extends Controller
 
         $destination->save();
 
-
+        
         // return redirect()->back()->with('success', 'Image and logo Updated Successfully');
         return response()->json(['success' => true]);
     }
