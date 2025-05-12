@@ -152,21 +152,6 @@
                                                             <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deleteDesti({{$desti_item->id}})" data-toggle="tooltip" title="Delete">
                                                                 <i class="fa fa-trash"></i>
                                                             </a>
-                                                            {{-- <a href="javascript:void(0)" class="btn btn-sm btn-primary mr-1" onclick="$('#upload-form-{{ $desti_item->id }}').toggle()" title="Upload Image">
-                                                                <i class="fa fa-plus"></i>
-                                                            </a> --}}
-                                                            
-                                                            {{-- <form method="POST" enctype="multipart/form-data" id="uploadForm-{{ $desti_item->id }}" class="d-inline">
-                                                                @csrf
-                                                                <input type="hidden" name="id" value="{{ $desti_item->id }}">
-                                                                <label for="imageInput-{{ $desti_item->id }}" class="btn btn-sm btn-info mr-1 mb-0" title="Change Image">
-                                                                    <i class="fa fa-edit"></i>
-                                                                </label>
-                                                                <input type="file" name="image" class="d-none" id="imageInput-{{ $desti_item->id }}"
-                                                                         onchange="uploadImage({{ $desti_item->id }})">
-                                                            </form> --}}
-
-
                                                             {{-- modal for upload image and logo  --}}
                                                             <a href="javascript:void(0)" class="btn btn-sm btn-info edit-media-btn" data-toggle="modal" data-target="#editMediaModal" data-id="{{ $desti_item->id }}"
                                                                 data-name="{{ $desti_item->name }}" title="Edit Logo & Image"><i class="fa fa-image"></i>
@@ -178,42 +163,35 @@
                                             </table>
 
                                             <!-- Upload Modal -->
-                                            
+
                                             <div class="modal fade" id="editMediaModal" tabindex="-1" role="dialog" aria-labelledby="editMediaModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
-                                                <form method="POST" enctype="multipart/form-data" id="editMediaForm" action="{{ route('admin.destination.createImage') }}">
-                                                    @csrf
-                                                    <input type="hidden" name="id" id="modal-destination-id">
-                                                    <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Update Logo & Image</h5>
-                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                    </div>
-                                                    <div class="modal-body">
-
-                                                        <div class="form-group">
-                                                            <label for="image">Upload Image</label>
-                                                            <input type="file" class="form-control" name="image" id="image">
-                                                            @error('image')
-                                                            <small class="text-danger">{{ $message }}</small>
-                                                            @enderror
+                                                    <form method="POST" enctype="multipart/form-data" id="editMediaForm">
+                                                        @csrf
+                                                        <input type="hidden" name="id" id="modal-destination-id">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">Update Logo & Image</h5>
+                                                                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="form-group">
+                                                                    <label for="logo">Upload Logo</label>
+                                                                    <input type="file" class="form-control" name="logo" id="logo">
+                                                                    <div class="error text-danger" id="logo-error"></div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="image">Upload Image</label>
+                                                                    <input type="file" class="form-control" name="image" id="image">
+                                                                    <div class="error text-danger" id="image-error"></div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="button" id="editMediaSubmit" class="btn btn-primary">Update</button>
+                                                            </div>
                                                         </div>
-                                            
-                                                        <div class="form-group">
-                                                            <label for="logo">Upload Logo</label>
-                                                            <input type="file" class="form-control" name="logo" id="logo">
-                                                            @error('logo')
-                                                            <small class="text-danger">{{ $message }}</small>
-                                                            @enderror
-                                                        </div>
-                                            
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="submit" class="btn btn-primary">Create</button>
-                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                    </div>
-                                                    </div>
-                                                </form>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </td>
@@ -237,6 +215,7 @@
 </section>
 @endsection
 @section('script')
+
 <script>
     function UpdateNewCountry(event) {
         var selectedOption = $(event.target).find('option:selected');
@@ -368,23 +347,72 @@
         });
     }
 
-    $(document).on('click', '.edit-media-btn', function () {
-        let id = $(this).data('id');
-        $('#modal-destination-id').val(id);
-    });
-
     document.addEventListener('DOMContentLoaded', function () {
-            var selects = document.getElementsByClassName('filter');
+        $(document).on('click', '.edit-media-btn', function () {
+            const destinationId = $(this).data('id');
+            $('#modal-destination-id').val(destinationId);
+        });
 
-            Array.from(selects).forEach(function(select) {
-                select.addEventListener('change', function () {
-                    var form = select.closest('form');
-                    if (form) {
-                        form.submit();
+        $('#editMediaSubmit').on('click', function () {
+            const form = $('#editMediaForm')[0];
+            const formData = new FormData(form);
+
+            $('#image-error').text('');
+            $('#logo-error').text('');
+
+            let hasError = false;
+
+            const imageFile = $('#image').val();
+            const logoFile = $('#logo').val();
+
+            if (hasError) return;
+
+            $.ajax({
+                url: "{{ route('admin.destination.createImage') }}", 
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    $('#editMediaModal').modal('hide');
+                    Swal.fire('Success', 'Image and Logo updated successfully!', 'success').then(() => {
+                        location.reload(); 
+                    });
+                },
+                error: function (xhr) {
+                    const res = xhr.responseJSON;
+                    if (res && res.errors) {
+                        if (res.errors.image) {
+                            $('#image-error').text(res.errors.image[0]);
+                        }
+                        if (res.errors.logo) {
+                            $('#logo-error').text(res.errors.logo[0]);
+                        }
+                        if (res.errors.id) {
+                            alert('Destination ID is missing.');
+                        }
+                    } else {
+                        Swal.fire('Error', 'Something went wrong.', 'error');
                     }
-                });
+                }
             });
         });
+    });
+
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var selects = document.getElementsByClassName('filter');
+
+        Array.from(selects).forEach(function(select) {
+            select.addEventListener('change', function () {
+                var form = select.closest('form');
+                if (form) {
+                    form.submit();
+                }
+            });
+        });
+    });
 
 
 </script>

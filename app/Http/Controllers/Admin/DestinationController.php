@@ -124,6 +124,15 @@ class DestinationController extends Controller
             'logo.max'    => 'Logo must not be more than 2MB.',
         ]);
 
+        if (!$request->hasFile('image') && !$request->hasFile('logo')) {
+            return response()->json([
+                'errors' => [
+                    'image' => ['Please upload at least one file: image or logo.'],
+                    'logo'  => ['Please upload at least one file: image or logo.'],
+                ]
+            ], 422);
+        }
+
         $destination = Destination::find($request->id);
 
 
@@ -151,13 +160,8 @@ class DestinationController extends Controller
         $destination->save();
 
 
-        // return response()->json([
-        //     'status' => 200,
-        //     'message' => 'Image uploaded successfully' . ($request->hasFile('logo') ? ' with logo.' : '.'),
-        //     'image_url' => asset($destination->image),
-        //     'logo_url' => $destination->logo ? asset($destination->logo) : null,
-        // ]); 
-        return redirect()->back()->with('success', 'Image and logo Updated Successfully');
+        // return redirect()->back()->with('success', 'Image and logo Updated Successfully');
+        return response()->json(['success' => true]);
     }
 
     public function destinationStatus(Request $request, $id) {      

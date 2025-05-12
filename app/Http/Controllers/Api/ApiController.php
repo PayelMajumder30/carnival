@@ -149,14 +149,7 @@ class ApiController extends Controller
                     ->where('trip_cat_id', $data_item->id)
                     ->where('status', 1)
                     ->get();
-
-                // if(!empty($destinationsData)){
-                //     $destinationsData->transform(function ($item) {
-                //         if ($item->tripdestination && $item->tripdestination->image) {
-                //             $item->tripdestination->image = asset($item->tripdestination->image);
-                //         }
-                //         return $item;
-                //     });
+                
                 if (!empty($destinationsData)) {
                     $destinationsData->transform(function ($item) {
                         if ($item->tripdestination) {
@@ -169,17 +162,19 @@ class ApiController extends Controller
                         }
                         return $item;
                     });
+                
                     $destinations = [];
-                    foreach($destinationsData as $key=>$destination) {
-                        $destinations[$key]=[
-                            'name'=>$destination->tripdestination?$destination->tripdestination->destination_name:"N/A",
-                            'logo'=>$destination->tripdestination?$destination->tripdestination->logo:null,
-                            'image'=>$destination->tripdestination?$destination->tripdestination->image:null,
-                            'start_price'=>$destination->start_price,
+                    foreach ($destinationsData as $key => $destination) {
+                        $destinations[$key] = [
+                            'name' => $destination->tripdestination ? $destination->tripdestination->destination_name : "N/A",
+                            'logo' => $destination->tripdestination ? $destination->tripdestination->logo : null,
+                            'image' => $destination->tripdestination ? $destination->tripdestination->image : null,
+                            'start_price' => $destination->start_price,
                         ];
                     }
+                
                     $result[$index]['destinations'] = $destinations;
-                }          
+                } 
             }
 
         return response()->json([
