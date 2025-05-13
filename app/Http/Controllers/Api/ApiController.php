@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\{TripCategoryDestination, SocialMedia, Banner, TripCategory, Partner, WhyChooseUs, Setting, Blog};
+use App\Models\{TripCategoryDestination, SocialMedia, Banner, TripCategory, Partner, WhyChooseUs, Setting, Blog, Offer};
 
 class ApiController extends Controller
 {
@@ -120,7 +120,6 @@ class ApiController extends Controller
         {
             return response()->json(['status' => false, 'message' => 'Not Found']);
         }
-        $whyChooseUs->image = asset($whyChooseUs->image);
         return response()->json(['status' => true, 'data' => $whyChooseUs]);
     }
  
@@ -297,6 +296,53 @@ class ApiController extends Controller
             return response()->json(['status' => 404, 'success' => false, 'message' => 'Not found']);
         }
         return response()->json(['status' => 200, 'success' => true, 'data' => $data]);
+    }
+
+     //master module/Offer
+    public function offerIndex()
+    {
+        $data = Offer::where('status', 1)->orderBy('id','asc')->get();
+        $result = [];
+        foreach($data as $key=>$item)
+        {
+            $result[$key] = [
+                'id'                    =>$item->id,
+                'coupon_code'           =>ucwords($item->coupon_code),
+                'discount_type'         =>ucwords($item->discount_type),
+                'discount_value'        =>number_format($item->discount_value, 0),
+                'minimum_order_amount'  =>$item->minimum_order_amount,
+                'maximum_discount'      =>$item->maximum_discount,
+                'start_date'            =>$item->start_date,
+                'end_date'              =>$item->end_date,
+                'usage_limit'           =>$item->usage_limit,
+                'usage_per_user'        =>$item->usage_per_user,
+            ];
+        }
+        return response()->json([
+            'status' => true,
+            'data' => $result
+        ]);
+    }
+
+    public function offerShow($id) 
+    {
+        $data = Offer::find($id);
+        if(!$data) {
+            return response()->json(['status'=>false, 'message' => 'Not found']);
+        }
+        $validated = [
+            'id'                    =>$data->id,
+            'coupon_code'           =>ucwords($data->coupon_code),
+            'discount_type'         =>ucwords($data->discount_type),
+            'discount_value'        =>number_format($data->discount_value, 0),
+            'minimum_order_amount'  =>$data->minimum_order_amount,
+            'maximum_discount'      =>$data->maximum_discount,
+            'start_date'            =>$data->start_date,
+            'end_date'              =>$data->end_date,
+            'usage_limit'           =>$data->usage_limit,
+            'usage_per_user'        =>$data->usage_per_user,
+        ];
+        return response()->json(['status'=>true, 'data'=>$validated]);
     }
 
     //website settings

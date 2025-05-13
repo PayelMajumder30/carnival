@@ -53,6 +53,11 @@ use App\Http\Controllers\Api\ApiController;
         //Route::get('/{trip_cat_id}/destinations', [ApiController::class, 'getDestinationsByTripCategory']);
     });
 
+    //Offers
+    Route::prefix('offers')->group(function () {
+        Route::get('/', [ApiController::class, 'offerIndex']);
+        Route::get('/{id}', [ApiController::class, 'offerShow']);
+    });
 
     //website settings 
     Route::prefix('website-settings')->group(function (){
