@@ -142,6 +142,10 @@ Route::name('admin.')->group(function() {
                 Route::post('/delete', [DestinationController::class, 'destinationDelete'])->name('destination.delete');
                 
             });
+
+            Route::prefix('support')->group(function(){
+                Route::get('/',[SupportController::class, 'index'])->name('support.list.all');
+            });
         });
         // Route::resource('article', ArticleController::class);
 

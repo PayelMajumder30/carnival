@@ -47,6 +47,9 @@ use App\Repositories\BlogRepository;
 use App\Interfaces\PageContentRepositoryInterface;
 use App\Repositories\PageContentRepository;
 
+use App\Interfaces\SupportRepositoryInterface;
+use App\Repositories\SupportRepository;
+
 class RepositoryServiceProvider extends ServiceProvider
 {
     /**
@@ -65,6 +68,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(BannerRepositoryInterface::class, BannerRepository::class);
         $this->app->bind(TripCategoryRepositoryInterface::class, TripCategoryRepository::class);
         $this->app->bind(ChooseUsRepositoryInterface::class, ChooseUsRepository::class);
+        $this->app->bind(SupportRepositoryInterface::class, SupportRepository::class);
 
         $this->app->bind(UserInterface::class, UserRepository::class);
         // $this->app->bind(OrderInterface::class, OrderRepository::class);

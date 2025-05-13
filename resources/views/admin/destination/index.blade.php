@@ -228,7 +228,7 @@
         }
 
         $.ajax({
-            url: "{{ route('admin.country.add') }}", // This should be your route name
+            url: "{{ route('admin.country.add') }}", 
             type: "POST",
             data: {
                 _token: '{{ csrf_token() }}',

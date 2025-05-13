@@ -97,6 +97,8 @@
                                                     <label for="">Offer List</label>
                                                     <input type="checkbox" id="destination" name="roles[]" value="destination" data-parent="MASTER MODULES" {{ in_array('destination', $permissions) ? 'checked' : '' }}>
                                                     <label for="">Destination</label>
+                                                    <input type="checkbox" id="support" name="roles[]" value="support" data-parent="MASTER MODULES" {{ in_array('support', $permissions) ? 'checked' : '' }}>
+                                                    <label for="">Support</label>
                                                 </li>
                                             </ul>
                                         </li>
