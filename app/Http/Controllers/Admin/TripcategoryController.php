@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Interfaces\TripCategoryRepositoryInterface;
 use Illuminate\Support\Facades\DB;
-use App\Models\{TripCategory, TripCategoryBanner, TripCategoryDestination, Country, Destination};
+use App\Models\{TripCategory, TripCategoryBanner, TripCategoryDestination, Country, Destination, TripCategoryActivities};
 
 class TripcategoryController extends Controller
 {
@@ -24,7 +24,8 @@ class TripcategoryController extends Controller
             $query->where('title', 'like', '%'.$keyword.'%');
         });
         $data = $query->orderBy('positions', 'asc')->paginate(25);
-        return view('admin.tripcategory.index', compact('data'));
+        $allTrips = TripCategory::orderBy('title')->get();
+        return view('admin.tripcategory.index', compact('data', 'allTrips'));
     }
     
     public function create(Request $request)
@@ -80,46 +81,56 @@ class TripcategoryController extends Controller
         ]);
     }
 
-    public function isHighlight(Request $request, $id) {
-        $category = TripCategory::find($id);
-        if (!$category) {
-            return response()->json([
-                'status'    => 404,
-                'message'   => 'Trip Category not found',
-            ]);
-        }        
-        // Toggle off if already highlighted
-        if ($category->is_highlighted == 1) {
-            $category->is_highlighted = 0; 
-            $category->save();
+    // public function isHighlight(Request $request, $id) {
+    //     $category = TripCategory::find($id);
+    //     if (!$category) {
+    //         return response()->json([
+    //             'status'    => 404,
+    //             'message'   => 'Trip Category not found',
+    //         ]);
+    //     }        
+    //     // Toggle off if already highlighted
+    //     if ($category->is_highlighted == 1) {
+    //         $category->is_highlighted = 0; 
+    //         $category->save();
         
-            return response()->json([
-                'status'    => 200,
-                'message'   => 'Highlight removed successfully.',
-            ]);
-        }       
-        // Count how many are currently highlighted
-        $highlightedCount = TripCategory::where('is_highlighted', 1)->count();
+    //         return response()->json([
+    //             'status'    => 200,
+    //             'message'   => 'Highlight removed successfully.',
+    //         ]);
+    //     }       
+    //     // Count how many are currently highlighted
+    //     $highlightedCount = TripCategory::where('is_highlighted', 1)->count();
         
-        if ($highlightedCount >= 2) {
-            // Turn off the oldest highlighted category
-            $oldest = TripCategory::where('is_highlighted', 1)
-                ->orderBy('updated_at', 'asc')
-                ->first();
+    //     if ($highlightedCount >= 2) {
+    //         // Turn off the oldest highlighted category
+    //         $oldest = TripCategory::where('is_highlighted', 1)
+    //             ->orderBy('updated_at', 'asc')
+    //             ->first();
         
-            if ($oldest) {
-                $oldest->is_highlighted = 0;
-                $oldest->save();
-            }
-        }       
-        // Now highlight the selected one
-        $category->is_highlighted = 1;
-        $category->save();
+    //         if ($oldest) {
+    //             $oldest->is_highlighted = 0;
+    //             $oldest->save();
+    //         }
+    //     }       
+    //     // Now highlight the selected one
+    //     $category->is_highlighted = 1;
+    //     $category->save();
         
-        return response()->json([
-            'status' => 200,
-            'message' => 'Highlight activated successfully.',
-        ]);       
+    //     return response()->json([
+    //         'status' => 200,
+    //         'message' => 'Highlight activated successfully.',
+    //     ]);       
+    // }
+
+    public function updateHighlights(Request $request) {
+
+        TripCategory::query()->update(['is_highlighted' => 0]);
+        // Then update selected
+        if ($request->has('trip_ids')) {
+            TripCategory::whereIn('id', $request->trip_ids)->update(['is_highlighted' => 1]);
+        }
+        return response()->json(['status' => true, 'message' => 'Highlighted trips updated successfully.']);
     }
 
     public function delete(Request $request){
@@ -279,6 +290,7 @@ class TripcategoryController extends Controller
                 'message' => 'Destination not found',
             ]);
         }
+
         return response()->json([
             'status'  => 200,
             'message' => 'Destinations fetched successfully.',
@@ -337,6 +349,126 @@ class TripcategoryController extends Controller
         $item->save();
 
         return redirect()->back()->with('success', 'Price Updated Successfully');
+    }
+
+    //trip category activities 
+    public function activitiesIndex($trip_cat_id, Request $request)
+    {
+        $countries  = Country::where('status', 1)->get(); 
+        $trip       = TripCategory::findOrFail($trip_cat_id);
+        
+        $query = TripCategoryActivities::with('tripdestination')->where('trip_cat_id', $trip_cat_id);
+
+        if ($request->has('keyword') && $request->keyword != '') {
+            $keyword = $request->keyword;
+            $query->whereHas('tripdestination', function($q) use ($keyword) {
+                $q->where('destination_name', 'like', '%' . $keyword . '%')
+                ->orWhere('activity_name', 'like', '%' . $keyword . '%');
+            });
+        }
+
+        $activities = $query->paginate(25);
+
+        return view('admin.tripcategory.activitiesIndex', compact('countries', 'trip', 'activities'));
+    }
+
+
+    public function getActivitiesByDestination($country_id, $trip_cat_id) {
+
+        $assignedDestinationIds = TripCategoryDestination::where('trip_cat_id', $trip_cat_id)->pluck('destination_id')->toArray();
+        
+        $destinations = Destination::
+            select(['id', 'destination_name', 'image'])
+            ->where('country_id', $country_id)
+            ->where('status', 1)
+            ->whereNotIn('id', $assignedDestinationIds)
+            ->get();
+
+        if ($destinations->isEmpty()) {
+            return response()->json([
+                'status'  => 404,
+                'message' => 'Destination not found',
+            ]);
+        }
+
+        return response()->json([
+            'status'  => 200,
+            'message' => 'Destinations fetched successfully.',
+            'destinations' => $destinations,
+        ]);
+        
+    }
+
+    public function activityAdd(Request $request)
+    {
+        $request->validate([
+            'trip_cat_id'    => 'required|integer',
+            'destination_id' => 'required|integer',
+            'activity_name'  => 'required|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'logo' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ]);
+
+        $imagePath = null;
+        $logoPath = null;
+
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $image = $request->file('image');
+            $imageName = time().rand(10000, 99999).'.'.$image->extension();
+            $imagePath = 'uploads/trip_activities/'.$imageName;
+            $image->move(public_path('uploads/trip_activities'), $imageName);
+        }
+
+        if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
+            $logo = $request->file('logo');
+            $logoName = time().rand(10000, 99999).'_logo.'.$logo->extension();
+            $logoPath = 'uploads/trip_activities/'.$logoName;
+            $logo->move(public_path('uploads/trip_activities'), $logoName);
+        }
+
+        $tripCategoryActivity = TripCategoryActivities::create([
+            'trip_cat_id'    => $request->trip_cat_id,
+            'destination_id' => $request->destination_id,
+            'activity_name'  => $request->activity_name,
+            'image'          => $imagePath,
+            'logo'           => $logoPath,
+            'status'         => 1,
+        ]);
+
+        $activity = TripCategoryActivities::with('tripdestination')->find($tripCategoryActivity->id);
+
+        return response()->json([
+            'status'  => 201,
+            'message' => 'Activity has been added successfully.',
+            'destination' => $activity,
+        ]);
+    }
+
+
+    public function activitiesDelete(Request $request) {
+        $tripactivity = TripCategoryActivities::find($request->id);
+
+        if(!$tripactivity) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Activity not found'
+            ]); 
+        }
+
+        $imagePath = $tripactivity->image;
+        $logoPath = $tripactivity->logo;
+        $tripactivity->delete();
+        if (!empty($imagePath) && file_exists(public_path($imagePath))) {
+            unlink(public_path($imagePath));
+        }
+
+        if (!empty($logoPath) && file_exists(public_path($logoPath))) {
+            unlink(public_path($logoPath));
+        }
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Activity deleted succesfully',
+        ]);
     }
 
 }

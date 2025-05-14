@@ -98,7 +98,8 @@ Route::name('admin.')->group(function() {
                 Route::get('/edit/{id}', [TripcategoryController::class, 'edit'])->name('tripcategory.edit');
                 Route::post('/update/{id}', [TripcategoryController::class, 'update'])->name('tripcategory.update');
                 Route::get('/status/{id}', [TripcategoryController::class, 'status'])->name('tripcategory.status'); 
-                Route::get('/isHighlight/{id}', [TripcategoryController::class, 'isHighlight'])->name('tripcategory.isHighlight');
+                //Route::get('/isHighlight/{id}', [TripcategoryController::class, 'isHighlight'])->name('tripcategory.isHighlight');
+                Route::post('/highlight/update', [TripcategoryController::class, 'updateHighlights'])->name('tripcategory.updateHighlights');
                 Route::post('/delete', [TripcategoryController::class, 'delete'])->name('tripcategory.delete');
                 Route::post('/sort', [TripcategoryController::class, 'sort'])->name('tripcategory.sort');
 
@@ -117,6 +118,12 @@ Route::name('admin.')->group(function() {
                 Route::post('destination/add', [TripcategoryController::class, 'destinationAdd'])->name('tripcategorydestination.destinationAdd');
                 Route::post('destination/update-price', [TripcategoryController::class, 'updatePrice'])->name('tripcategory.updatePrice');
                 Route::post('destination/delete', [TripcategoryController::class, 'destinationDelete'])->name('tripcategory.destinationDelete');
+
+                //trip category activities
+                Route::get('/activities/{trip_cat_id}', [TripcategoryController::class, 'activitiesIndex'])->name('tripcategoryactivities.list.all');
+                Route::get('activities/by-destination/{country_id}/{trip_cat_id}', [TripcategoryController::class, 'getActivitiesByDestination'])->name('tripcategorydestination.getActivities');
+                Route::post('activities/add', [TripcategoryController::class, 'activityAdd'])->name('tripcategorydestination.activityAdd');
+                Route::post('activities/delete', [TripcategoryController::class, 'activitiesDelete'])->name('tripcategory.activitiesDelete');
             });
 
             //offer list
@@ -143,11 +150,17 @@ Route::name('admin.')->group(function() {
                 
             });
 
+             //Master modeule/support
             Route::prefix('support')->group(function(){
                 Route::get('/',[SupportController::class, 'index'])->name('support.list.all');
                 Route::get('/create',[SupportController::class, 'create'])->name('support.create');
                 Route::post('/store',[SupportController::class, 'store'])->name('support.store');
                 Route::post('/delete',[SupportController::class, 'delete'])->name('support.delete');
+
+
+                Route::get('/edit/{id}', [SupportController::class, 'edit'])->name('support.edit');
+                Route::post('/update', [SupportController::class, 'update'])->name('support.update');
+                Route::get('/status/{id}', [SupportController::class, 'status'])->name('support.status'); 
             });
         });
         // Route::resource('article', ArticleController::class);

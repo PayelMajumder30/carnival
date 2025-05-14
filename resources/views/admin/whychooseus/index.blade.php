@@ -101,17 +101,15 @@
                         position: index + 1
                     });
                 });
-    
+
                 $.ajax({
-                    url: "{{ route('admin.whychooseus.sort')}}",
+                    url: "{{ route('admin.whychooseus.sort') }}",
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
                         order: order
                     },
                     success: function(response) {
-                        //console.log('Sorting Updated');
-                        //alert('Update successfully');
                         $('#ajax-message').html(`
                             <div class="alert alert-success alert-dismissible fade show mt-2 text-dark" role="alert">
                                 ${response.message}
@@ -120,9 +118,13 @@
                                 </button>
                             </div>
                         `);
+
+                        // ✅ Reload after a short delay
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000); // reload after 1 second (1000ms)
                     },
                     error: function () {
-                        //alert('Sorting failed. Please try again');
                         $('#ajax-message').html(`
                             <div class="alert alert-danger fade show mt-2" role="alert">
                                 Sorting failed. Please try again.
@@ -135,7 +137,7 @@
                 });
             }
         });
-    });  
+    }); 
 
     function deleteChoose(chooseId) {
         Swal.fire({

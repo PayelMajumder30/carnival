@@ -21,7 +21,7 @@
                             <div class="form-group">
                                 {{-- <div class="col-md-6" style="margin-top: 50px;"> --}}
                                     <label for="title">Title <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control" name="title" id="title" placeholder="Enter social title.." value="{{ old('title') ? old('title') : $data->title }}">
+                                    <input type="text" class="form-control" name="title" id="title" placeholder="Enter title.." value="{{ old('title') ? old('title') : $data->title }}">
                                     @error('title') <p class="small text-danger">{{ $message }}</p> @enderror
                                 {{-- </div> --}}
                             </div>

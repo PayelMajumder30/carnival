@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <div class="row mb-3">
                             <div class="col-md-12 text-right">
-                                <a href="{{ route('admin.support.create') }}" class="btn btn-sm btn-primary"> <i class="fa fa-plus"></i> Create</a>
+                                <a href="{{route('admin.support.create')}}" class="btn btn-sm btn-primary"> <i class="fa fa-plus"></i> Create</a>
                             </div>
                         </div>
                         {{-- <div class="row">
@@ -88,18 +88,23 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="title-part">
+                                              <div class="title-part">
                                                 <p class="text-muted mb-0">{{ $item->description }}</p>
                                             </div>
+                                        </td>                                         
+                                        <td> 
+                                            <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
+                                                <input type="checkbox" class="custom-control-input" id="customSwitch{{$item->id}}" {{ ($item->status == 1) ? 'checked' : '' }} onchange="statusToggle('{{ route('admin.support.status', $item->id) }}')">
+                                                <label class="custom-control-label" for="customSwitch{{$item->id}}"></label>
+                                            </div>
                                         </td>
-                                        <td></td>
                                         <td class="d-flex">
                                             <div class="btn-group">
-                                                <a href="" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
+                                                <a href="{{ route('admin.support.edit', $item->id)}}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
                                                 {{-- <a href="{{ route('admin.banner.delete', $item->id)}}" class="btn btn-sm btn-dark" onclick="return confirm('Are you sure ?')" data-toggle="tooltip" title="Delete">
-                                                    <i class="fa fa-trash"></i>
+                                                <i class="fa fa-trash"></i>
                                                 </a> --}}
                                                 <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deleteSupport({{$item->id}})" data-toggle="tooltip" title="Delete">
                                                     <i class="fa fa-trash"></i>

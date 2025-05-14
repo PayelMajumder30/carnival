@@ -37,7 +37,18 @@ class SupportRepository implements SupportRepositoryInterface
         } else{
             return false;
         }
-        
     }
 
+    public function update($id, array $data)
+    {
+        // Find the banner media by ID
+        $support     = Support::findOrFail($id);      
+        $supportData = [            
+            'title' => $data['title'],
+            'description'  => $data['description'], 
+        ];
+        $support->update($supportData);
+        return $support;
+    }
+    
 }
