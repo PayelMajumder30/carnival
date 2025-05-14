@@ -98,7 +98,8 @@ Route::name('admin.')->group(function() {
                 Route::get('/edit/{id}', [TripcategoryController::class, 'edit'])->name('tripcategory.edit');
                 Route::post('/update/{id}', [TripcategoryController::class, 'update'])->name('tripcategory.update');
                 Route::get('/status/{id}', [TripcategoryController::class, 'status'])->name('tripcategory.status'); 
-                Route::get('/isHighlight/{id}', [TripcategoryController::class, 'isHighlight'])->name('tripcategory.isHighlight');
+                //Route::get('/isHighlight/{id}', [TripcategoryController::class, 'isHighlight'])->name('tripcategory.isHighlight');
+                Route::post('/highlight/update', [TripcategoryController::class, 'updateHighlights'])->name('tripcategory.updateHighlights');
                 Route::post('/delete', [TripcategoryController::class, 'delete'])->name('tripcategory.delete');
                 Route::post('/sort', [TripcategoryController::class, 'sort'])->name('tripcategory.sort');
 
@@ -141,6 +142,16 @@ Route::name('admin.')->group(function() {
                 Route::get('/destination/status/{id}', [DestinationController::class, 'destinationStatus'])->name('destination.status');  
                 Route::post('/delete', [DestinationController::class, 'destinationDelete'])->name('destination.delete');
                 
+            });
+
+             //Master modeule/support
+            Route::prefix('support')->group(function(){
+                Route::get('/',[SupportController::class, 'index'])->name('support.list.all');
+
+
+                Route::get('/edit/{id}', [SupportController::class, 'edit'])->name('support.edit');
+                Route::post('/update', [SupportController::class, 'update'])->name('support.update');
+                Route::get('/status/{id}', [SupportController::class, 'status'])->name('support.status'); 
             });
         });
         // Route::resource('article', ArticleController::class);

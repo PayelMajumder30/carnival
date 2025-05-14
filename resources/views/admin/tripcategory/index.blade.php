@@ -2,6 +2,14 @@
 @section('page-title', 'Trip Categories')
 
 @section('section')
+<style>
+    .dotted-table-container {
+        background-color: #ffffff;
+        padding: 15px;
+        border: 3px dotted #ddd;
+        border-radius: 8px;
+        }
+</style>
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -11,6 +19,10 @@
                         <div class="row mb-3">
                             <div class="col-md-12 text-right">
                                 <a href="{{ route('admin.tripcategory.create') }}" class="btn btn-sm btn-primary"> <i class="fa fa-plus"></i> Create</a>
+                                
+                                 <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#highlightModal">
+                                    <i class="fa fa-star"></i> Is Highlighted
+                                </button>
                             </div>
                         </div>
                         <div class="row">
@@ -37,7 +49,7 @@
                         </div>
                     </div>
                     <div id="ajax-message"></div>
-                    <div class="card-body">
+                    <div class="card-body dotted-table-container">
                         <div class="d-flex font-weight-bold text-center border-bottom py-2 bg-light">
                             <div class="col-1">#</div>
                             <div class="col-3 text-left">Title</div>
@@ -56,8 +68,8 @@
                                             <div class="custom-control custom-switch" data-toggle="tooltip" title="Toggle Highlight"> 
                                                 <input type="checkbox" class="custom-control-input" 
                                                     id="highlightSwitch{{ $item->id }}" 
-                                                    {{ $item->is_highlighted == 1 ? 'checked' : '' }} 
-                                                    onchange="highlightToggle('{{ route('admin.tripcategory.isHighlight', $item->id) }}')"> 
+                                                    {{ $item->is_highlighted == 1 ? 'checked' : '' }}>
+                                                   
                                                 <label class="custom-control-label" for="highlightSwitch{{ $item->id }}"></label> 
                                             </div>
                                         </div>                                       
@@ -81,7 +93,7 @@
                                             <a href="{{ route('admin.tripcategorybanner.list.all', ['trip_cat_id' => $item->id] )}}" class="btn btn-sm btn-primary mr-1" data-toggle="tooltip" title="Banner">
                                                 Banner
                                             </a>
-                                            <a href="{{ route('admin.tripcategorydestination.list.all', ['trip_cat_id' => $item->id])}}" class="btn btn-sm btn-info mr-1" data-toggle="tooltip" title="Banner">
+                                            <a href="{{ route('admin.tripcategorydestination.list.all', ['trip_cat_id' => $item->id])}}" class="btn btn-sm btn-info mr-1" data-toggle="tooltip" title="Destination">
                                                 Destination
                                             </a>
                                         </div>
@@ -97,6 +109,44 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- add modal for highlighted status --}}
+
+                <div class="modal fade" id="highlightModal" tabindex="-1" role="dialog" aria-labelledby="highlightModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <form id="highlightForm">
+                    @csrf
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="highlightModalLabel">Manage Highlighted Trips</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                        <div class="row">
+                            @foreach($allTrips as $trip)
+                            <div class="col-md-4">
+                                <div class="form-check">
+                                <input class="form-check-input trip-checkbox" type="checkbox" name="trip_ids[]" value="{{ $trip->id }}" id="trip{{ $trip->id }}"
+                                    {{ $trip->is_highlighted ? 'checked' : '' }}>
+                                <label class="form-check-label" for="trip{{ $trip->id }}">
+                                    {{ $trip->title }}
+                                </label>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+                </div>
+  
             </div>
         </div>
     </div>
@@ -116,17 +166,15 @@
                         position: index + 1
                     });
                 });
-    
+
                 $.ajax({
-                    url: "{{ route('admin.tripcategory.sort')}}",
+                    url: "{{ route('admin.tripcategory.sort') }}",
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
                         order: order
                     },
                     success: function(response) {
-                        //console.log('Sorting Updated');
-                        //alert('Update successfully');
                         $('#ajax-message').html(`
                             <div class="alert alert-success alert-dismissible fade show mt-2 text-dark" role="alert">
                                 ${response.message}
@@ -135,9 +183,12 @@
                                 </button>
                             </div>
                         `);
+
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000); // reload after 1 second (1000ms)
                     },
                     error: function () {
-                        //alert('Sorting failed. Please try again');
                         $('#ajax-message').html(`
                             <div class="alert alert-danger fade show mt-2" role="alert">
                                 Sorting failed. Please try again.
@@ -183,5 +234,21 @@
             }
         });
     }
+
+    $('#highlightForm').on('submit', function (e) {
+        e.preventDefault();
+
+        $.ajax({
+        url: '{{ route("admin.tripcategory.updateHighlights") }}',
+        method: 'POST',
+        data: $(this).serialize(),
+        success: function (res) {
+            if (res.status) {
+                $('#highlightModal').modal('hide');
+                location.reload(); // Reload to reflect changes
+            }
+        }
+        });
+    });
 </script>
 @endsection

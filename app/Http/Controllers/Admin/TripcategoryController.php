@@ -24,7 +24,8 @@ class TripcategoryController extends Controller
             $query->where('title', 'like', '%'.$keyword.'%');
         });
         $data = $query->orderBy('positions', 'asc')->paginate(25);
-        return view('admin.tripcategory.index', compact('data'));
+        $allTrips = TripCategory::orderBy('title')->get();
+        return view('admin.tripcategory.index', compact('data', 'allTrips'));
     }
     
     public function create(Request $request)
@@ -80,46 +81,56 @@ class TripcategoryController extends Controller
         ]);
     }
 
-    public function isHighlight(Request $request, $id) {
-        $category = TripCategory::find($id);
-        if (!$category) {
-            return response()->json([
-                'status'    => 404,
-                'message'   => 'Trip Category not found',
-            ]);
-        }        
-        // Toggle off if already highlighted
-        if ($category->is_highlighted == 1) {
-            $category->is_highlighted = 0; 
-            $category->save();
+    // public function isHighlight(Request $request, $id) {
+    //     $category = TripCategory::find($id);
+    //     if (!$category) {
+    //         return response()->json([
+    //             'status'    => 404,
+    //             'message'   => 'Trip Category not found',
+    //         ]);
+    //     }        
+    //     // Toggle off if already highlighted
+    //     if ($category->is_highlighted == 1) {
+    //         $category->is_highlighted = 0; 
+    //         $category->save();
         
-            return response()->json([
-                'status'    => 200,
-                'message'   => 'Highlight removed successfully.',
-            ]);
-        }       
-        // Count how many are currently highlighted
-        $highlightedCount = TripCategory::where('is_highlighted', 1)->count();
+    //         return response()->json([
+    //             'status'    => 200,
+    //             'message'   => 'Highlight removed successfully.',
+    //         ]);
+    //     }       
+    //     // Count how many are currently highlighted
+    //     $highlightedCount = TripCategory::where('is_highlighted', 1)->count();
         
-        if ($highlightedCount >= 2) {
-            // Turn off the oldest highlighted category
-            $oldest = TripCategory::where('is_highlighted', 1)
-                ->orderBy('updated_at', 'asc')
-                ->first();
+    //     if ($highlightedCount >= 2) {
+    //         // Turn off the oldest highlighted category
+    //         $oldest = TripCategory::where('is_highlighted', 1)
+    //             ->orderBy('updated_at', 'asc')
+    //             ->first();
         
-            if ($oldest) {
-                $oldest->is_highlighted = 0;
-                $oldest->save();
-            }
-        }       
-        // Now highlight the selected one
-        $category->is_highlighted = 1;
-        $category->save();
+    //         if ($oldest) {
+    //             $oldest->is_highlighted = 0;
+    //             $oldest->save();
+    //         }
+    //     }       
+    //     // Now highlight the selected one
+    //     $category->is_highlighted = 1;
+    //     $category->save();
         
-        return response()->json([
-            'status' => 200,
-            'message' => 'Highlight activated successfully.',
-        ]);       
+    //     return response()->json([
+    //         'status' => 200,
+    //         'message' => 'Highlight activated successfully.',
+    //     ]);       
+    // }
+
+    public function updateHighlights(Request $request) {
+
+        TripCategory::query()->update(['is_highlighted' => 0]);
+        // Then update selected
+        if ($request->has('trip_ids')) {
+            TripCategory::whereIn('id', $request->trip_ids)->update(['is_highlighted' => 1]);
+        }
+        return response()->json(['status' => true, 'message' => 'Highlighted trips updated successfully.']);
     }
 
     public function delete(Request $request){
@@ -166,7 +177,7 @@ class TripcategoryController extends Controller
     public function bannerStore(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120', 
         ]);
     
         $data = $request->all();   
@@ -195,7 +206,7 @@ class TripcategoryController extends Controller
 
     public function bannerUpdate(Request $request) {
         $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120', 
         ]);
         $data = $request->all();
         $this->TripCategoryRepository->banner_update($data);

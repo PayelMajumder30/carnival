@@ -124,7 +124,7 @@
                                                         <td>
                                                             <div class="text-center">
                                                                 @if (!empty($desti_item->logo) && file_exists(public_path($desti_item->logo)))
-                                                                    <img src="{{ asset($desti_item->logo) }}" alt="destination-logo" style="height: 40px; width: 40px;" class="rounded-circle">
+                                                                    <img src="{{ asset($desti_item->logo) }}" alt="destination-logo" style="height: 40px; width: 40px;background-color: #524242 !important;" class="img-thumbnail">
                                                                 @else
                                                                     <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="placeholder-logo" style="height: 40px; width: 40px;" class="rounded-circle">
                                                                 @endif
@@ -275,6 +275,7 @@
                 if(response.success) {
                   location.reload();
                 }else{
+                    console.log(response.message);
                     alert(response.message || 'Something Went Wrong');
                 }
             },

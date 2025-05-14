@@ -55,54 +55,64 @@
                             <p>Partners</p>
                         </a>
                     </li>
-                @endif
-                @if(in_array('banner', $RolePass)) 
-                <li class="nav-item">
-                    <a href="{{ route('admin.banner.list.all')}}" 
-                       class="nav-link {{ (request()->is('admin/master-module/banner*')) ? 'active active_nav_link' : '' }}">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Banner List</p>
-                    </a>
-                </li>
-                @endif
-                @if(in_array('whychooseus', $RolePass))
-                <li class="nav-item">
-                    <a href="{{ route('admin.whychooseus.list.all')}}"
-                        class="nav-link {{ (request()->is('admin/master-module/whychooseus*')) ? 'active active_nav_link' : ''}}">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Why Choose Us</p>
-                    </a>
-                </li>
-                @endif
-                
-                @if(in_array('tripcategory', $RolePass))
-                <li class="nav-item">
-                    <a href="{{ route('admin.tripcategory.list.all')}}"
-                        class="nav-link {{ (request()->is('admin/master-module/tripcategory*')) ? 'active active_nav_link' : ''}}">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Trip Category</p>
-                    </a>
-                </li>
-                @endif
-                @if(in_array('offers', $RolePass))
-                <li class="nav-item">
-                    <a href="{{ route('admin.offers.list.all')}}"
-                        class="nav-link {{ (request()->is('admin/master-module/offers*')) ? 'active active_nav_link' : ''}}">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Offer List</p>
-                    </a>
-                </li>
-                @endif
+                    @endif
+                    @if(in_array('banner', $RolePass)) 
+                    <li class="nav-item">
+                        <a href="{{ route('admin.banner.list.all')}}" 
+                        class="nav-link {{ (request()->is('admin/master-module/banner*')) ? 'active active_nav_link' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Banner List</p>
+                        </a>
+                    </li>
+                    @endif
+                    @if(in_array('whychooseus', $RolePass))
+                    <li class="nav-item">
+                        <a href="{{ route('admin.whychooseus.list.all')}}"
+                            class="nav-link {{ (request()->is('admin/master-module/whychooseus*')) ? 'active active_nav_link' : ''}}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Why Choose Us</p>
+                        </a>
+                    </li>
+                    @endif
+                    
+                    @if(in_array('tripcategory', $RolePass))
+                    <li class="nav-item">
+                        <a href="{{ route('admin.tripcategory.list.all')}}"
+                            class="nav-link {{ (request()->is('admin/master-module/tripcategory*')) ? 'active active_nav_link' : ''}}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Trip Category</p>
+                        </a>
+                    </li>
+                    @endif
+                    @if(in_array('offers', $RolePass))
+                    <li class="nav-item">
+                        <a href="{{ route('admin.offers.list.all')}}"
+                            class="nav-link {{ (request()->is('admin/master-module/offers*')) ? 'active active_nav_link' : ''}}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Offer List</p>
+                        </a>
+                    </li>
+                    @endif
 
-                @if(in_array('destination', $RolePass))
-                <li class="nav-item">
-                    <a href="{{ route('admin.destination.list.all')}}"
-                        class="nav-link {{ (request()->is('admin/master-module/destination*')) ? 'active active_nav_link' : ''}}">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Destinations</p>
-                    </a>
-                </li>
-                @endif
+                    @if(in_array('destination', $RolePass))
+                    <li class="nav-item">
+                        <a href="{{ route('admin.destination.list.all')}}"
+                            class="nav-link {{ (request()->is('admin/master-module/destination*')) ? 'active active_nav_link' : ''}}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Destinations</p>
+                        </a>
+                    </li>
+                    @endif
+
+                    @if(in_array('support', $RolePass))
+                    <li class="nav-item">
+                        <a href="{{ route('admin.support.list.all')}}"
+                            class="nav-link {{ (request()->is('admin/master-module/support*')) ? 'active active_nav_link' : ''}}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Support</p>
+                        </a>
+                    </li>
+                    @endif
                 </ul>
             </li>
         @endif
