@@ -61,7 +61,7 @@
                         <a href="{{ route('admin.banner.list.all')}}" 
                         class="nav-link {{ (request()->is('admin/master-module/banner*')) ? 'active active_nav_link' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>Banner List</p>
+                            <p>Banner Title</p>
                         </a>
                     </li>
                     @endif

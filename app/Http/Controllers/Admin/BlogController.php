@@ -54,7 +54,7 @@ class BlogController extends Controller
             'meta_type'     => 'nullable|string',
             'meta_description'  => 'nullable|string',
             'meta_keywords'     => 'nullable|string',
-            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
+            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120', 
         ]);
         
         $data = $request->all();
@@ -99,7 +99,7 @@ class BlogController extends Controller
             'meta_type' => 'nullable|string',
             'meta_description' => 'nullable|string',
             'meta_keywords' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
         ], [
             'title.required' => 'The title field is required.',
             'title.unique' => 'This title has already been used.',

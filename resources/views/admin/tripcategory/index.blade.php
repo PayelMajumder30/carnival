@@ -2,14 +2,7 @@
 @section('page-title', 'Trip Categories')
 
 @section('section')
-<style>
-    .dotted-table-container {
-        background-color: #ffffff;
-        padding: 15px;
-        border: 3px dotted #ddd;
-        border-radius: 8px;
-        }
-</style>
+
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -65,7 +58,7 @@
                                         <div class="col-1">{{ $index + $data->firstItem() }}</div>
                                         <div class="col-3 text-left">{{ $item->title }}</div>
                                         <div class="col-2">
-                                            <div class="custom-control custom-switch" data-toggle="tooltip" title="Toggle Highlight"> 
+                                            <div class="custom-control custom-switch"  title="Toggle Highlight"> 
                                                 <input type="checkbox" class="custom-control-input" 
                                                     id="highlightSwitch{{ $item->id }}" 
                                                     {{ $item->is_highlighted == 1 ? 'checked' : '' }}>
@@ -113,38 +106,39 @@
                 {{-- add modal for highlighted status --}}
 
                 <div class="modal fade" id="highlightModal" tabindex="-1" role="dialog" aria-labelledby="highlightModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <form id="highlightForm">
-                    @csrf
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        <h5 class="modal-title" id="highlightModalLabel">Manage Highlighted Trips</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        </div>
-                        <div class="modal-body">
-                        <div class="row">
-                            @foreach($allTrips as $trip)
-                            <div class="col-md-4">
-                                <div class="form-check">
-                                <input class="form-check-input trip-checkbox" type="checkbox" name="trip_ids[]" value="{{ $trip->id }}" id="trip{{ $trip->id }}"
-                                    {{ $trip->is_highlighted ? 'checked' : '' }}>
-                                <label class="form-check-label" for="trip{{ $trip->id }}">
-                                    {{ $trip->title }}
-                                </label>
-                                </div>
+                    <div class="modal-dialog modal-lg" role="document">
+                        <form id="highlightForm">
+                        @csrf
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="highlightModalLabel">Manage Highlighted Trips</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                             </div>
-                            @endforeach
+                            <div class="modal-body">
+                            <div class="row">
+                                @foreach($allTrips as $trip)
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                    <input class="form-check-input trip-checkbox" type="checkbox" name="trip_ids[]" value="{{ $trip->id }}" id="trip{{ $trip->id }}"
+                                        {{ $trip->is_highlighted ? 'unchecked' : '' }}>
+                                    <label class="form-check-label cursor-pointer" for="trip{{ $trip->id }}">
+                                        {{ $trip->title }}
+                                    </label>
+                                    </div>
+                                </div>                                                      
+                                @endforeach
+                                <div id="highlightError" class="text-danger mt-2" style="display: none;"></div>
+                            </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
                         </div>
-                        </div>
-                        <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </div>
+                        </form>
                     </div>
-                    </form>
-                </div>
                 </div>
   
             </div>
@@ -235,19 +229,76 @@
         });
     }
 
-    $('#highlightForm').on('submit', function (e) {
-        e.preventDefault();
-
-        $.ajax({
-        url: '{{ route("admin.tripcategory.updateHighlights") }}',
-        method: 'POST',
-        data: $(this).serialize(),
-        success: function (res) {
-            if (res.status) {
-                $('#highlightModal').modal('hide');
-                location.reload(); // Reload to reflect changes
-            }
+     //select checkboxes
+    $(document).ready(function () {
+        // Function to reset the Save button state
+        function resetSaveButton() {
+            const $btn = $('#highlightForm button[type="submit"]');
+            $btn.prop('disabled', false).text('Save Changes');
         }
+
+        // Function to show loading state
+        function showLoadingButton() {
+            const $btn = $('#highlightForm button[type="submit"]');
+            $btn.prop('disabled', true).text('Saving...');
+        }
+
+        // On checkbox change
+        $(document).on('change', '.trip-checkbox', function () {
+            let checkedCount = $('.trip-checkbox:checked').length;
+
+            if (checkedCount > 2) {
+                this.checked = false;
+                $('#highlightError').text('You can only select up to two checkboxes.').show();
+                return;
+            }
+
+            if (checkedCount > 0 && checkedCount <= 2) {
+                $('#highlightError').hide();
+                resetSaveButton();
+            }
+        });
+
+        // On form submit
+        $('#highlightForm').on('submit', function (e) {
+            e.preventDefault();
+            let checkedCount = $('.trip-checkbox:checked').length;
+
+            if (checkedCount === 0) {
+                $('#highlightError').text('Please select at least one checkbox.').show();
+                showLoadingButton(); // simulate loading
+                setTimeout(() => {
+                    resetSaveButton(); // revert after short delay
+                    $('#highlightError').hide();
+                }, 2000);
+                return;
+            }
+
+            if (checkedCount > 2) {
+                $('#highlightError').text('You can only select up to two checkboxes.').show();
+                return;
+            }
+
+            // All good — show loading, then send request
+            showLoadingButton();
+
+            $.ajax({
+                url: '{{ route("admin.tripcategory.updateHighlights") }}',
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function (res) {
+                    if (res.status) {
+                        $('#highlightModal').modal('hide');
+                        location.reload(); // Refresh to reflect changes
+                    } else {
+                        resetSaveButton(); // Reset button in case of failure
+                    }
+                },
+                error: function () {
+                    resetSaveButton(); // Reset button on error
+                    $('#highlightError').text('Something went wrong. Please try again.').show();
+                }
+            });
         });
     });
 </script>

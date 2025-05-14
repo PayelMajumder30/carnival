@@ -18,47 +18,40 @@ class SupportRepository implements SupportRepositoryInterface
         return Support::findOrFail($id);
     }
 
-    // public function create(array $data)
-    //     { 
-    //         $Data = [     
-    //             'title' => $data['title'],    
-    //         ];
-    //         // Create the banner media and return the created instance
-    //         return Support::create($bannerData);
-    //     }
+    public function create(array $data)
+    { 
+        $supportData = [     
+            'title' => $data['title'],
+            'description' => $data['description'],    
+        ];
+        // Create the banner media and return the created instance
+        return Support::create($supportData);
+    }
 
-    // public function update($id, array $data)
-    //     {
-    //         // Find the banner media by ID
-    //         $banner     = Banner::findOrFail($id);      
-    //         $updateData = [            
-    //             'title'  => $data['title'],
-    //         ];
-    //         $banner->update($updateData);
-    //         return $banner;
-    //     }
-
-    // public function delete($id)
-    // {
-    //     $banner = Banner::findOrFail($id);
-    //     //dd($banner);
-    //     if($banner->delete()){
-    //         return true;
-    //     } else{
-    //         return false;
-    //     }
-        
-    // }
 
     public function update($id, array $data)
-        {
-            // Find the banner media by ID
-            $support     = Support::findOrFail($id);      
-            $supportData = [            
-                'title' => $data['title'],
-                'description'  => $data['description'], 
-            ];
-            $support->update($supportData);
-            return $support;
+    {
+        // Find the banner media by ID
+        $support     = Support::findOrFail($id);      
+        $supportData = [            
+            'title' => $data['title'],
+            'description'  => $data['description'], 
+        ];
+        $support->update($supportData);
+        return $support;
+    }
+    
+    public function delete($id)
+    {
+        $support = Support::findOrFail($id);
+        //dd($banner);
+        if($support->delete()){
+            return true;
+        } else{
+            return false;
         }
+        
+    }
+
+
 }

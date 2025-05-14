@@ -38,7 +38,7 @@ class PageContentController extends Controller
             'page' => 'required|unique:page_contents,page',
             'title' => 'required',
             'description' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
         $data = $request->all();
@@ -73,7 +73,7 @@ class PageContentController extends Controller
             'page' => 'required|unique:page_contents,page,' . $id,
             'title' => 'required',
             'description' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
         $data = $request->all();

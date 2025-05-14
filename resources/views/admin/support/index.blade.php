@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <div class="row mb-3">
                             <div class="col-md-12 text-right">
-                                <a href="" class="btn btn-sm btn-primary"> <i class="fa fa-plus"></i> Create</a>
+                                <a href="{{route('admin.support.create')}}" class="btn btn-sm btn-primary"> <i class="fa fa-plus"></i> Create</a>
                             </div>
                         </div>
                         {{-- <div class="row">
@@ -84,12 +84,12 @@
                                         <td>{{ $index + $data->firstItem() }}</td>
                                         <td>
                                             <div class="title-part">
-                                                <p class="text-muted mb-0">{{ $item->title }}</p>
+                                                <p class="text-muted mb-0">{{ ucwords($item->title) }}</p>
                                             </div>
                                         </td>
                                         <td>
-                                              <div class="title-part">
-                                                <p class="text-muted mb-0">{{ $item->description }}</p>
+                                            <div class="title-part">
+                                                <p class="text-muted mb-0">{{ \Str::limit($item->description, 200, '...') }}</p>
                                             </div>
                                         </td>                                         
                                         <td> 
@@ -106,7 +106,7 @@
                                                 {{-- <a href="{{ route('admin.banner.delete', $item->id)}}" class="btn btn-sm btn-dark" onclick="return confirm('Are you sure ?')" data-toggle="tooltip" title="Delete">
                                                 <i class="fa fa-trash"></i>
                                                 </a> --}}
-                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deleteBanner({{$item->id}})" data-toggle="tooltip" title="Delete">
+                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deleteSupport({{$item->id}})" data-toggle="tooltip" title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </div>
@@ -131,7 +131,7 @@
 </section>
 @endsection
 <script>
-    function deleteBanner(bannerId) {
+    function deleteSupport(supportId) {
       Swal.fire({
           icon: 'warning',
           title: "Are you sure you want to delete this?",
@@ -144,10 +144,10 @@
           /* Read more about isConfirmed, isDenied below */
           if (result.isConfirmed) {
               $.ajax({
-                  url: "{{ route('admin.banner.delete')}}",
+                  url: "{{ route('admin.support.delete')}}",
                   type: 'POST',
                   data: {
-                      "id": bannerId,
+                      "id": supportId,
                       "_token": '{{ csrf_token() }}',
                   },
                   success: function (data){

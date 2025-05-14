@@ -46,6 +46,7 @@
                             <thead>
                                 <tr class="text-center">
                                     <th>#</th>
+                                    <th>Logo</th>
                                     <th>Destination Name</th>
                                     <th>Image</th>
                                     <th>Starting Price</th>
@@ -57,16 +58,29 @@
                               @foreach($tripCategoryDestination as $index => $item)
                                 <tr>
                                     <td>{{ $index+1}}</td>
+                                    <td>
+                                        @if (!empty($item->tripdestination->logo) && file_exists(public_path($item->tripdestination->logo)))
+                                            <img src="{{ asset($item->tripdestination->logo) }}" style="height: 40px; width: 40px;background-color: #524242 !important;" class="img-thumbnail" alt="destination-logo">
+                                        @else
+                                            <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" style="height: 40px; width: 40px;background-color: #524242 !important;" class="img-thumbnail" alt="placeholder-logo">
+                                        @endif
+                                    </td>
                                     <td>{{$item->tripdestination->destination_name}}</td>
                                     <td>
                                         @if (!empty($item->tripdestination->image) && file_exists(public_path($item->tripdestination->image)))
-                                            <img src="{{ asset($item->tripdestination->image) }}" style="height: 50px" class="img-thumbnail" alt="destination-image">
+                                            <img src="{{ asset($item->tripdestination->image) }}" class="img-thumbnail" style="width: 80px; height: 50px;" alt="destination-image">
                                         @else
-                                            <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" style="height: 50px" class="img-thumbnail" alt="placeholder-image">
+                                            <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" class="img-thumbnail" style="width: 80px; height: 50px;" alt="placeholder-image">
                                         @endif
                                     </td>
                                     <td>{{env('CURRENCY')}}{{number_format($item->start_price, 2)}}</td>
-                                    <td><span class="badge badge-success">Active</span></td>
+                                    <td>
+                                        @if ($item->tripdestination && $item->tripdestination->status == 1)
+                                            <span class="badge badge-success">Active</span>
+                                        @else
+                                            <span class="badge badge-danger">Inactive</span>
+                                        @endif
+                                    </td>
                                     <td>
                                         <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deletetripDesti({{$item->id}})" data-toggle="tooltip" title="Delete">
                                             <i class="fa fa-trash"></i>
@@ -222,6 +236,13 @@
         });
     }
 
+    $(document).on('click', '.edit-price-btn', function () {
+        var id = $(this).data('id');
+        var price = $(this).data('price');
+
+        $('#modal-destination-id').val(id);
+        $('#modal-start-price').val(price);
+    });
 
     function addDestination() {
        
@@ -252,16 +273,33 @@
                     console.log('Added destination', data.destination);
                     const rowCount = $('#destination-table-body tr').length + 1;
                     const newDestination = data.destination;
+                    // const BASE_URL  = "{{ asset('') }}";
+                    // const imagePath = BASE_URL + newDestination.tripdestination.image;
+                    // const logoPath  = BASE_URL + newDestination.tripdestination.logo;
                     const BASE_URL  = "{{ asset('') }}";
-                    const imagePath = BASE_URL + newDestination.tripdestination.image;
+                    const placeholderImage = "{{ asset('backend-assets/images/placeholder.jpg') }}";
+
+                    const logoPath = newDestination.tripdestination.logo && newDestination.tripdestination.logo !== ''
+                        ? BASE_URL + newDestination.tripdestination.logo : placeholderImage;
+                        
+                    const imagePath = newDestination.tripdestination.image && newDestination.tripdestination.image !== ''
+                        ? BASE_URL + newDestination.tripdestination.image : placeholderImage;                     
 
                     $("#destination-table-body").append("<tr>\
                         <td>"+ rowCount +"</td>\
+                        <td><img src='" + logoPath + "' width='50' height='40' class='img-thumbnail'></td>\
                         <td>" + newDestination.tripdestination.destination_name + " </td>\
                         <td><img src='" + imagePath + "' width='50' height='40'></td>\
                         <td>" + newDestination.start_price + "</td>\
                         <td><span class='badge badge-success'>Active</span></td>\
-                        <td><a href='javascript:void(0);' class='btn btn-sm btn-dark mr-1' onclick='deletetripDesti(" + newDestination.id + ")'><i class='fa fa-trash'></i></a></td>\
+                        <td>\
+                            <a href='javascript:void(0);' class='btn btn-sm btn-dark mr-1' onclick='deletetripDesti(" + newDestination.id + ")' title='Delete'>\
+                                <i class='fa fa-trash'></i>\
+                            </a>\
+                            <a href='javascript:void(0);' class='btn btn-sm btn-info mr-1 edit-price-btn' data-toggle='modal' data-target='#editPriceModal' data-id='" + newDestination.id + "' data-price='" + newDestination.start_price + "' title='Edit'>\
+                                <i class='fa fa-edit'></i>\
+                            </a>\
+                        </td>\
                     </tr>");
 
                     setTimeout(function() {
@@ -272,13 +310,7 @@
         });
     } 
 
-  $(document).on('click', '.edit-price-btn', function () {
-    var id = $(this).data('id');
-    var price = $(this).data('price');
 
-    $('#modal-destination-id').val(id);
-    $('#modal-start-price').val(price);
-  });
 
 
 </script>
