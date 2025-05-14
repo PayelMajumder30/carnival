@@ -117,11 +117,11 @@ class DestinationController extends Controller
     public function createDestImage(Request $request) {
         $request->validate([
             'id'    => 'required|exists:destinations,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'logo'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'logo'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
         ], [
-            'image.max'   => 'Upload image must not be more than 2MB.',
-            'logo.max'    => 'Logo must not be more than 2MB.',
+            'image.max'   => 'Upload image must not be more than 5MB.',
+            'logo.max'    => 'Logo must not be more than 5MB.',
         ]);
 
         if (!$request->hasFile('image') && !$request->hasFile('logo')) {

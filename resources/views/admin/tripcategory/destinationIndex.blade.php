@@ -46,6 +46,7 @@
                             <thead>
                                 <tr class="text-center">
                                     <th>#</th>
+                                    <th>Logo</th>
                                     <th>Destination Name</th>
                                     <th>Image</th>
                                     <th>Starting Price</th>
@@ -57,6 +58,13 @@
                               @foreach($tripCategoryDestination as $index => $item)
                                 <tr>
                                     <td>{{ $index+1}}</td>
+                                    <td>
+                                        @if (!empty($item->tripdestination->logo) && file_exists(public_path($item->tripdestination->logo)))
+                                            <img src="{{ asset($item->tripdestination->logo) }}" style="height: 40px; width: 40px;background-color: #524242 !important;" class="img-thumbnail" alt="destination-logo">
+                                        @else
+                                            <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" style="height: 40px; width: 40px;background-color: #524242 !important;" class="img-thumbnail" alt="placeholder-logo">
+                                        @endif
+                                    </td>
                                     <td>{{$item->tripdestination->destination_name}}</td>
                                     <td>
                                         @if (!empty($item->tripdestination->image) && file_exists(public_path($item->tripdestination->image)))

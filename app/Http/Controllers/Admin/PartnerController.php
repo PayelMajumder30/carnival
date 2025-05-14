@@ -44,7 +44,7 @@ class PartnerController extends Controller
             'max:255',
             Rule::unique('partners', 'title'),
         ],
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120', 
 
         ],[
             'title.required'   => 'The partner title is required.',
@@ -54,7 +54,7 @@ class PartnerController extends Controller
         
             'image.image' => 'The uploaded file must be an image.',
             'image.mimes' => 'The image must be in one of the following formats: jpeg, png, jpg, gif, svg, webp.',
-            'image.max'   => 'The image size must not exceed 2MB.',
+            'image.max'   => 'The image size must not exceed 5MB.',
         ]);
     
         $data = $request->all();    

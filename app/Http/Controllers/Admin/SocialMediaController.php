@@ -45,7 +45,7 @@ class SocialMediaController extends Controller
                 'max:255',
                 Rule::unique('social_media', 'title'),
             ],
-            'image'         => 'required|image|mimes:jpg,jpeg,png,webp,gif,svg|max:1000',
+            'image'         => 'required|image|mimes:jpg,jpeg,png,webp,gif,svg|max:5120',
             'social_link'   => 'nullable|string',
         ], [
             'title.required'    => 'The title field is required.',
@@ -56,7 +56,7 @@ class SocialMediaController extends Controller
             'image.required'    => 'Please upload an image.',
             'image.image'       => 'The uploaded file must be an image.',
             'image.mimes'       => 'The image must be a type of: jpg, jpeg, png, webp, gif, or svg.',
-            'image.max'         => 'The image must not be larger than 1MB.',
+            'image.max'         => 'The image must not be larger than 5MB.',
         
             'social_link.string' => 'The social link must be a valid string.',
         ]);

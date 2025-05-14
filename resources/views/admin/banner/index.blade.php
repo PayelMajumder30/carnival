@@ -82,7 +82,7 @@
                                         </td>
                                         <td class="d-flex">
                                             <div class="btn-group">
-                                                <a href="{{ route('admin.banner.edit', $item->id)}}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
+                                                <a href="" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
                                                 {{-- <a href="{{ route('admin.banner.delete', $item->id)}}" class="btn btn-sm btn-dark" onclick="return confirm('Are you sure ?')" data-toggle="tooltip" title="Delete">

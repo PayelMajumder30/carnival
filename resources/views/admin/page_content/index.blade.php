@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <div class="row mb-3">
                             <div class="col-md-12 text-right">
-                                <a href="{{ route('admin.page_content.create') }}" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i>Create New Page</a>
+                                <a href="{{ route('admin.page_content.create') }}" class="btn btn-sm btn-primary"><i class="fa fa-plus mr-1"></i>Create New Page</a>
                             </div>
                         </div>
                         <div class="row">
@@ -52,7 +52,7 @@
                                     <tr>
                                         <td>{{ $index + $data->firstItem() }}</td>
                                         <td>{{ strtoupper($item->page) }}</td>
-                                        <td>{{ $item->title }}</td>
+                                        <td>{{ ucwords($item->title) }}</td>
                                         <td class="d-flex">
                                             <div class="btn-group">
                                                 {{-- <a href="{{ route('admin.page_content.detail', $item->id) }}" class="btn btn-sm btn-dark" data-toggle="tooltip" title="View">

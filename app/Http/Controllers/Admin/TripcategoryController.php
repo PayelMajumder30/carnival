@@ -166,7 +166,7 @@ class TripcategoryController extends Controller
     public function bannerStore(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120', 
         ]);
     
         $data = $request->all();   
@@ -195,7 +195,7 @@ class TripcategoryController extends Controller
 
     public function bannerUpdate(Request $request) {
         $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120', 
         ]);
         $data = $request->all();
         $this->TripCategoryRepository->banner_update($data);
