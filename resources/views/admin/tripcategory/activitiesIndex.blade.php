@@ -271,22 +271,6 @@
     function fetchActivities(destinationId) {
         const apiUrl = `https://christmastree.quickdemo.in/api/crm/active/destination-wise/activities/${destinationId}`;
         
-        // $.get(apiUrl, function(response) {
-        //     console.log("Activity response:", response); 
-        //     if (response.status === 200 && response.data.length > 0) {
-        //         $('#activity_name').html("<option value=''>-- Select Activity --</option>");
-        //         response.data.forEach(activity => {
-        //             $('#activity_name').append(new Option(activity.activity_name, activity.activity_name));
-        //         });
-        //     } else {
-        //         $('#activity_name').html("<option value=''>No activities found</option>");
-        //         toastr.error('No activities found for selected destination');
-        //     }
-        //     }).fail(function(err) {
-        //     console.error("API error:", err);
-        //     $('#activity_name').html("<option value=''>No activities found</option>");
-        //     toastr.error('Error fetching activities');
-        // });
         $.get(apiUrl, function(response) {
         console.log(response); 
         if (response.status === 200 && response.data.length > 0) {
