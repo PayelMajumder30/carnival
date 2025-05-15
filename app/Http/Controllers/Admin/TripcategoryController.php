@@ -378,7 +378,7 @@ class TripcategoryController extends Controller
         $assignedDestinationIds = TripCategoryDestination::where('trip_cat_id', $trip_cat_id)->pluck('destination_id')->toArray();
         
         $destinations = Destination::
-            select(['id', 'destination_name', 'image'])
+            select(['id', 'destination_name', 'crm_destination_id'])
             ->where('country_id', $country_id)
             ->where('status', 1)
             ->whereNotIn('id', $assignedDestinationIds)
@@ -469,6 +469,62 @@ class TripcategoryController extends Controller
             'status'    => 200,
             'message'   => 'Activity deleted succesfully',
         ]);
+    }
+
+    public function activitiesStatus(Request $request, $id) {
+        $data = TripCategoryActivities::find($id);
+        $data->status   = ($data->status == 1) ? 0 : 1;
+        $data->update();
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'status updated',
+        ]);
+    }
+
+    public function updateActivities(Request $request)
+    {
+       
+        $request->validate([
+            'id' => 'required|exists:trip_category_activities,id',
+            'activity_name' => 'required|string|max:255',
+            'activity_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'activity_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+        ]);
+
+        $activity = TripCategoryActivities::findOrFail($request->id);
+        $activity->activity_name = $request->activity_name;
+
+        if ($request->hasFile('activity_image') && $request->file('activity_image')->isValid()) {
+            // Delete old image if exists
+            if ($activity->image && file_exists(public_path($activity->image))) {
+                unlink(public_path($activity->image));
+            }
+
+            // Upload new image
+            $image = $request->file('activity_image');
+            $imageName = time() . rand(10000, 99999) . '.' . $image->extension();
+            $imagePath = 'uploads/trip_activities/' . $imageName;
+            $image->move(public_path('uploads/trip_activities'), $imageName);
+            $activity->image = $imagePath;
+        }
+
+        if ($request->hasFile('activity_logo') && $request->file('activity_logo')->isValid()) {
+            // Delete old logo if exists
+            if ($activity->logo && file_exists(public_path($activity->logo))) {
+                unlink(public_path($activity->logo));
+            }
+
+            // Upload new logo
+            $logo = $request->file('activity_logo');
+            $logoName = time() . rand(10000, 99999) . '_logo.' . $logo->extension();
+            $logoPath = 'uploads/trip_activities/' . $logoName;
+            $logo->move(public_path('uploads/trip_activities'), $logoName);
+            $activity->logo = $logoPath;
+        }
+
+
+        $activity->save();
+        return redirect()->back()->with('success', 'Activity Updated Successfully');
     }
 
 }

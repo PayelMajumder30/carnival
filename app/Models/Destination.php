@@ -26,4 +26,5 @@ class Destination extends Model
     public function tripcategorydestination() {
         return $this->hasMany(TripCategoryDestination::class, 'destination_id');
     }
+    
 }

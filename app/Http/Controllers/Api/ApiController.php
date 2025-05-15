@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\{TripCategoryDestination, SocialMedia, Banner, TripCategory, Partner, 
-    WhyChooseUs, Setting, Blog, Offer, PageContent, Destination};
+    WhyChooseUs, Setting, Blog, Offer, PageContent, Destination, TripCategoryActivities};
 
 class ApiController extends Controller
 {
@@ -125,7 +125,7 @@ class ApiController extends Controller
     }
  
     
-   //master module/ trip category
+    //master module/ trip category
     public function tripIndex()
     {
         $data = TripCategory::with(['tripcategorybanner' => function($query) {

@@ -51,7 +51,9 @@ use App\Http\Controllers\Api\ApiController;
         Route::get('/', [ApiController::class, 'tripIndex']);
         Route::get('/{id}', [ApiController::class, 'tripShow']);
         //Route::get('/{trip_cat_id}/destinations', [ApiController::class, 'getDestinationsByTripCategory']);
+        
     });
+    
 
     //Offers
     Route::prefix('offers')->group(function () {
@@ -70,4 +72,6 @@ use App\Http\Controllers\Api\ApiController;
         Route::get('/', [ApiController::class, 'contentIndex']);
         Route::get('/{id}',[ApiController::class, 'contentShow']);
     });
+
+
 

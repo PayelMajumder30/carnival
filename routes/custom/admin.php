@@ -124,6 +124,8 @@ Route::name('admin.')->group(function() {
                 Route::get('activities/by-destination/{country_id}/{trip_cat_id}', [TripcategoryController::class, 'getActivitiesByDestination'])->name('tripcategorydestination.getActivities');
                 Route::post('activities/add', [TripcategoryController::class, 'activityAdd'])->name('tripcategorydestination.activityAdd');
                 Route::post('activities/delete', [TripcategoryController::class, 'activitiesDelete'])->name('tripcategory.activitiesDelete');
+                Route::get('activities/status/{id}',[TripcategoryController::class, 'activitiesStatus'])->name('tripcategory.activitiesStatus');
+                Route::post('activities/update', [TripcategoryController::class, 'updateActivities'])->name('tripcategory.updateActivities');
             });
 
             //offer list
