@@ -84,12 +84,12 @@
                                         <td>{{ $index + $data->firstItem() }}</td>
                                         <td>
                                             <div class="title-part">
-                                                <p class="text-muted mb-0">{{ $item->title }}</p>
+                                                <p class="text-muted mb-0">{{ ucwords($item->title) }}</p>
                                             </div>
                                         </td>
                                         <td>
-                                              <div class="title-part">
-                                                <p class="text-muted mb-0">{{ $item->description }}</p>
+                                            <div class="title-part">
+                                                <p class="text-muted mb-0">{{ \Str::limit($item->description, 200, '...') }}</p>
                                             </div>
                                         </td>                                         
                                         <td> 

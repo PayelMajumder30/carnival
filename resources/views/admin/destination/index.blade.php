@@ -133,11 +133,14 @@
                                                         <td>{{$desti_item->destination_name}}</td>
                                                         <td id="image-col-{{ $desti_item->id }}">
                                                             <div class="text-center">
-                                                                @if (!empty($desti_item->image) && file_exists(public_path($desti_item->image)))
-                                                                    <img src="{{ asset($desti_item->image) }}" alt="destination-image" style="height: 50px" class="img-thumbnail">
-                                                                @else
-                                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="placeholder-image" style="height: 50px" class="img-thumbnail">
-                                                                @endif
+                                                                @php
+                                                                    $imagePath = !empty($desti_item->image) && file_exists(public_path($desti_item->image))
+                                                                    ? asset($desti_item->image)
+                                                                    : asset('backend-assets/images/placeholder.jpg');
+                                                                @endphp
+                                                                <img src="{{ $imagePath }}" alt="destination-image"
+                                                                    class="img-thumbnail"
+                                                                    style="height: 50px; width: 70px; object-position: center;">
                                                             </div>
                                                         </td>
                                                         <td> 

@@ -89,7 +89,7 @@ class PartnerController extends Controller
                 'max:255',
                 Rule::unique('partners', 'title')->ignore($id),
             ],
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', 
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120', 
         ],
         [
             'title.required' => 'The partner title is required.',

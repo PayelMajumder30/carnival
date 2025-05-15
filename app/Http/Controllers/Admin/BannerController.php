@@ -32,19 +32,26 @@ class BannerController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
-        $request->validate([
-            'title'    => 'required|string|max:255|unique:banners,title',
-        ],[
-            'title.required'    => 'The banner title is required.',
-            'title.string'      => 'The banner title must be a valid string.',
-            'title.max'         => 'The banner title cannot exceed 255 characters.',
-            'title.unique'      => 'This banner title already exists. Please choose a different one.',
-        ]);
 
-        $data = $request->all();
-        $this->bannerRepository->create($data);
-        return redirect()->route('admin.banner.list.all')->with('success', 'New Banner created');
+      $request->validate([
+        'title'=> 'required|string|max:255',
+      ],[
+        'title.required' => 'The banner title is required.',
+        'title.string' => 'The banner title must be a valid string.',
+        'title.max' => 'The banner title cannot exceed 255 characters.',
+      ]);
+
+      //delete the existing banner
+      $existingBanner = Banner::first();
+      if($existingBanner){
+        $existingBanner->delete();
+      }
+
+      //create new banner
+      $data = $request->only('title'); //only - It restricts the data to just the 'title' field.
+      $this->bannerRepository->create($data);
+
+      return redirect()->route('admin.banner.list.all')->with('success', 'Banner updated successfully');
     }
 
     public function edit($id){

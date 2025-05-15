@@ -237,6 +237,19 @@
   font-weight: bold;
 }
 
+/* for cursor pointer */
+.cursor-pointer {
+      cursor: pointer;
+  }
+
+  /* for dotted border in trip category */
+  .dotted-table-container {
+      background-color: #ffffff;
+      padding: 15px;
+      border: 3px dotted #ddd;
+      border-radius: 8px;
+  }
+
 
 
 

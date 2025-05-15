@@ -116,7 +116,7 @@ class SocialMediaController extends Controller
                 Rule::unique('social_media', 'title')->ignore($id),
             ],
             'social_link'   => 'nullable|string',
-            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
         ],
         [
             'title.required'    => 'The social media title is required.',

@@ -153,14 +153,12 @@ Route::name('admin.')->group(function() {
              //Master modeule/support
             Route::prefix('support')->group(function(){
                 Route::get('/',[SupportController::class, 'index'])->name('support.list.all');
-                Route::get('/create',[SupportController::class, 'create'])->name('support.create');
-                Route::post('/store',[SupportController::class, 'store'])->name('support.store');
-                Route::post('/delete',[SupportController::class, 'delete'])->name('support.delete');
-
-
                 Route::get('/edit/{id}', [SupportController::class, 'edit'])->name('support.edit');
                 Route::post('/update', [SupportController::class, 'update'])->name('support.update');
                 Route::get('/status/{id}', [SupportController::class, 'status'])->name('support.status'); 
+                Route::get('/create',[SupportController::class, 'create'])->name('support.create');
+                Route::post('/store',[SupportController::class, 'store'])->name('support.store');
+                Route::post('/delete',[SupportController::class, 'delete'])->name('support.delete');
             });
         });
         // Route::resource('article', ArticleController::class);

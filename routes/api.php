@@ -65,4 +65,9 @@ use App\Http\Controllers\Api\ApiController;
         Route::get('/{id}',[ApiController::class, 'settingShow']);
     });
 
+    //Page content
+     Route::prefix('pageContent')->group(function (){
+        Route::get('/', [ApiController::class, 'contentIndex']);
+        Route::get('/{id}',[ApiController::class, 'contentShow']);
+    });
 

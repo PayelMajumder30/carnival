@@ -11,7 +11,7 @@ use App\Models\Support;
 class SupportController extends Controller
 {
      private $SupportRepository;
-    public function __construct(SupportRepositoryInterface $SupportRepository){
+        public function __construct(SupportRepositoryInterface $SupportRepository){
         $this->SupportRepository = $SupportRepository;
     }
 
@@ -20,7 +20,8 @@ class SupportController extends Controller
         $query      = Support::query();
 
         $query->when($keyword, function($query) use ($keyword) {
-            $query->where('title', 'like', '%'.$keyword.'%');
+            $query->where('title', 'like', '%'.$keyword.'%')
+                ->orWhere('description', 'like', '%'.$keyword.'%');
         });
         $data = $query->latest('id')->paginate(25);
         return view('admin.support.index', compact('data'));
@@ -33,16 +34,16 @@ class SupportController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
+    // dd($request->all());
         $request->validate([
-            'title'    => 'required|string|max:255|unique:supports,title',
-            'description' => 'nullable|string|max:255',
+        'title' => 'required|string|max:255|unique:supports,title',
+        'description' => 'nullable|string|max:255',
         ],[
-            'title.required'    => 'The support title is required.',
-            'title.string'      => 'The support title must be a valid string.',
-            'title.max'         => 'The supportr title cannot exceed 255 characters.',
-            'title.unique'      => 'This support title already exists. Please choose a different one.',
-            'description.max'   => 'The description may not be greater than 255 characters.',
+        'title.required' => 'The support title is required.',
+        'title.string' => 'The support title must be a valid string.',
+        'title.max' => 'The supportr title cannot exceed 255 characters.',
+        'title.unique' => 'This support title already exists. Please choose a different one.',
+        'description.max' => 'The description may not be greater than 255 characters.',
         ]);
 
         $data = $request->all();
@@ -66,6 +67,7 @@ class SupportController extends Controller
             'message'   => 'support deleted successfully.',
         ]);
     }
+
 
 
 
@@ -99,4 +101,5 @@ class SupportController extends Controller
             'message'   => 'Status updated',
         ]);
     }
+
 }

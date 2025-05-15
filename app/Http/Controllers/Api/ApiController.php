@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\{TripCategoryDestination, SocialMedia, Banner, TripCategory, Partner, WhyChooseUs, Setting, Blog, Offer};
+use App\Models\{TripCategoryDestination, SocialMedia, Banner, TripCategory, Partner, 
+    WhyChooseUs, Setting, Blog, Offer, PageContent, Destination};
 
 class ApiController extends Controller
 {
@@ -147,6 +148,9 @@ class ApiController extends Controller
             $destinationsData = TripCategoryDestination::with('tripdestination')
                     ->where('trip_cat_id', $data_item->id)
                     ->where('status', 1)
+                    ->whereHas('tripdestination', function($q) {
+                        $q->where('status', 1);
+                    })
                     ->get();
                 
                 if (!empty($destinationsData)) {
@@ -278,7 +282,6 @@ class ApiController extends Controller
         return response()->json(['status'=>true, 'data' => $data]);
     }
 
-
     //master module/ banner
     public function bannerIndex() {
         $data = Banner::orderBy('id')->get();
@@ -396,6 +399,25 @@ class ApiController extends Controller
                 'message' => "Data not found!"
             ]);
         }
+    }
+
+    //page content
+    public function contentIndex() {
+         $data = PageContent::orderBy('id','asc')->get();
+        $result = [];
+        foreach($data as $key=>$item)
+        {
+            $result[$key] = [
+                'id'        =>$item->id,
+                'page'      =>$item->page,
+                'title'     =>$item->title,
+                'description' =>$item->description       
+            ];
+        }
+        return response()->json([
+            'status' => true,
+            'data'   => $result
+        ]);
     }
 }
    

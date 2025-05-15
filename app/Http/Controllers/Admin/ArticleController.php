@@ -50,7 +50,7 @@ class ArticleController extends Controller
             'meta_type' => 'nullable|string',
             'meta_description' => 'nullable|string',
             'meta_keywords' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120', 
         ]);
    
     // Prepare the request data
@@ -96,7 +96,7 @@ class ArticleController extends Controller
             'meta_type'         => 'nullable|string',
             'meta_description'  => 'nullable|string',
             'meta_keywords'     => 'nullable|string',
-            'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
+            'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5120', 
         ]);
     
         $this->articleRepository->update($id, $request->all());

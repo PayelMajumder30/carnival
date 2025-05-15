@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('page-title', 'Update social media')
+@section('page-title', 'Update Support')
 
 @section('section')
 <section class="content">
@@ -25,7 +25,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="description">Description <span style="color: red">*</span></label>
+                                <label for="description">Description</label>
                                 <textarea class="form-control" name="description" id="description" placeholder="Enter Description Here">{{ old('description', $data->description) }}</textarea>
                                 @error('description') <p class="small text-danger">{{ $message }}</p> @enderror
                             </div>

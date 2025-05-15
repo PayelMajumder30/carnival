@@ -28,16 +28,6 @@ class SupportRepository implements SupportRepositoryInterface
         return Support::create($supportData);
     }
 
-    public function delete($id)
-    {
-        $support = Support::findOrFail($id);
-        //dd($banner);
-        if($support->delete()){
-            return true;
-        } else{
-            return false;
-        }
-    }
 
     public function update($id, array $data)
     {
@@ -51,4 +41,17 @@ class SupportRepository implements SupportRepositoryInterface
         return $support;
     }
     
+    public function delete($id)
+    {
+        $support = Support::findOrFail($id);
+        //dd($banner);
+        if($support->delete()){
+            return true;
+        } else{
+            return false;
+        }
+        
+    }
+
+
 }
