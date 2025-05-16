@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Country;
-use App\Models\Destination;
+use App\Models\{Country, Destination, DestinationWisePackageCat};
 
 
 class DestinationController extends Controller
@@ -119,19 +118,22 @@ class DestinationController extends Controller
             'id'    => 'required|exists:destinations,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'logo'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'banner_image'  => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'short_desc'    => 'nullable|string|min:1',
         ], [
             'image.max'   => 'Upload image must not be more than 5MB.',
             'logo.max'    => 'Logo must not be more than 5MB.',
+            'banner_image.max'    => 'Banner iamge must not be more than 5MB.',
         ]);
 
-        if (!$request->hasFile('image') && !$request->hasFile('logo')) {
-            return response()->json([
-                'errors' => [
-                    'image' => ['Please upload at least one file: image or logo.'],
-                    'logo'  => ['Please upload at least one file: image or logo.'],
-                ]
-            ], 422);
-        }
+        // if (!$request->hasFile('image') && !$request->hasFile('logo')) {
+        //     return response()->json([
+        //         'errors' => [
+        //             'image' => ['Please upload at least one file: image or logo.'],
+        //             'logo'  => ['Please upload at least one file: image or logo.'],
+        //         ]
+        //     ], 422);
+        // }
 
         $destination = Destination::find($request->id);
 
@@ -157,6 +159,18 @@ class DestinationController extends Controller
             $destination->logo = $logoPath;
         }
 
+        //upload banner image
+        if ($request->hasFile('banner_image') && $request->file('banner_image')->isValid()) {
+            $bannerImage = $request->file('banner_image');
+            $bannerImageName = time() . rand(10000, 99999) . '.' . $bannerImage->extension();
+            $bannerImagePath = 'uploads/desti_wise_bannerImg/' . $bannerImageName;
+            $bannerImage->move(public_path('uploads/desti_wise_bannerImg'), $bannerImageName);
+            $destination->banner_image = $bannerImagePath;
+        }
+
+        if ($request->has('short_desc')) {
+            $destination->short_desc = $request->short_desc;
+        }
         $destination->save();
 
         
@@ -182,6 +196,14 @@ class DestinationController extends Controller
         ]);
     }
 
+    public function packageCategoryIndex($id) {
+
+        $destination = Destination::findOrFail($id);
+        $packageCategories = DestinationWisePackageCat::where('destination_id', $id)->get();
+
+        return view('admin.destination.packageCategoryIndex', compact('destination', 'packageCategories'));
+    }
+
     public function destinationDelete(Request $request) {
         $countryDestination = Destination::findOrFail($request->id);
         if(!$countryDestination) {
@@ -192,6 +214,7 @@ class DestinationController extends Controller
         }
         $imagePath = $countryDestination->image;
         $logoPath = $countryDestination->logo;
+        $bannerImagePath = $countryDestination->banner_image;
         // Delete banner from db
         $countryDestination->delete();
         // If file is exist then remove from target directory
@@ -201,6 +224,10 @@ class DestinationController extends Controller
 
         if (!empty($logoPath) && file_exists(public_path($logoPath))) {
             unlink(public_path($logoPath));
+        }
+
+         if (!empty($bannerImagePath) && file_exists(public_path($bannerImagePath))) {
+            unlink(public_path($bannerImagePath));
         }
         // Return suceess response with message
         return response()->json([

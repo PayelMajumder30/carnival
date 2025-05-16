@@ -22,4 +22,9 @@ class TripCategory extends Model
         return $this->hasMany(TripCategoryDestination::class, 'trip_cat_id');
     }
 
+    public function destinations()
+    {
+        return $this->hasMany(Destination::class, 'trip_cat_id');
+    }
+
 }

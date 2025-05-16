@@ -16,6 +16,8 @@ class Destination extends Model
         'image',
         'logo',
         'status',
+        'banner_image',
+        'short_desc'
     ];
 
     public function country()
@@ -26,5 +28,14 @@ class Destination extends Model
     public function tripcategorydestination() {
         return $this->hasMany(TripCategoryDestination::class, 'destination_id');
     }
-    
+
+    public function packcategorydestination() {
+        return $this->hasMany(DestinationWisePackageCat::class, 'destination_id');
+    }
+
+    public function activities()
+    {
+        return $this->hasMany(TripCategoryActivity::class, 'destination_id');
+    }
+
 }

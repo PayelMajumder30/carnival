@@ -129,62 +129,73 @@ class ApiController extends Controller
     public function tripIndex()
     {
         $data = TripCategory::with(['tripcategorybanner' => function($query) {
-                $query->where('status', 1)->orderBy('id');
-            }])->orderBy('positions')->get();
+            $query->where('status', 1)->orderBy('id');
+        }])->orderBy('positions')->get();
 
         $result = [];
-        foreach($data as $index=>$data_item) {
+
+        foreach ($data as $index => $data_item) {
             $activeBanner = $data_item->tripcategorybanner->first();
             $result[] = [
-                'id'              => $data_item->id,
-                'is_highlighted'  => $data_item->is_highlighted,
-                'title'           => ucwords($data_item->title),
-                'short_desc'      => $data_item->short_desc,
-                'image'           => $activeBanner ? asset($activeBanner->image) : null,
+                'id'             => $data_item->id,
+                'is_highlighted' => $data_item->is_highlighted,
+                'title'          => ucwords($data_item->title),
+                'short_desc'     => $data_item->short_desc,
+                'image'          => $activeBanner ? asset($activeBanner->image) : null,
             ];
 
-            $tripCategory = TripCategory::find($data_item->id);
 
             $destinationsData = TripCategoryDestination::with('tripdestination')
-                    ->where('trip_cat_id', $data_item->id)
-                    ->where('status', 1)
-                    ->whereHas('tripdestination', function($q) {
-                        $q->where('status', 1);
-                    })
-                    ->get();
-                
-                if (!empty($destinationsData)) {
-                    $destinationsData->transform(function ($item) {
-                        if ($item->tripdestination) {
-                            if ($item->tripdestination->image) {
-                                $item->tripdestination->image = asset($item->tripdestination->image);
-                            }
-                            if ($item->tripdestination->logo) {
-                                $item->tripdestination->logo = asset($item->tripdestination->logo);
-                            }
-                        }
-                        return $item;
-                    });
-                
-                    $destinations = [];
-                    foreach ($destinationsData as $key => $destination) {
-                        $destinations[$key] = [
-                            'name' => $destination->tripdestination ? $destination->tripdestination->destination_name : "N/A",
-                            'logo' => $destination->tripdestination ? $destination->tripdestination->logo : null,
-                            'image' => $destination->tripdestination ? $destination->tripdestination->image : null,
-                            'start_price' => $destination->start_price,
-                        ];
-                    }
-                
-                    $result[$index]['destinations'] = $destinations;
-                } 
+                ->where('trip_cat_id', $data_item->id)
+                ->where('status', 1)
+                ->whereHas('tripdestination', function($q) {
+                    $q->where('status', 1);
+                })
+                ->get();
+
+            if (!empty($destinationsData)) {
+                $destinations = [];
+
+                foreach ($destinationsData as $key => $destination) {
+                    $tripDest = $destination->tripdestination;
+
+                    // Format destination image and logo
+                    $image = $tripDest && $tripDest->image ? asset($tripDest->image) : null;
+                    $logo  = $tripDest && $tripDest->logo  ? asset($tripDest->logo) : null;
+
+                    $destinations[$key] = [
+                        'name'        => $tripDest ? $tripDest->destination_name : "N/A",
+                        'logo'        => $logo,
+                        'image'       => $image,
+                        'start_price' => $destination->start_price
+                    ];
+                }
+
+                $result[$index]['destinations'] = $destinations;
             }
 
+            // Activities
+            // Fetch activities under this destination and trip category
+            $activities = TripCategoryActivities::where('trip_cat_id', $data_item->id)
+                ->where('status', 1)
+                ->get()
+                ->map(function($activity) {
+                    return [
+                        'id'            => $activity->id,
+                        'activity_name' => $activity->activity_name,
+                        'image'         => $activity->image ? asset($activity->image) : null,
+                        'logo'          => $activity->logo ? asset($activity->logo) : null,
+                    ];
+                });
+                $result[$index]['activities'] = $activities;
+        }
+
         return response()->json([
-            'status'   => true,
-            'data'     => $result
+            'status' => true,
+            'data'   => $result
         ]);
     }
+
 
     public function tripShow($id)
     {

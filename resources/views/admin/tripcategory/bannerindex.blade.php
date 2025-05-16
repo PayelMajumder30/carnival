@@ -50,7 +50,7 @@
                                         <td>
                                             <div class="text-center">
                                                 @if (!empty($item->image) && file_exists(public_path($item->image)))
-                                                    <img src="{{ asset($item->image) }}" alt="tripcategorybanner-image" style="height: 50px" class="img-thumbnail mr-2">
+                                                    <img src="{{ asset($item->image) }}" alt="tripcategorybanner-image" style="height: 50px; width: 70px; object-position: center;" class="img-thumbnail mr-2">
                                                 @else
                                                     <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="tripcategorybanner-image" style="height: 50px" class="mr-2">
                                                 @endif

@@ -71,7 +71,6 @@
                                     <th>Country Name</th>
                                     <th>Status</th>
                                     <th>Destinations</th>
-                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -114,6 +113,8 @@
                                                         <th>Logo</th>
                                                         <th>Name</th>
                                                         <th>Image</th>
+                                                        <th>Banner Image</th>
+                                                        <th>Short Description</th>
                                                         <th>Status</th>
                                                         <th>Action</th>
                                                     </tr>
@@ -126,22 +127,37 @@
                                                                 @if (!empty($desti_item->logo) && file_exists(public_path($desti_item->logo)))
                                                                     <img src="{{ asset($desti_item->logo) }}" alt="destination-logo" style="height: 40px; width: 40px;background-color: #524242 !important;" class="img-thumbnail">
                                                                 @else
-                                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="placeholder-logo" style="height: 40px; width: 40px;" class="rounded-circle">
+                                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="placeholder-logo" title="logo" style="height: 40px; width: 40px;" class="rounded-circle">
                                                                 @endif
                                                             </div>
                                                         </td>
-                                                        <td>{{$desti_item->destination_name}}</td>
+                                                        <td>
+                                                            <div class="text-center">
+                                                                {{$desti_item->destination_name}}
+                                                            </div>
+                                                        </td>
                                                         <td id="image-col-{{ $desti_item->id }}">
                                                             <div class="text-center">
-                                                                @php
-                                                                    $imagePath = !empty($desti_item->image) && file_exists(public_path($desti_item->image))
-                                                                    ? asset($desti_item->image)
-                                                                    : asset('backend-assets/images/placeholder.jpg');
-                                                                @endphp
-                                                                <img src="{{ $imagePath }}" alt="destination-image"
-                                                                    class="img-thumbnail"
-                                                                    style="height: 50px; width: 70px; object-position: center;">
+                                                                @if (!empty($desti_item->image) && file_exists(public_path($desti_item->image)))
+                                                                    <img src="{{ asset($desti_item->image) }}" alt="destination-image" style="height: 50px; width: 70px; object-position: center;" class="img-thumbnail">
+                                                                @else
+                                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="placeholder-image" title="image" style="height: 50px; width: 70px;" class="img-thumbnail">
+                                                                @endif
                                                             </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="text-center">
+                                                                @if (!empty($desti_item->banner_image) && file_exists(public_path($desti_item->banner_image)))
+                                                                    <img src="{{ asset($desti_item->banner_image) }}" alt="destination-banner-image" style="height: 50px; width: 70px; object-position: center;" class="img-thumbnail">
+                                                                @else
+                                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="placeholder-banner_image" title="banner image" style="height: 50px; width: 70px;" class="img-thumbnail">
+                                                                @endif
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="text-center">
+                                                                   {{ \Str::limit(($desti_item->short_desc), 10, '...') }}
+                                                            </div>                                                     
                                                         </td>
                                                         <td> 
                                                             <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
@@ -152,13 +168,18 @@
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deleteDesti({{$desti_item->id}})" data-toggle="tooltip" title="Delete">
-                                                                <i class="fa fa-trash"></i>
-                                                            </a>
-                                                            {{-- modal for upload image and logo  --}}
-                                                            <a href="javascript:void(0)" class="btn btn-sm btn-info edit-media-btn" data-toggle="modal" data-target="#editMediaModal" data-id="{{ $desti_item->id }}"
-                                                                data-name="{{ $desti_item->name }}" title="Edit Logo & Image"><i class="fa fa-image"></i>
-                                                            </a> 
+                                                            <div class="text-center">
+                                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deleteDesti({{$desti_item->id}})" data-toggle="tooltip" title="Delete">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </a>
+                                                                {{-- modal for upload image and logo  --}}
+                                                                <a href="javascript:void(0)" class="btn btn-sm btn-info edit-media-btn" data-toggle="modal" data-target="#editMediaModal" data-id="{{ $desti_item->id }}"
+                                                                    data-name="{{ $desti_item->name }}" title="Edit Logo & Image"><i class="fa fa-image"></i>
+                                                                </a> 
+                                                                <a href="{{ route('admin.country/destinations.packageCategory', $desti_item->id) }}" class="btn btn-sm btn-warning" title="Manage Package Categories">
+                                                                    <i class="fa fa-folder"></i>
+                                                                </a>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                     @endforeach
@@ -188,7 +209,19 @@
                                                                     <input type="file" class="form-control" name="image" id="image">
                                                                     <div class="error text-danger" id="image-error"></div>
                                                                 </div>
+                                                                <div class="form-group">
+                                                                    <label for="banner_image">Upload Banner Image</label>
+                                                                    <input type="file" class="form-control" name="banner_image" id="banner_image">
+                                                                    <div class="error text-danger" id="banner-image-error"></div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="short_desc">Upload Short Description</label>
+                                                                    <textarea class="form-control" name="short_desc" id="short_desc" rows="4" 
+                                                                    placeholder="Enter short description..."></textarea>
+                                                                    <div class="error text-danger" id="short-desc-error"></div>
+                                                                </div>
                                                             </div>
+                                                            
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                                                                 <button type="button" id="editMediaSubmit" class="btn btn-primary">Update</button>
@@ -197,8 +230,7 @@
                                                     </form>
                                                 </div>
                                             </div>
-                                        </td>
-                                        <td></td>
+                                        </td>                                       
                                     </tr>
                                 @empty
                                     <tr>
@@ -363,11 +395,13 @@
 
             $('#image-error').text('');
             $('#logo-error').text('');
+            $('#banner-image-error').text('');
 
             let hasError = false;
 
             const imageFile = $('#image').val();
             const logoFile = $('#logo').val();
+            const bannerImageFile = $('#banner_image').val();
 
             if (hasError) return;
 
@@ -392,6 +426,9 @@
                         if (res.errors.logo) {
                             $('#logo-error').text(res.errors.logo[0]);
                         }
+                        if (res.errors.banner_image) {
+                            $('#banner-image-error').text(res.errors.banner_image[0]);
+                        }
                         if (res.errors.id) {
                             alert('Destination ID is missing.');
                         }
@@ -402,7 +439,6 @@
             });
         });
     });
-
 
 
     document.addEventListener('DOMContentLoaded', function () {
