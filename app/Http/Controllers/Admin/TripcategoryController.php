@@ -445,42 +445,7 @@ class TripcategoryController extends Controller
     }
 
 
-    public function activitiesDelete(Request $request) {
-        $tripactivity = TripCategoryActivities::find($request->id);
-
-        if(!$tripactivity) {
-            return response()->json([
-                'status'    => 404,
-                'message'   => 'Activity not found'
-            ]); 
-        }
-
-        $imagePath = $tripactivity->image;
-        $logoPath = $tripactivity->logo;
-        $tripactivity->delete();
-        if (!empty($imagePath) && file_exists(public_path($imagePath))) {
-            unlink(public_path($imagePath));
-        }
-
-        if (!empty($logoPath) && file_exists(public_path($logoPath))) {
-            unlink(public_path($logoPath));
-        }
-        return response()->json([
-            'status'    => 200,
-            'message'   => 'Activity deleted succesfully',
-        ]);
-    }
-
-    public function activitiesStatus(Request $request, $id) {
-        $data = TripCategoryActivities::find($id);
-        $data->status   = ($data->status == 1) ? 0 : 1;
-        $data->update();
-        return response()->json([
-            'status'    => 200,
-            'message'   => 'status updated',
-        ]);
-    }
-
+    
     public function updateActivities(Request $request)
     {
        
@@ -526,5 +491,43 @@ class TripcategoryController extends Controller
         $activity->save();
         return redirect()->back()->with('success', 'Activity Updated Successfully');
     }
+
+    public function activitiesStatus(Request $request, $id) {
+        $data = TripCategoryActivities::find($id);
+        $data->status   = ($data->status == 1) ? 0 : 1;
+        $data->update();
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'status updated',
+        ]);
+    }
+
+
+    public function activitiesDelete(Request $request) {
+        $tripactivity = TripCategoryActivities::find($request->id);
+
+        if(!$tripactivity) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Activity not found'
+            ]); 
+        }
+
+        $imagePath = $tripactivity->image;
+        $logoPath = $tripactivity->logo;
+        $tripactivity->delete();
+        if (!empty($imagePath) && file_exists(public_path($imagePath))) {
+            unlink(public_path($imagePath));
+        }
+
+        if (!empty($logoPath) && file_exists(public_path($logoPath))) {
+            unlink(public_path($logoPath));
+        }
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Activity deleted succesfully',
+        ]);
+    }
+
 
 }

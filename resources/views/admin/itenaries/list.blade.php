@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('page-title', 'Social Media list')
+@section('page-title', 'Itinary List')
 
 @section('section')
 <section class="content">
@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <div class="row mb-3">
                             <div class="col-md-12 text-right">
-                                <a href="{{ route('admin.social_media.create') }}" class="btn btn-sm btn-primary"> <i class="fa fa-plus"></i> Create</a>
+                                <a href="{{ route('admin.itenaries.create')}}" class="btn btn-sm btn-primary"> <i class="fa fa-plus"></i> Create</a>
                             </div>
                         </div>
                         <div class="row">
@@ -21,6 +21,7 @@
                                         <div class="form-group ml-2">
                                             <input type="search" class="form-control form-control-sm" name="keyword" id="keyword" value="{{ request()->input('keyword') }}" placeholder="Search something...">
                                         </div>
+
                                         <div class="form-group ml-2">
                                             <div class="btn-group">
                                                 <button type="submit" class="btn btn-sm btn-primary">
@@ -39,47 +40,55 @@
                     <div class="card-body">
                         <table class="table table-sm table-hover">
                             <thead>
-                                <tr class="text-center">
-                                    <th>#</th>
-                                    <th>Image</th>
-                                    <th>Title</th>
-                                    <th>Link</th>
-                                    <th style="width: 100px">Action</th>
+                                <tr>
+                                    <th style="width: 5%">#</th>
+                                    <th width="15%">Main Image</th>
+                                    <th width="15%">Title</th>
+                                    <th width="15%">Short Description</th>
+                                    <th width="15%">Selling Price</th>
+                                    <th width="15%">Actual Price</th>
+                                    <th>Status</th>
+                                    <th width="10%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($data as $index => $item)
-                                    <tr>
-                                        <td class="text-center">{{ $index + $data->firstItem() }}</td>
+                                    <tr class="text-left align-middle">
+                                        <td>{{ $index + 1 }}</td>
+
                                         <td>
-                                            <div class="text-center">
-                                                @if (!empty($item->image) && file_exists(public_path($item->image)))
-                                                    <img src="{{ asset($item->image) }}" alt="social-media-image" style="height: 50px" class="img-thumbnail mr-2">
-                                                @else
-                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="social-media-image" style="height: 50px" class="mr-2">
-                                                @endif
+                                            @if (!empty($item->main_image) && file_exists(public_path($item->main_image)))
+                                                <img src="{{ asset($item->main_image) }}" style="height: 40px; width: 40px;background-color: #524242 !important; object-position: center;" class="img-thumbnail" alt="main-image">
+                                            @else
+                                                <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" style="height: 40px; width: 40px;background-color: #524242 !important;" class="img-thumbnail" alt="main-image">
+                                            @endif
+                                        </td>
+
+                                        <td>{{ ucwords($item->title) }}</td>
+
+        
+                                        <td>{{ ucwords($item->short_description ?? '-') }}</td>
+
+                      
+                                        <td>{{ $item->selling_price ?? '-' }}</td>
+
+                                        <td>{{ $item->actual_price ?? '-' }}</td>
+
+                                        <td>
+                                            <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
+                                                <input type="checkbox" class="custom-control-input" id="statusSwitch{{ $item->id }}"
+                                                    {{ $item->status == 1 ? 'checked' : '' }}
+                                                    onchange="statusToggle('{{ route('admin.itenaries.status', $item->id) }}')">
+                                                <label class="custom-control-label" for="statusSwitch{{ $item->id }}"></label>
                                             </div>
                                         </td>
-                                        <td class="text-center">
-                                            <div class="title-part">
-                                                <p class="text-muted mb-0">{{ $item->title }}</p>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <a href="{{$item->link}}" target="_blank" class="btn btn-sm btn-dark" data-toggle="tooltip" title="link">
-                                                <i class="fa fa-link"></i>
-                                            </a>
-                                        </td>
-                                        <td class="text-center">
+
+                                        <td class="d-flex">
                                             <div class="btn-group">
-                                                <a href="{{ route('admin.social_media.edit', $item->id) }}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
+                                                <a href="{{ route('admin.itenaries.edit', $item->id) }}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
-
-                                                {{-- <a href="{{ route('admin.social_media.delete', $item->id) }}" class="btn btn-sm btn-dark" onclick="return confirm('Are you sure ?')" data-toggle="tooltip" title="Delete">
-                                                    <i class="fa fa-trash"></i>
-                                                </a> --}}
-                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deleteSocial({{$item->id}})" data-toggle="tooltip" title="Delete">
+                                                <a href="javascript:void(0)" class="btn btn-sm btn-dark ml-1" onclick="deleteItenary({{ $item->id }})" data-toggle="tooltip" title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </div>
@@ -87,14 +96,15 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="100%" class="text-center">No records found</td>
+                                        <td colspan="100%" class="text-center">No itineraries found</td>
                                     </tr>
                                 @endforelse
                             </tbody>
-                        </table>
 
+                        </table>
+                       {{-- Pagination Links --}}
                         <div class="pagination-container">
-                            {{$data->appends($_GET)->links()}}
+                            {{$data->links()}}
                         </div>
                     </div>
                 </div>
@@ -102,9 +112,10 @@
         </div>
     </div>
 </section>
+
 @endsection
-<script>
-    function deleteSocial(socialId) {
+<script>  
+    function deleteItenary(itenaryId) {
         Swal.fire({
             icon: 'warning',
             title: "Are you sure you want to delete this?",
@@ -114,22 +125,23 @@
             cancelButtonColor: "#d33",
             confirmButtonText: "Delete",
         }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "{{ route('admin.social_media.delete')}}",
-                    type: 'POST',
+                    url: "/admin/itenaries/itenary-list/delete/" + itenaryId,  // ID in URL
+                    type: 'DELETE',  // Correct HTTP verb
                     data: {
-                        "id": socialId,
-                        "_token": '{{ csrf_token() }}',
+                        _token: '{{ csrf_token() }}',  // CSRF token is still needed
                     },
-                    success: function (data){
-                        if (data.status != 200) {
+                    success: function (data) {
+                        if (data.status != 'success') {
                             toastFire('error', data.message);
                         } else {
                             toastFire('success', data.message);
                             location.reload();
                         }
+                    },
+                    error: function () {
+                        toastFire('error', 'Something went wrong. Please try again.');
                     }
                 });
             }

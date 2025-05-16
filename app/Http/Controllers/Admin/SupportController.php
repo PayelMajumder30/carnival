@@ -10,7 +10,7 @@ use App\Models\Support;
 
 class SupportController extends Controller
 {
-     private $SupportRepository;
+    private $SupportRepository;
         public function __construct(SupportRepositoryInterface $SupportRepository){
         $this->SupportRepository = $SupportRepository;
     }

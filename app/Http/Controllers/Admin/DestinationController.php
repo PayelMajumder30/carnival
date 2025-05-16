@@ -203,6 +203,8 @@ class DestinationController extends Controller
             'message' => 'Status updated',
         ]);
     }
+    
+
 
 
     //Destinationwise package Category
