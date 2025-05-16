@@ -4,11 +4,19 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Interfaces\DestiantionPackageInterface;
+use Illuminate\Support\Facades\DB;
 use App\Models\{Country, Destination, DestinationWisePackageCat};
 
 
 class DestinationController extends Controller
 {
+
+    //
+    private $destiantionPackageRepository;
+    public function __construct(DestiantionPackageInterface $destiantionPackageRepository){
+        $this->destiantionPackageRepository = $destiantionPackageRepository;
+    }
     public function index(Request $request)
     {
 
@@ -137,7 +145,6 @@ class DestinationController extends Controller
 
         $destination = Destination::find($request->id);
 
-
         //image and logo upload
         if($request->hasFile('image') && $request->file('image')->isValid())
         {
@@ -196,12 +203,57 @@ class DestinationController extends Controller
         ]);
     }
 
-    public function packageCategoryIndex($id) {
 
-        $destination = Destination::findOrFail($id);
-        $packageCategories = DestinationWisePackageCat::where('destination_id', $id)->get();
+    //Destinationwise package Category
+    public function packageCategoryIndex(Request $request, $id)
+    {
+        $keyword        = $request->keyword;
+        $destination    = Destination::findOrFail($id);
+        $query          = DestinationWisePackageCat::where('destination_id', $id);
+        if ($keyword) {
+            $query->where(function($q) use ($keyword) {
+                $q->where('title', 'like', '%'.$keyword.'%');
+            });
+        }
+        $packageCategories = $query->latest('id')->paginate(25);
 
         return view('admin.destination.packageCategoryIndex', compact('destination', 'packageCategories'));
+    }
+
+    public function packageCategoryCreate($id)
+    {
+        $packageCategories  = Destination::findOrFail($id);
+        return view('admin.destination.packageCategoryIndex', compact('packageCategories'));
+    }
+
+    public function packageCategoryStore(Request $request) {
+        $request->validate([
+            'title' => 'required|string|max:255|unique:destination_wise_package_category,title',
+            'destination_id'  => 'required|exists:destinations,id', 
+        ],[
+            'title.required' => 'The title is required.',
+            'title.string' => 'The title must be a valid string.',
+            'title.max' => 'The title cannot exceed 255 characters.',
+            'title.unique' => 'This title already exists. Please choose a different one.',
+        ]);
+        $this->destiantionPackageRepository->create([
+            'title' => $request->title,
+            'destination_id' => $request->destination_id,
+        ]);
+        return redirect()
+                ->route('admin.country/destinations.packageCategory', $request->destination_id)
+                ->with('success', 'New Title created');
+    }
+
+    public function packageCategoryUpdate(Request $request) {
+        $request->validate([
+            'id' => 'required|exists:destination_wise_package_category,id',
+            'title' => 'required|string|max:255|unique:destination_wise_package_category,title,',
+        ]);
+        $this->packageCatRepo->update($request->id, [
+            'title' => $request->title
+        ]);
+        return redirect()->back()->with('success', 'Package Category title updated successfully.');
     }
 
     public function destinationDelete(Request $request) {

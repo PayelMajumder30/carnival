@@ -141,6 +141,9 @@ Route::name('admin.')->group(function() {
                 Route::post('/destination/create-image', [DestinationController::class, 'createDestImage'])->name('destination.createImage'); 
                 Route::get('/destination/status/{id}', [DestinationController::class, 'destinationStatus'])->name('destination.status');
                 Route::get('/destination/package-category/{id}', [DestinationController::class, 'packageCategoryIndex'])->name('country/destinations.packageCategory');
+                Route::get('/destination/package-category/create/{id}', [DestinationController::class, 'packageCategoryCreate'])->name('country/destinations.packageCategoryCreate');
+                Route::post('/destination/package-category/store', [DestinationController::class, 'packageCategoryStore'])->name('country/destinations.packageCategoryStore');
+                Route::post('/destination/package-category/update', [DestinationController::class, 'packageCategoryUpdate'])->name('country/destinations.packageCategoryUpdate');
                 Route::post('/delete', [DestinationController::class, 'destinationDelete'])->name('destination.delete');
                 
             });
