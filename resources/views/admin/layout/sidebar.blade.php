@@ -128,10 +128,21 @@
                 <ul class="nav nav-treeview">
                     @if(in_array('Upcoming events', $RolePass))
                         <li class="nav-item">
-                            <a href="{{ route('admin.itenaries.list.all') }}"
+                            <a href="{{ route('admin.upcomingevents.list.all') }}"
                             class="nav-link {{ (request()->is('admin/itenaries*')) ? 'active active_nav_link' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Upcoming Events </p>
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+                <ul class="nav nav-treeview">
+                    @if(in_array('Itenary list', $RolePass))
+                        <li class="nav-item">
+                            <a href="{{ route('admin.itenaries.list.all') }}"
+                            class="nav-link {{ (request()->is('admin/itenaries*')) ? 'active active_nav_link' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Itenary List </p>
                             </a>
                         </li>
                     @endif

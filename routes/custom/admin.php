@@ -123,9 +123,9 @@ Route::name('admin.')->group(function() {
                 Route::get('/activities/{trip_cat_id}', [TripcategoryController::class, 'activitiesIndex'])->name('tripcategoryactivities.list.all');
                 Route::get('activities/by-destination/{country_id}/{trip_cat_id}', [TripcategoryController::class, 'getActivitiesByDestination'])->name('tripcategorydestination.getActivities');
                 Route::post('activities/add', [TripcategoryController::class, 'activityAdd'])->name('tripcategorydestination.activityAdd');
-                Route::post('activities/delete', [TripcategoryController::class, 'activitiesDelete'])->name('tripcategory.activitiesDelete');
-                Route::get('activities/status/{id}',[TripcategoryController::class, 'activitiesStatus'])->name('tripcategory.activitiesStatus');
                 Route::post('activities/update', [TripcategoryController::class, 'updateActivities'])->name('tripcategory.updateActivities');
+                Route::get('activities/status/{id}',[TripcategoryController::class, 'activitiesStatus'])->name('tripcategory.activitiesStatus');
+                Route::post('activities/delete', [TripcategoryController::class, 'activitiesDelete'])->name('tripcategory.activitiesDelete');
             });
 
             //offer list
@@ -149,6 +149,9 @@ Route::name('admin.')->group(function() {
                 Route::post('/destination/create-image', [DestinationController::class, 'createDestImage'])->name('destination.createImage'); 
                 Route::get('/destination/status/{id}', [DestinationController::class, 'destinationStatus'])->name('destination.status');
                 Route::get('/destination/package-category/{id}', [DestinationController::class, 'packageCategoryIndex'])->name('country/destinations.packageCategory');
+                Route::get('/destination/package-category/create/{id}', [DestinationController::class, 'packageCategoryCreate'])->name('country/destinations.packageCategoryCreate');
+                Route::post('/destination/package-category/store', [DestinationController::class, 'packageCategoryStore'])->name('country/destinations.packageCategoryStore');
+                Route::post('/destination/package-category/update', [DestinationController::class, 'packageCategoryUpdate'])->name('country/destinations.packageCategoryUpdate');
                 Route::post('/delete', [DestinationController::class, 'destinationDelete'])->name('destination.delete');
                 
             });
@@ -190,10 +193,27 @@ Route::name('admin.')->group(function() {
         });
 
         //Itenaries
-        Route::prefix('itenaries')->group(function() {
-            Route::get('/', [itenariesController::class, 'index'])->name('itenaries.list.all');
-            
-        });    
+        Route::prefix('itinaries')->group(function() {
+
+            //upcoming events  
+            Route::prefix('upcoming-events')->group(function() {
+                Route::get('/', [itenariesController::class, 'index'])->name('upcomingevents.list.all');
+                
+            });
+
+            //itenary list
+            Route::prefix('itinary-list')->group(function() {
+                Route::get('/', [ItenaryListController::class, 'index'])->name('itenaries.list.all');
+                Route::get('/create', [ItenaryListController::class, 'create'])->name('itenaries.create');
+                Route::post('/store', [ItenaryListController::class, 'store'])->name('itenaries.store');
+                Route::get('/edit/{id}', [ItenaryListController::class, 'edit'])->name('itenaries.edit');
+                Route::post('/update/{id}', [ItenaryListController::class, 'update'])->name('itenaries.update');
+                Route::get('/status/{id}', [ItenaryListController::class, 'toggleStatus'])->name('itenaries.status');
+                Route::delete('/delete/{id}', [ItenaryListController::class, 'delete'])->name('itenaries.delete');
+            });
+
+        });
+        
     });
 
     // ckeditor custom upload adapter path

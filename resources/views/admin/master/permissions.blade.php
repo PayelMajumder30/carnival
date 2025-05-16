@@ -111,6 +111,10 @@
                                                     <input type="checkbox" id="upcoming_events" name="roles[]" value="Upcoming events" data-parent="ITENARIES" {{ in_array('Upcoming events', $permissions) ? 'checked' : '' }}>
                                                     <label for="upcoming_events">Upcoming Events</label>
                                                 </li>
+                                                 <li>
+                                                    <input type="checkbox" id="itenary_list" name="roles[]" value="Itenary list" data-parent="ITENARIES" {{ in_array('itenary_list', $permissions) ? 'checked' : '' }}>
+                                                    <label for="itenary_list">Itenary List</label>
+                                                </li>
                                             </ul>
                                         </li>
 
