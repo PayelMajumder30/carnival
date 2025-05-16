@@ -89,6 +89,9 @@
                                             <a href="{{ route('admin.tripcategorydestination.list.all', ['trip_cat_id' => $item->id])}}" class="btn btn-sm btn-info mr-1" data-toggle="tooltip" title="Destination">
                                                 Destination
                                             </a>
+                                            <a href="{{ route('admin.tripcategoryactivities.list.all', ['trip_cat_id' => $item->id])}}" class="btn btn-sm btn-info mr-1" data-toggle="tooltip" title="Activities">
+                                                Activities
+                                            </a>
                                         </div>
                                     </div>
                                 </li>

@@ -118,6 +118,14 @@ Route::name('admin.')->group(function() {
                 Route::post('destination/add', [TripcategoryController::class, 'destinationAdd'])->name('tripcategorydestination.destinationAdd');
                 Route::post('destination/update-price', [TripcategoryController::class, 'updatePrice'])->name('tripcategory.updatePrice');
                 Route::post('destination/delete', [TripcategoryController::class, 'destinationDelete'])->name('tripcategory.destinationDelete');
+
+                //trip category activities
+                Route::get('/activities/{trip_cat_id}', [TripcategoryController::class, 'activitiesIndex'])->name('tripcategoryactivities.list.all');
+                Route::get('activities/by-destination/{country_id}/{trip_cat_id}', [TripcategoryController::class, 'getActivitiesByDestination'])->name('tripcategorydestination.getActivities');
+                Route::post('activities/add', [TripcategoryController::class, 'activityAdd'])->name('tripcategorydestination.activityAdd');
+                Route::post('activities/delete', [TripcategoryController::class, 'activitiesDelete'])->name('tripcategory.activitiesDelete');
+                Route::get('activities/status/{id}',[TripcategoryController::class, 'activitiesStatus'])->name('tripcategory.activitiesStatus');
+                Route::post('activities/update', [TripcategoryController::class, 'updateActivities'])->name('tripcategory.updateActivities');
             });
 
             //offer list

@@ -50,6 +50,28 @@ class SupportController extends Controller
         $this->SupportRepository->create($data);
         return redirect()->route('admin.support.list.all')->with('success', 'New support created');
     }
+
+    public function delete(Request $request){
+        $support = Support::find($request->id); // use find(), not findOrFail() to avoid immediate 404
+    
+        if (!$support) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'support not found.',
+            ]);
+        }
+    
+        $support->delete(); // perform deletion
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'support deleted successfully.',
+        ]);
+    }
+
+
+
+
+
     
     public function edit($id){
         $data = $this->SupportRepository->findById($id);
@@ -77,22 +99,6 @@ class SupportController extends Controller
         return response()->json([
             'status'    => 200,
             'message'   => 'Status updated',
-        ]);
-    }
-
-    public function delete(Request $request){
-        $support = Support::find($request->id); // use find(), not findOrFail() to avoid immediate 404
-    
-        if (!$support) {
-            return response()->json([
-                'status'    => 404,
-                'message'   => 'support not found.',
-            ]);
-        }  
-        $support->delete(); // perform deletion
-        return response()->json([
-            'status'    => 200,
-            'message'   => 'support deleted successfully.',
         ]);
     }
 

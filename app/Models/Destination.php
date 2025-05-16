@@ -32,4 +32,10 @@ class Destination extends Model
     public function packcategorydestination() {
         return $this->hasMany(DestinationWisePackageCat::class, 'destination_id');
     }
+
+    public function activities()
+    {
+        return $this->hasMany(TripCategoryActivity::class, 'destination_id');
+    }
+
 }

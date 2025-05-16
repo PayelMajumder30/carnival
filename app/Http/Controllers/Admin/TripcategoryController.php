@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Interfaces\TripCategoryRepositoryInterface;
 use Illuminate\Support\Facades\DB;
-use App\Models\{TripCategory, TripCategoryBanner, TripCategoryDestination, Country, Destination};
+use App\Models\{TripCategory, TripCategoryBanner, TripCategoryDestination, Country, Destination, TripCategoryActivities};
 
 class TripcategoryController extends Controller
 {
@@ -290,6 +290,7 @@ class TripcategoryController extends Controller
                 'message' => 'Destination not found',
             ]);
         }
+
         return response()->json([
             'status'  => 200,
             'message' => 'Destinations fetched successfully.',
@@ -348,6 +349,182 @@ class TripcategoryController extends Controller
         $item->save();
 
         return redirect()->back()->with('success', 'Price Updated Successfully');
+    }
+
+    //trip category activities 
+    public function activitiesIndex($trip_cat_id, Request $request)
+    {
+        $countries  = Country::where('status', 1)->get(); 
+        $trip       = TripCategory::findOrFail($trip_cat_id);
+        
+        $query = TripCategoryActivities::with('tripdestination')->where('trip_cat_id', $trip_cat_id);
+
+        if ($request->has('keyword') && $request->keyword != '') {
+            $keyword = $request->keyword;
+            $query->whereHas('tripdestination', function($q) use ($keyword) {
+                $q->where('destination_name', 'like', '%' . $keyword . '%')
+                ->orWhere('activity_name', 'like', '%' . $keyword . '%');
+            });
+        }
+
+        $activities = $query->paginate(25);
+
+        return view('admin.tripcategory.activitiesIndex', compact('countries', 'trip', 'activities'));
+    }
+
+
+    public function getActivitiesByDestination($country_id, $trip_cat_id) {
+
+        $assignedDestinationIds = TripCategoryDestination::where('trip_cat_id', $trip_cat_id)->pluck('destination_id')->toArray();
+        
+        $destinations = Destination::
+            select(['id', 'destination_name', 'crm_destination_id'])
+            ->where('country_id', $country_id)
+            ->where('status', 1)
+            ->whereNotIn('id', $assignedDestinationIds)
+            ->get();
+
+        if ($destinations->isEmpty()) {
+            return response()->json([
+                'status'  => 404,
+                'message' => 'Destination not found',
+            ]);
+        }
+
+        return response()->json([
+            'status'  => 200,
+            'message' => 'Destinations fetched successfully.',
+            'destinations' => $destinations,
+        ]);
+        
+    }
+
+    public function activityAdd(Request $request)
+    {
+        $request->validate([
+            'trip_cat_id'    => 'required|integer',
+            'destination_id' => 'required|integer',
+            'activity_name'  => 'required|string|max:255',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'logo' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+        ]);
+
+        $imagePath = null;
+        $logoPath = null;
+
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $image = $request->file('image');
+            $imageName = time().rand(10000, 99999).'.'.$image->extension();
+            $imagePath = 'uploads/trip_activities/'.$imageName;
+            $image->move(public_path('uploads/trip_activities'), $imageName);
+        }
+
+        if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
+            $logo = $request->file('logo');
+            $logoName = time().rand(10000, 99999).'_logo.'.$logo->extension();
+            $logoPath = 'uploads/trip_activities/'.$logoName;
+            $logo->move(public_path('uploads/trip_activities'), $logoName);
+        }
+
+        $tripCategoryActivity = TripCategoryActivities::create([
+            'trip_cat_id'    => $request->trip_cat_id,
+            'destination_id' => $request->destination_id,
+            'activity_name'  => $request->activity_name,
+            'image'          => $imagePath,
+            'logo'           => $logoPath,
+            'status'         => 1,
+        ]);
+
+        $activity = TripCategoryActivities::with('tripdestination')->find($tripCategoryActivity->id);
+
+        return response()->json([
+            'status'  => 201,
+            'message' => 'Activity has been added successfully.',
+            'destination' => $activity,
+        ]);
+    }
+
+
+    public function activitiesDelete(Request $request) {
+        $tripactivity = TripCategoryActivities::find($request->id);
+
+        if(!$tripactivity) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Activity not found'
+            ]); 
+        }
+
+        $imagePath = $tripactivity->image;
+        $logoPath = $tripactivity->logo;
+        $tripactivity->delete();
+        if (!empty($imagePath) && file_exists(public_path($imagePath))) {
+            unlink(public_path($imagePath));
+        }
+
+        if (!empty($logoPath) && file_exists(public_path($logoPath))) {
+            unlink(public_path($logoPath));
+        }
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Activity deleted succesfully',
+        ]);
+    }
+
+    public function activitiesStatus(Request $request, $id) {
+        $data = TripCategoryActivities::find($id);
+        $data->status   = ($data->status == 1) ? 0 : 1;
+        $data->update();
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'status updated',
+        ]);
+    }
+
+    public function updateActivities(Request $request)
+    {
+       
+        $request->validate([
+            'id' => 'required|exists:trip_category_activities,id',
+            'activity_name' => 'required|string|max:255',
+            'activity_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+            'activity_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
+        ]);
+
+        $activity = TripCategoryActivities::findOrFail($request->id);
+        $activity->activity_name = $request->activity_name;
+
+        if ($request->hasFile('activity_image') && $request->file('activity_image')->isValid()) {
+            // Delete old image if exists
+            if ($activity->image && file_exists(public_path($activity->image))) {
+                unlink(public_path($activity->image));
+            }
+
+            // Upload new image
+            $image = $request->file('activity_image');
+            $imageName = time() . rand(10000, 99999) . '.' . $image->extension();
+            $imagePath = 'uploads/trip_activities/' . $imageName;
+            $image->move(public_path('uploads/trip_activities'), $imageName);
+            $activity->image = $imagePath;
+        }
+
+        if ($request->hasFile('activity_logo') && $request->file('activity_logo')->isValid()) {
+            // Delete old logo if exists
+            if ($activity->logo && file_exists(public_path($activity->logo))) {
+                unlink(public_path($activity->logo));
+            }
+
+            // Upload new logo
+            $logo = $request->file('activity_logo');
+            $logoName = time() . rand(10000, 99999) . '_logo.' . $logo->extension();
+            $logoPath = 'uploads/trip_activities/' . $logoName;
+            $logo->move(public_path('uploads/trip_activities'), $logoName);
+            $activity->logo = $logoPath;
+        }
+
+
+        $activity->save();
+        return redirect()->back()->with('success', 'Activity Updated Successfully');
     }
 
 }
