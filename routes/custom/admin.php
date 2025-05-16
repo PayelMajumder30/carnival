@@ -139,7 +139,8 @@ Route::name('admin.')->group(function() {
                 Route::get('/country/status/{id}', [DestinationController::class, 'countryStatus'])->name('country.status'); 
                 Route::post('/destination/add',[DestinationController::class, 'destinationAdd'])->name('destination.add'); 
                 Route::post('/destination/create-image', [DestinationController::class, 'createDestImage'])->name('destination.createImage'); 
-                Route::get('/destination/status/{id}', [DestinationController::class, 'destinationStatus'])->name('destination.status');  
+                Route::get('/destination/status/{id}', [DestinationController::class, 'destinationStatus'])->name('destination.status');
+                Route::get('/destination/package-category/{id}', [DestinationController::class, 'packageCategoryIndex'])->name('country/destinations.packageCategory');
                 Route::post('/delete', [DestinationController::class, 'destinationDelete'])->name('destination.delete');
                 
             });
@@ -147,11 +148,11 @@ Route::name('admin.')->group(function() {
              //Master modeule/support
             Route::prefix('support')->group(function(){
                 Route::get('/',[SupportController::class, 'index'])->name('support.list.all');
-                Route::get('/edit/{id}', [SupportController::class, 'edit'])->name('support.edit');
-                Route::post('/update', [SupportController::class, 'update'])->name('support.update');
-                Route::get('/status/{id}', [SupportController::class, 'status'])->name('support.status'); 
                 Route::get('/create',[SupportController::class, 'create'])->name('support.create');
                 Route::post('/store',[SupportController::class, 'store'])->name('support.store');
+                Route::get('/edit/{id}', [SupportController::class, 'edit'])->name('support.edit');
+                Route::post('/update', [SupportController::class, 'update'])->name('support.update');
+                Route::get('/status/{id}', [SupportController::class, 'status'])->name('support.status');               
                 Route::post('/delete',[SupportController::class, 'delete'])->name('support.delete');
             });
         });
@@ -177,8 +178,7 @@ Route::name('admin.')->group(function() {
                Route::get('/edit/{id}', [PageContentController::class, 'PageContentEdit'])->name('page_content.edit');
                Route::post('/update/{id}', [PageContentController::class, 'PageContentUpdate'])->name('page_content.update');
                Route::get('/delete/{id}', [PageContentController::class, 'PageContentDelete'])->name('page_content.delete');
-
-           });
+            });
         });
 
         //Itenaries
