@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\DestinationWisePackageCat;
+use App\Models\{DestinationWisePackageCat, PackageCategory};
 use App\Interfaces\DestiantionPackageInterface;
 //use Auth;
 
@@ -10,27 +10,27 @@ class DestiantionPackageRepository implements DestiantionPackageInterface
 {
     public function getAll()
     {
-        return DestinationWisePackageCat::all();
+        return PackageCategory::all();
     }
 
     public function findById($id)
     {
-        return DestinationWisePackageCat::findOrFail($id);
+        return PackageCategory::findOrFail($id);
     }
 
     public function create(array $data)
         {
-           $destiPckgCat = [     
+           $packageCatData  = [     
                 'title' => $data['title'], 
-                'destination_id' => $data['destination_id'],   
+                //'destination_id' => $data['destination_id'],   
             ];
             // Create the banner media and return the created instance
-            return DestinationWisePackageCat::create($destiPckgCat);
+            return PackageCategory::create($packageCatData );
         }
 
     public function update($id, array $data)
         {
-            $destiPckgCat = DestinationWisePackageCat::findOrFail($id);
+            $destiPckgCat = PackageCategory::findOrFail($id);
             $updatePckgData = [
                 'title' => $data['title'],
             ];
@@ -40,7 +40,7 @@ class DestiantionPackageRepository implements DestiantionPackageInterface
 
     public function delete($id)
     {
-        $social = DestinationWisePackageCat::findOrFail($id);
+        $social = PackageCategory::findOrFail($id);
         //dd($social);
         //check if social media has an image
         if($social->image && file_exists(public_path($social->image))) {

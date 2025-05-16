@@ -62,18 +62,19 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
-                                                <input type="checkbox" class="custom-control-input" id="customSwitch{{$item->id}}" {{ ($item->status == 1) ? 'checked' : '' }} onchange="statusToggle('{{ route('admin.offers.status', $item->id) }}')">
+                                                <input type="checkbox" class="custom-control-input" id="customSwitch{{$item->id}}" {{ ($item->status == 1) ? 'checked' : '' }} onchange="statusToggle('{{ route('admin.country/destinations.packageCategoryStatus', $item->id) }}')">
                                                 <label class="custom-control-label" for="customSwitch{{$item->id}}"></label>
                                             </div>
                                         </td>
                                            <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="javascript:void(0)" class="btn btn-sm btn-info mr-1 edit-title-btn" data-toggle="modal" 
-                                                data-target="#editTitleModal" data-id="{{ $item->id }}" data-price="{{ $item->title }}" data-title="{{ $item->title }}" 
-                                                title="Edit">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>                          
-                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deleteOffer({{$item->id}})" data-toggle="tooltip" title="Delete">
+                                               <a href="javascript:void(0)" class="btn btn-sm btn-info mr-1 edit-title-btn"
+                                                    data-toggle="modal" 
+                                                    data-target="#editTitleModal"
+                                                    data-id="{{ $item->id }}" 
+                                                    data-title="{{ $item->title }}" 
+                                                    title="Edit"> <i class="fa fa-edit"></i> </a>                        
+                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deletePackage({{$item->id}})" data-toggle="tooltip" title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </div>
@@ -103,7 +104,8 @@
                                         <div class="modal-body">
                                             <div class="form-group">
                                                 <label for="modal-title-input">Title</label>
-                                                <input type="text" class="form-control" name="title" id="modal-title-input" required>
+                                                <input type="text" class="form-control" name="title" 
+                                                id="modal-title-input" value="{{ old('title') }}">
                                             </div>
                                         </div>   
                             
@@ -150,10 +152,48 @@
 </section>
 @endsection
 <script>  
-    $(document).on('click', '.edit-title-btn', function () {
-        var id = $(this).data('id');
-        var title = $(this).data('title');
-        $('#modal-title-id').val(id);
-        $('#modal-title-input').val(title);
+    document.addEventListener('DOMContentLoaded', function () {
+        const editBtns = document.querySelectorAll('.edit-title-btn');
+        editBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const id = btn.getAttribute('data-id');
+                const title = btn.getAttribute('data-title');
+
+                document.getElementById('modal-title-id').value = id;
+                document.getElementById('modal-title-input').value = title;
+            });
+        });
     });
+
+    function deletePackage(packageId) {
+      Swal.fire({
+          icon: 'warning',
+          title: "Are you sure you want to delete this?",
+          text: "You won't be able to revert this!",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Delete",
+      }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+              $.ajax({
+                  url: "{{ route('admin.country/destinations.packageCategorydelete')}}",
+                  type: 'POST',
+                  data: {
+                      "id": packageId,
+                      "_token": '{{ csrf_token() }}',
+                  },
+                  success: function (data){
+                      if (data.status != 200) {
+                          toastFire('error', data.message);
+                      } else {
+                          toastFire('success', data.message);
+                          location.reload();
+                      }
+                  }
+              });
+          }
+      });
+    }
 </script>

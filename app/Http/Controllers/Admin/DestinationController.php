@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Interfaces\DestiantionPackageInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use App\Models\{Country, Destination, DestinationWisePackageCat};
 
 
@@ -105,14 +106,14 @@ class DestinationController extends Controller
     public function destinationAdd(Request $request)
     {
         $validated = $request->validate([
-            'crm_destination_id' => 'required|unique:destinations,crm_destination_id',
-            'destination_name' => 'required|string|max:255',
+            'crm_destination_id'    => 'required|unique:destinations,crm_destination_id',
+            'destination_name'      => 'required|string|max:255',
         ]);
 
         Destination::create([
-            'country_id' => $request->country_id,
+            'country_id'         => $request->country_id,
             'crm_destination_id' => $validated['crm_destination_id'],
-            'destination_name' => $validated['destination_name'],
+            'destination_name'   => $validated['destination_name'],
             'status' => 1
         ]);
 
@@ -126,7 +127,7 @@ class DestinationController extends Controller
             'id'    => 'required|exists:destinations,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'logo'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'banner_image'  => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'banner_image'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'short_desc'    => 'nullable|string|min:1',
         ], [
             'image.max'   => 'Upload image must not be more than 5MB.',
@@ -175,7 +176,7 @@ class DestinationController extends Controller
             $destination->banner_image = $bannerImagePath;
         }
 
-        if ($request->has('short_desc')) {
+        if ($request->filled('short_desc')) {
             $destination->short_desc = $request->short_desc;
         }
         $destination->save();
@@ -205,6 +206,7 @@ class DestinationController extends Controller
 
 
     //Destinationwise package Category
+
     public function packageCategoryIndex(Request $request, $id)
     {
         $keyword        = $request->keyword;
@@ -228,13 +230,20 @@ class DestinationController extends Controller
 
     public function packageCategoryStore(Request $request) {
         $request->validate([
-            'title' => 'required|string|max:255|unique:destination_wise_package_category,title',
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('destination_wise_package_category')->where(function ($query) use ($request) {
+                return $query->where('destination_id', $request->destination_id);
+            }),
+        ],
             'destination_id'  => 'required|exists:destinations,id', 
         ],[
-            'title.required' => 'The title is required.',
-            'title.string' => 'The title must be a valid string.',
-            'title.max' => 'The title cannot exceed 255 characters.',
-            'title.unique' => 'This title already exists. Please choose a different one.',
+            'title.required'    => 'The Package category is required.',
+            'title.string'      => 'The title must be a valid string.',
+            'title.max'         => 'The title cannot exceed 255 characters.',
+            'title.unique'      => 'This title already exists. Please choose a different one.',
         ]);
         $this->destiantionPackageRepository->create([
             'title' => $request->title,
@@ -248,13 +257,43 @@ class DestinationController extends Controller
     public function packageCategoryUpdate(Request $request) {
         $request->validate([
             'id' => 'required|exists:destination_wise_package_category,id',
-            'title' => 'required|string|max:255|unique:destination_wise_package_category,title,',
+            'title' => 'required|string|max:255|unique:destination_wise_package_category,title,' . $request->id,
         ]);
-        $this->packageCatRepo->update($request->id, [
-            'title' => $request->title
-        ]);
-        return redirect()->back()->with('success', 'Package Category title updated successfully.');
+
+        $category = DestinationWisePackageCat::findOrFail($request->id);
+        $category->title = $request->title;
+        $category->save();
+
+        return redirect()->back()->with('success', 'Package category title updated successfully.');
     }
+
+    public function packageCategoryStatus(Request $request, $id)
+    {
+        $data = DestinationWisePackageCat::find($id);
+        $data->status = ($data->status == 1) ? 0 : 1;
+        $data->update();
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Status updated',
+        ]);
+    }
+
+    public function packageCategoryDelete(Request $request){
+        $package = DestinationWisePackageCat::find($request->id); // use find(), not findOrFail() to avoid immediate 404    
+        if (!$package) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Package not found.',
+            ]);
+        }
+    
+        $package->delete(); // perform deletion
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Destinationwise package deleted successfully.',
+        ]);
+    }
+
 
     public function destinationDelete(Request $request) {
         $countryDestination = Destination::findOrFail($request->id);

@@ -139,6 +139,17 @@ Route::name('admin.')->group(function() {
                 Route::post('/delete', [OfferController::class, 'delete'])->name('offers.delete');
             });
 
+            //Master modeule/package categoryPackageController
+
+            Route::prefix('packageCategory')->group(function() {
+                Route::get('/', [PackageController::class, 'packageCategoryIndex'])->name('packageCategory.list.all');
+                Route::get('/create', [PackageController::class, 'packageCategoryCreate'])->name('packageCategory.packageCategoryCreate');
+                Route::post('/store', [PackageController::class, 'packageCategoryStore'])->name('packageCategory.packageCategoryStore');
+                Route::post('/update', [PackageController::class, 'packageCategoryUpdate'])->name('packageCategory.packageCategoryUpdate');
+                Route::get('/status/{id}', [PackageController::class, 'packageCategoryStatus'])->name('packageCategory.packageCategoryStatus');
+                Route::post('/delete', [PackageController::class, 'packageCategoryDelete'])->name('packageCategory.packageCategorydelete');
+            });
+
             //Master modeule/destination
             Route::prefix('country/destinations')->group(function(){
                 Route::get('/',[DestinationController::class, 'index'])->name('destination.list.all');
@@ -152,6 +163,8 @@ Route::name('admin.')->group(function() {
                 Route::get('/destination/package-category/create/{id}', [DestinationController::class, 'packageCategoryCreate'])->name('country/destinations.packageCategoryCreate');
                 Route::post('/destination/package-category/store', [DestinationController::class, 'packageCategoryStore'])->name('country/destinations.packageCategoryStore');
                 Route::post('/destination/package-category/update', [DestinationController::class, 'packageCategoryUpdate'])->name('country/destinations.packageCategoryUpdate');
+                Route::get('/destination/package-category/status/{id}', [DestinationController::class, 'packageCategoryStatus'])->name('country/destinations.packageCategoryStatus');
+                Route::post('/destination/package-category/delete', [DestinationController::class, 'packageCategoryDelete'])->name('country/destinations.packageCategorydelete');
                 Route::post('/delete', [DestinationController::class, 'destinationDelete'])->name('destination.delete');
                 
             });
