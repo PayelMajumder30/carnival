@@ -187,7 +187,7 @@
                                                                 <i class="fa fa-image"></i>
                                                                 </a>
 
-                                                                <a href="{{ route('admin.country/destinations.packageCategory', $desti_item->id) }}" class="btn btn-sm btn-warning" title="Manage Package Categories">
+                                                                <a href="{{ route('admin.destination.itineraryList', $desti_item->id) }}" class="btn btn-sm btn-warning" title="Manage Itineraries">
                                                                     <i class="fa fa-folder"></i>
                                                                 </a>
                                                             </div>

@@ -41,7 +41,7 @@ class SupportController extends Controller
         ],[
         'title.required' => 'The support title is required.',
         'title.string' => 'The support title must be a valid string.',
-        'title.max' => 'The supportr title cannot exceed 255 characters.',
+        'title.max' => 'The support title cannot exceed 255 characters.',
         'title.unique' => 'This support title already exists. Please choose a different one.',
         'description.max' => 'The description may not be greater than 255 characters.',
         ]);
@@ -50,29 +50,7 @@ class SupportController extends Controller
         $this->SupportRepository->create($data);
         return redirect()->route('admin.support.list.all')->with('success', 'New support created');
     }
-
-    public function delete(Request $request){
-        $support = Support::find($request->id); // use find(), not findOrFail() to avoid immediate 404
-    
-        if (!$support) {
-            return response()->json([
-                'status'    => 404,
-                'message'   => 'support not found.',
-            ]);
-        }
-    
-        $support->delete(); // perform deletion
-        return response()->json([
-            'status'    => 200,
-            'message'   => 'support deleted successfully.',
-        ]);
-    }
-
-
-
-
-
-    
+  
     public function edit($id){
         $data = $this->SupportRepository->findById($id);
         return view('admin.support.edit', compact('data'));
@@ -102,4 +80,20 @@ class SupportController extends Controller
         ]);
     }
 
+    public function delete(Request $request){
+        $support = Support::find($request->id); // use find(), not findOrFail() to avoid immediate 404
+    
+        if (!$support) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'support not found.',
+            ]);
+        }
+    
+        $support->delete(); // perform deletion
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'support deleted successfully.',
+        ]);
+    }
 }

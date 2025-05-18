@@ -38,4 +38,11 @@ class Destination extends Model
         return $this->hasMany(TripCategoryActivity::class, 'destination_id');
     }
 
+    /*
+    * Relationship with `destination_wise_itinerary` table
+    */
+    public function destinationItineraries(){
+        return $this->hasMany(DestinationWiseItinerary::class, 'destination_id', 'destination_id');
+    }
+
 }

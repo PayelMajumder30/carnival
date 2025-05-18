@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Interfaces\DestiantionPackageInterface;
+use App\Interfaces\PackageInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use App\Models\{PackageCategory};
@@ -12,91 +12,78 @@ use App\Models\{PackageCategory};
 
 class PackageController extends Controller
 {
-
     //
-    private $destiantionPackageRepository;
-    public function __construct(DestiantionPackageInterface $destiantionPackageRepository){
-        $this->destiantionPackageRepository = $destiantionPackageRepository;
+    private $packageRepository;
+    public function __construct(PackageInterface $packageRepository){
+        $this->packageRepository = $packageRepository;
     }
 
-    //Destinationwise package Category
+    public function index(Request $request) {
+        $keyword    = $request->keyword;
+        $query      = PackageCategory::query();
 
-    public function packageCategoryIndex(Request $request)
-    {
-        $keyword = $request->input('keyword');
-        $query = PackageCategory::query(); // now used as a global package category
-
-        if ($keyword) {
-            $query->where('title', 'like', '%' . $keyword . '%');
-        }
-
-        $packageCategories = $query->latest('id')->paginate(25);
-
-        return view('admin.packageCategory.index', compact('packageCategories'));
+        $query->when($keyword, function($query) use ($keyword) {
+            $query->where('title', 'like', '%'.$keyword.'%');
+        });
+        $data = $query->latest('id')->paginate(25);
+        return view('admin.packageCategory.index', compact('data'));
     }
 
-    public function packageCategoryCreate($id)
-    {
-        $packageCategories  = Destination::findOrFail($id);
-        return view('admin.destination.packageCategoryIndex', compact('packageCategories'));
+    public function create(Request $request) {
+        return view ('admin.packageCategory.index');
     }
-
-    public function packageCategoryStore(Request $request) {
+    public function store(Request $request) {
         $request->validate([
             'title' => 'required|string|max:255|unique:package_category,title',
         ],[
-            'title.required' => 'The title is required.',
-            'title.string'   => 'The title must be a valid string.',
-            'title.max'      => 'The title cannot exceed 255 characters.',
-            'title.unique'   => 'This title already exists. Please choose a different one.',
+            'title.required'    => 'The title is required.',
+            'title.string'      => 'The title must be a valid string.',
+            'title.max'         => 'The  title cannot exceed 255 characters.',
+            'title.unique'      => 'This title already exists. Please choose a different one.',
         ]);
-
-        $this->destiantionPackageRepository->create([
-            'title' => $request->title,
-    ]);
-
-        // Redirect to the generic package category listing route (adjust route name if needed)
-        return redirect()->route('admin.packageCategory.list.all') ->with('success', 'New Title created');
+        $data = $request->all();
+        $this->packageRepository->create($data);
+        return redirect()->route('admin.packageCategory.list.all')->with('success', 'New Package category created');
     }
 
-
-    public function packageCategoryUpdate(Request $request) {
-        $request->validate([
-            'id' => 'required|exists:package_category,id',
-            'title' => 'required|string|max:255|unique:package_category,title,' . $request->id,
-        ]);
-
-        $category = PackageCategory::findOrFail($request->id);
-        $category->title = $request->title;
-        $category->save();
-
-        return redirect()->back()->with('success', 'Package category title updated successfully.');
-    }
-
-    public function packageCategoryStatus(Request $request, $id)
+    public function status(Request $request, $id)
     {
         $data = PackageCategory::find($id);
         $data->status = ($data->status == 1) ? 0 : 1;
         $data->update();
+        
         return response()->json([
             'status'    => 200,
             'message'   => 'Status updated',
         ]);
     }
 
-    public function packageCategoryDelete(Request $request){
-        $package = PackageCategory::find($request->id); // use find(), not findOrFail() to avoid immediate 404    
-        if (!$package) {
+    public function update(Request $request) {
+        //dd($request->all());
+        $request->validate([
+            'title' => 'required|string|max:255',
+        ]);
+
+        $id = $request->id; 
+        $this->packageRepository->update($id, $request->only(['title']));
+        
+        return redirect()->route('admin.packageCategory.list.all')->with('success', 'Package Category updated successfully');
+    }
+
+    public function delete(Request $request){
+        $data = PackageCategory::find($request->id); // use find(), not findOrFail() to avoid immediate 404
+    
+        if (!$data) {
             return response()->json([
                 'status'    => 404,
-                'message'   => 'Package not found.',
+                'message'   => 'package category not found.',
             ]);
         }
     
-        $package->delete(); // perform deletion
+        $data->delete(); // perform deletion
         return response()->json([
             'status'    => 200,
-            'message'   => 'Destinationwise package deleted successfully.',
+            'message'   => 'package category deleted successfully.',
         ]);
     }
 
