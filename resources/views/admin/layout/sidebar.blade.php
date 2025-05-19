@@ -133,7 +133,7 @@
             <li class="nav-item {{ (request()->is('admin/itenaries*')) ? 'menu-open' : '' }}">
                 <a href="#" class="nav-link {{ (request()->is('admin/itenaries*')) ? 'active' : '' }}">
                     <i class="nav-icon fas fa-file-alt"></i>
-                    <p> Itenaries <i class="right fas fa-angle-left"></i></p>
+                    <p> Itineraries <i class="right fas fa-angle-left"></i></p>
                 </a>
                 <ul class="nav nav-treeview">
                     @if(in_array('Upcoming events', $RolePass))
@@ -152,7 +152,7 @@
                             <a href="{{ route('admin.itenaries.list.all') }}"
                             class="nav-link {{ (request()->is('admin/itenaries*')) ? 'active active_nav_link' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Itenary List </p>
+                                <p>Itinerary List </p>
                             </a>
                         </li>
                     @endif

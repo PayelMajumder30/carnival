@@ -41,8 +41,13 @@ class Destination extends Model
     /*
     * Relationship with `destination_wise_itinerary` table
     */
-    public function destinationItineraries(){
-        return $this->hasMany(DestinationWiseItinerary::class, 'destination_id', 'destination_id');
+    // public function destinationItineraries(){
+    //     return $this->hasMany(DestinationWiseItinerary::class, 'destination_id', 'destination_id');
+    // }
+    public function destinationItineraries()
+    {
+        return $this->hasMany(DestinationWiseItinerary::class, 'destination_id', 'id')
+                    ->with(['packageCategory', 'itinerary']);
     }
 
 }

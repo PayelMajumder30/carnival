@@ -211,7 +211,7 @@ Route::name('admin.')->group(function() {
         });
 
         //Itenaries
-        Route::prefix('itinaries')->group(function() {
+        Route::prefix('itineraries')->group(function() {
 
             //upcoming events  
             Route::prefix('upcoming-events')->group(function() {
@@ -220,7 +220,7 @@ Route::name('admin.')->group(function() {
             });
 
             //itenary list
-            Route::prefix('itinary-list')->group(function() {
+            Route::prefix('itinerary-list')->group(function() {
                 Route::get('/', [ItenaryListController::class, 'index'])->name('itenaries.list.all');
                 Route::get('/create', [ItenaryListController::class, 'create'])->name('itenaries.create');
                 Route::post('/store', [ItenaryListController::class, 'store'])->name('itenaries.store');

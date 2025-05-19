@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\{TripCategoryDestination, SocialMedia, Banner, TripCategory, Partner, 
-    WhyChooseUs, Setting, Blog, Offer, PageContent, Destination, TripCategoryActivities};
+    WhyChooseUs, Setting, Blog, Offer, PageContent, Destination, TripCategoryActivities, ItenaryList};
 
 class ApiController extends Controller
 {
@@ -414,7 +414,7 @@ class ApiController extends Controller
 
     //page content
     public function contentIndex() {
-         $data = PageContent::orderBy('id','asc')->get();
+        $data = PageContent::orderBy('id','asc')->get();
         $result = [];
         foreach($data as $key=>$item)
         {
@@ -430,5 +430,65 @@ class ApiController extends Controller
             'data'   => $result
         ]);
     }
+
+    // Itineraries / Itinerary_list
+    public function getDestinationPackagesWithItineraries($destinationId)
+    { 
+            $destination = Destination::with(['destinationItineraries.packageCategory', 'destinationItineraries.itinerary'])
+            ->where('id', $destinationId)
+            ->where('status', 1)
+            ->first();
+
+        if (!$destination) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Destination not found'
+            ], 404);
+        }
+
+        $result = [
+            'id'   => $destination->id,
+            'name' => $destination->destination_name,
+        ];
+
+        $groupedPackages = [];
+
+        foreach ($destination->destinationItineraries as $entry) {
+            $package = $entry->packageCategory;
+            $itinerary = $entry->itinerary;
+
+            if (!$package || !$itinerary) {
+                continue; 
+            }
+
+            $packageId = $package->id;
+
+            if (!isset($groupedPackages[$packageId])) {
+                $groupedPackages[$packageId] = [
+                    'package_id'   => $package->id,
+                    'package_name' => $package->title,
+                    'itineraries'  => []
+                ];
+            }
+
+            $groupedPackages[$packageId]['itineraries'][] = [
+                'itinerary_id'      => $itinerary->id,
+                'title'             => $itinerary->title,
+                'short_description' => $itinerary->short_description,
+                'main_image'        => $itinerary->main_image ? asset($itinerary->main_image) : null,
+                'selling_price'     => $itinerary->selling_price,
+                'actual_price'      => $itinerary->actual_price,
+            ];
+        }
+
+        // Assign grouped package data to result
+        $result['packages'] = array_values($groupedPackages);
+
+        return response()->json([
+            'status' => true,
+            'data'   => $result
+        ]);
+    }
+
 }
    

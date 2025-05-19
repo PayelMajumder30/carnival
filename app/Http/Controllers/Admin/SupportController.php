@@ -81,7 +81,7 @@ class SupportController extends Controller
     }
 
     public function delete(Request $request){
-        $support = Support::find($request->id); // use find(), not findOrFail() to avoid immediate 404
+        $support = Support::find($request->id); 
     
         if (!$support) {
             return response()->json([
@@ -90,7 +90,7 @@ class SupportController extends Controller
             ]);
         }
     
-        $support->delete(); // perform deletion
+        $support->delete(); 
         return response()->json([
             'status'    => 200,
             'message'   => 'support deleted successfully.',
