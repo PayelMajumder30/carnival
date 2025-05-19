@@ -99,6 +99,8 @@
                                                     <label for="">Destination</label>
                                                     <input type="checkbox" id="support" name="roles[]" value="support" data-parent="MASTER MODULES" {{ in_array('support', $permissions) ? 'checked' : '' }}>
                                                     <label for="">Support</label>
+                                                    <input type="checkbox" id="packageCategory" name="roles[]" value="packageCategory" data-parent="MASTER MODULES" {{ in_array('packageCategory', $permissions) ? 'checked' : '' }}>
+                                                    <label for="">Package Category</label>
                                                 </li>
                                             </ul>
                                         </li>

@@ -50,8 +50,8 @@ use App\Repositories\PageContentRepository;
 use App\Interfaces\SupportRepositoryInterface;
 use App\Repositories\SupportRepository;
 
-use App\Interfaces\DestiantionPackageInterface;
-use App\Repositories\DestiantionPackageRepository;
+use App\Interfaces\PackageInterface;
+use App\Repositories\PackageRepository;
 
 use App\Interfaces\ItenarylistRepositoryInterface;
 use App\Repositories\ItenarylistRepository;
@@ -75,7 +75,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(TripCategoryRepositoryInterface::class, TripCategoryRepository::class);
         $this->app->bind(ChooseUsRepositoryInterface::class, ChooseUsRepository::class);
         $this->app->bind(SupportRepositoryInterface::class, SupportRepository::class);
-        $this->app->bind(DestiantionPackageInterface::class, DestiantionPackageRepository::class);
+        $this->app->bind(PackageInterface::class, PackageRepository::class);
         $this->app->bind(ItenarylistRepositoryInterface::class, ItenarylistRepository::class);
 
         $this->app->bind(UserInterface::class, UserRepository::class);

@@ -73,5 +73,13 @@ use App\Http\Controllers\Api\ApiController;
         Route::get('/{id}',[ApiController::class, 'contentShow']);
     });
 
+    //Itineraries / itinerary list
+
+    Route::prefix('Itineraries')->group(function (){
+        // Route::get('/', [ApiController::class, 'itineraryIndex']);
+        // Route::get('/{id}', [ApiController::class, 'itineraryShow']);
+        Route::get('/destination/{id}/packages-itineraries', [ApiController::class, 'getDestinationPackagesWithItineraries']);
+    });
+
 
 

@@ -173,10 +173,21 @@
                                                                     <i class="fa fa-trash"></i>
                                                                 </a>
                                                                 {{-- modal for upload image and logo  --}}
-                                                                <a href="javascript:void(0)" class="btn btn-sm btn-info edit-media-btn" data-toggle="modal" data-target="#editMediaModal" data-id="{{ $desti_item->id }}"
+                                                                {{-- <a href="javascript:void(0)" class="btn btn-sm btn-info edit-media-btn" data-toggle="modal" data-target="#editMediaModal" data-id="{{ $desti_item->id }}"
                                                                     data-name="{{ $desti_item->name }}" title="Edit Logo & Image"><i class="fa fa-image"></i>
-                                                                </a> 
-                                                                <a href="{{ route('admin.country/destinations.packageCategory', $desti_item->id) }}" class="btn btn-sm btn-warning" title="Manage Package Categories">
+                                                                </a>  --}}
+                                                                <a href="javascript:void(0)" 
+                                                                    class="btn btn-sm btn-info edit-media-btn" 
+                                                                    data-toggle="modal" 
+                                                                    data-target="#editMediaModal" 
+                                                                    data-id="{{ $desti_item->id }}" 
+                                                                    data-name="{{ $desti_item->name }}" 
+                                                                    data-short_desc="{{ $desti_item->short_desc ?? '' }}" 
+                                                                    title="Edit Logo & Image">
+                                                                <i class="fa fa-image"></i>
+                                                                </a>
+
+                                                                <a href="{{ route('admin.destination.itineraryList', $desti_item->id) }}" class="btn btn-sm btn-warning" title="Manage Itineraries">
                                                                     <i class="fa fa-folder"></i>
                                                                 </a>
                                                             </div>
@@ -217,9 +228,10 @@
                                                                 <div class="form-group">
                                                                     <label for="short_desc">Upload Short Description</label>
                                                                     <textarea class="form-control" name="short_desc" id="short_desc" rows="4" 
-                                                                    placeholder="Enter short description..."></textarea>
+                                                                        placeholder="Enter short description...">{{ old('short_desc', $destination->short_desc ?? '') }}</textarea>
                                                                     <div class="error text-danger" id="short-desc-error"></div>
                                                                 </div>
+
                                                             </div>
                                                             
                                                             <div class="modal-footer">
@@ -386,7 +398,10 @@
     document.addEventListener('DOMContentLoaded', function () {
         $(document).on('click', '.edit-media-btn', function () {
             const destinationId = $(this).data('id');
+            const shortDesc = $(this).data('short_desc'); // Get the short description
+
             $('#modal-destination-id').val(destinationId);
+            $('#short_desc').val(shortDesc); // Set it in the textarea
         });
 
         $('#editMediaSubmit').on('click', function () {
@@ -396,6 +411,7 @@
             $('#image-error').text('');
             $('#logo-error').text('');
             $('#banner-image-error').text('');
+            $('#short-desc-error').text('');
 
             let hasError = false;
 
@@ -406,7 +422,7 @@
             if (hasError) return;
 
             $.ajax({
-                url: "{{ route('admin.destination.createImage') }}", 
+                url: "{{ route('admin.destination.createImage') }}",
                 type: "POST",
                 data: formData,
                 contentType: false,
@@ -414,7 +430,7 @@
                 success: function (response) {
                     $('#editMediaModal').modal('hide');
                     Swal.fire('Success', 'Image and Logo updated successfully!', 'success').then(() => {
-                        location.reload(); 
+                        location.reload();
                     });
                 },
                 error: function (xhr) {
@@ -429,6 +445,9 @@
                         if (res.errors.banner_image) {
                             $('#banner-image-error').text(res.errors.banner_image[0]);
                         }
+                        if (res.errors.short_desc) {
+                            $('#short-desc-error').text(res.errors.short_desc[0]);
+                        }
                         if (res.errors.id) {
                             alert('Destination ID is missing.');
                         }
@@ -439,6 +458,7 @@
             });
         });
     });
+
 
 
     document.addEventListener('DOMContentLoaded', function () {

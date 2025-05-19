@@ -270,12 +270,9 @@
                     toastFire('error', 'Unable to add destination');
                 } else {
                     toastFire('success', data.message);
-                    console.log('Added destination', data.destination);
                     const rowCount = $('#destination-table-body tr').length + 1;
                     const newDestination = data.destination;
-                    // const BASE_URL  = "{{ asset('') }}";
-                    // const imagePath = BASE_URL + newDestination.tripdestination.image;
-                    // const logoPath  = BASE_URL + newDestination.tripdestination.logo;
+                    
                     const BASE_URL  = "{{ asset('') }}";
                     const placeholderImage = "{{ asset('backend-assets/images/placeholder.jpg') }}";
 

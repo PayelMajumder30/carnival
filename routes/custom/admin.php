@@ -139,6 +139,17 @@ Route::name('admin.')->group(function() {
                 Route::post('/delete', [OfferController::class, 'delete'])->name('offers.delete');
             });
 
+            //Master modeule/package categoryPackageController
+
+            Route::prefix('packageCategory')->group(function() {
+                Route::get('/', [PackageController::class, 'index'])->name('packageCategory.list.all');
+                Route::get('/create', [PackageController::class, 'create'])->name('packageCategory.create');
+                Route::post('/store', [PackageController::class, 'store'])->name('packageCategory.store');
+                Route::post('/update', [PackageController::class, 'update'])->name('packageCategory.update');   
+                Route::get('/status/{id}', [PackageController::class, 'status'])->name('packageCategory.status');
+                Route::post('/delete', [PackageController::class, 'delete'])->name('packageCategory.delete');
+            });
+
             //Master modeule/destination
             Route::prefix('country/destinations')->group(function(){
                 Route::get('/',[DestinationController::class, 'index'])->name('destination.list.all');
@@ -148,11 +159,18 @@ Route::name('admin.')->group(function() {
                 Route::post('/destination/add',[DestinationController::class, 'destinationAdd'])->name('destination.add'); 
                 Route::post('/destination/create-image', [DestinationController::class, 'createDestImage'])->name('destination.createImage'); 
                 Route::get('/destination/status/{id}', [DestinationController::class, 'destinationStatus'])->name('destination.status');
-                Route::get('/destination/package-category/{id}', [DestinationController::class, 'packageCategoryIndex'])->name('country/destinations.packageCategory');
-                Route::get('/destination/package-category/create/{id}', [DestinationController::class, 'packageCategoryCreate'])->name('country/destinations.packageCategoryCreate');
-                Route::post('/destination/package-category/store', [DestinationController::class, 'packageCategoryStore'])->name('country/destinations.packageCategoryStore');
-                Route::post('/destination/package-category/update', [DestinationController::class, 'packageCategoryUpdate'])->name('country/destinations.packageCategoryUpdate');
+                // Route::get('/destination/package-category/{id}', [DestinationController::class, 'packageCategoryIndex'])->name('country/destinations.packageCategory');
+                // Route::get('/destination/package-category/create/{id}', [DestinationController::class, 'packageCategoryCreate'])->name('country/destinations.packageCategoryCreate');
+                // Route::post('/destination/package-category/store', [DestinationController::class, 'packageCategoryStore'])->name('country/destinations.packageCategoryStore');
+                // Route::post('/destination/package-category/update', [DestinationController::class, 'packageCategoryUpdate'])->name('country/destinations.packageCategoryUpdate');
+                // Route::get('/destination/package-category/status/{id}', [DestinationController::class, 'packageCategoryStatus'])->name('country/destinations.packageCategoryStatus');
+                // Route::post('/destination/package-category/delete', [DestinationController::class, 'packageCategoryDelete'])->name('country/destinations.packageCategorydelete');
                 Route::post('/delete', [DestinationController::class, 'destinationDelete'])->name('destination.delete');
+
+                // Routes of itineraries associated with destinations
+                Route::get('/{destiation_id}/itineraries', [DestinationController::class, 'destinationItineraryIndex'])->name('destination.itineraryList');
+                Route::post('/{destiation_id}/assign-itinerary', [DestinationController::class, 'assignItineraryToDestination'])->name('destination.assignItinerary');
+
                 
             });
 

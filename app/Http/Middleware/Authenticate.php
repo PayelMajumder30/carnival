@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Illuminate\Support\Facades\Auth;
 
 class Authenticate extends Middleware
 {
@@ -21,10 +22,10 @@ class Authenticate extends Middleware
 
             // return route('front.user.login');
 
-            if($request->is('admin') || $request->is('admin/*'))
-            return route('admin.login');
-
-            return route('front.user.login');
+            if($request->is('admin') || $request->is('admin/*') || !Auth::guard('admin')->check()) {
+                return route('admin.login');
+            }
+            // return route('front.user.login');
         }
     }
 }

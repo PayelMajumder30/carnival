@@ -6,17 +6,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Interfaces\DestiantionPackageInterface;
 use Illuminate\Support\Facades\DB;
-use App\Models\{Country, Destination, DestinationWisePackageCat};
+use Illuminate\Validation\Rule;
+use App\Models\{Country, Destination, ItenaryList, PackageCategory, DestinationWisePackageCat, DestinationWiseItinerary};
 
 
 class DestinationController extends Controller
 {
+    
 
     //
-    private $destiantionPackageRepository;
-    public function __construct(DestiantionPackageInterface $destiantionPackageRepository){
-        $this->destiantionPackageRepository = $destiantionPackageRepository;
-    }
     public function index(Request $request)
     {
 
@@ -105,14 +103,14 @@ class DestinationController extends Controller
     public function destinationAdd(Request $request)
     {
         $validated = $request->validate([
-            'crm_destination_id' => 'required|unique:destinations,crm_destination_id',
-            'destination_name' => 'required|string|max:255',
+            'crm_destination_id'    => 'required|unique:destinations,crm_destination_id',
+            'destination_name'      => 'required|string|max:255',
         ]);
 
         Destination::create([
-            'country_id' => $request->country_id,
+            'country_id'         => $request->country_id,
             'crm_destination_id' => $validated['crm_destination_id'],
-            'destination_name' => $validated['destination_name'],
+            'destination_name'   => $validated['destination_name'],
             'status' => 1
         ]);
 
@@ -126,7 +124,7 @@ class DestinationController extends Controller
             'id'    => 'required|exists:destinations,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'logo'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'banner_image'  => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'banner_image'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
             'short_desc'    => 'nullable|string|min:1',
         ], [
             'image.max'   => 'Upload image must not be more than 5MB.',
@@ -175,7 +173,7 @@ class DestinationController extends Controller
             $destination->banner_image = $bannerImagePath;
         }
 
-        if ($request->has('short_desc')) {
+        if ($request->filled('short_desc')) {
             $destination->short_desc = $request->short_desc;
         }
         $destination->save();
@@ -203,61 +201,6 @@ class DestinationController extends Controller
         ]);
     }
     
-
-
-
-    //Destinationwise package Category
-    public function packageCategoryIndex(Request $request, $id)
-    {
-        $keyword        = $request->keyword;
-        $destination    = Destination::findOrFail($id);
-        $query          = DestinationWisePackageCat::where('destination_id', $id);
-        if ($keyword) {
-            $query->where(function($q) use ($keyword) {
-                $q->where('title', 'like', '%'.$keyword.'%');
-            });
-        }
-        $packageCategories = $query->latest('id')->paginate(25);
-
-        return view('admin.destination.packageCategoryIndex', compact('destination', 'packageCategories'));
-    }
-
-    public function packageCategoryCreate($id)
-    {
-        $packageCategories  = Destination::findOrFail($id);
-        return view('admin.destination.packageCategoryIndex', compact('packageCategories'));
-    }
-
-    public function packageCategoryStore(Request $request) {
-        $request->validate([
-            'title' => 'required|string|max:255|unique:destination_wise_package_category,title',
-            'destination_id'  => 'required|exists:destinations,id', 
-        ],[
-            'title.required' => 'The title is required.',
-            'title.string' => 'The title must be a valid string.',
-            'title.max' => 'The title cannot exceed 255 characters.',
-            'title.unique' => 'This title already exists. Please choose a different one.',
-        ]);
-        $this->destiantionPackageRepository->create([
-            'title' => $request->title,
-            'destination_id' => $request->destination_id,
-        ]);
-        return redirect()
-                ->route('admin.country/destinations.packageCategory', $request->destination_id)
-                ->with('success', 'New Title created');
-    }
-
-    public function packageCategoryUpdate(Request $request) {
-        $request->validate([
-            'id' => 'required|exists:destination_wise_package_category,id',
-            'title' => 'required|string|max:255|unique:destination_wise_package_category,title,',
-        ]);
-        $this->packageCatRepo->update($request->id, [
-            'title' => $request->title
-        ]);
-        return redirect()->back()->with('success', 'Package Category title updated successfully.');
-    }
-
     public function destinationDelete(Request $request) {
         $countryDestination = Destination::findOrFail($request->id);
         if(!$countryDestination) {
@@ -288,6 +231,35 @@ class DestinationController extends Controller
             'status'    => 200,
             'message'   => 'Countrywise destination has been deleted successfully',
         ]);
+    }
+
+    public function destinationItineraryIndex(Request $request, $destination_id) {
+        $destinationItineraries = DestinationWiseItinerary::with(['packageCategory'])->where('destination_id', $destination_id)->paginate(15);
+        $packageCategories = PackageCategory::where('status', 1)->get();
+        $itineraries = ItenaryList::select(['id', 'title'])->where('status', 1)->get();
+        $destination = Destination::select(['id', 'destination_name'])->where('id', $destination_id)->first()   ;
+
+        return view('admin.destination.itineraryList', compact('destination', 'destinationItineraries', 'packageCategories', 'itineraries'));
+    }
+
+    public function assignItineraryToDestination(Request $request) {
+        $is_exist = DestinationWiseItinerary::where([
+            'destination_id' => $request->destination_id,
+            'package_id' => $request->package_id,
+            'itinerary_id' => $request->itinerary_id,
+        ])->first();
+        // If same itinerary of same package is aleady added then return error
+        if (!empty($is_exist)) {
+            return redirect()->route('admin.destination.itineraryList', $request->destination_id)->with('failure', 'Selected destination of same package category is already added');
+        }
+
+        DestinationWiseItinerary::create([
+            'destination_id' => $request->destination_id,
+            'package_id' => $request->package_id,
+            'itinerary_id' => $request->itinerary_id,
+            'status' => 1,
+        ]);
+        return redirect()->route('admin.destination.itineraryList', $request->destination_id)->with('success', 'Itinerary is assigned successfully with the destination');
     }
  
 }

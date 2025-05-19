@@ -104,6 +104,16 @@
                     </li>
                     @endif
 
+                    @if(in_array('packageCategory', $RolePass))
+                    <li class="nav-item">
+                        <a href="{{ route('admin.packageCategory.list.all')}}"
+                            class="nav-link {{ (request()->is('admin/master-module/packageCategory*')) ? 'active active_nav_link' : ''}}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Package Category</p>
+                        </a>
+                    </li>
+                    @endif
+
                     @if(in_array('support', $RolePass))
                     <li class="nav-item">
                         <a href="{{ route('admin.support.list.all')}}"

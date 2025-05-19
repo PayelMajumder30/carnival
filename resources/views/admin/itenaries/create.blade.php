@@ -24,13 +24,13 @@
                                     @error('title') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div>
 
-                                 <div class="form-group col-md-3">
+                                <div class="form-group col-md-3">
                                     <label for="actual_price">Actual Price <span style="color: red;">*</span></label>
                                     <input type="number" step="0.01" class="form-control" name="actual_price" id="actual_price" placeholder="Enter actual price" value="{{ old('actual_price') }}">
                                     @error('actual_price') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div>
 
-                                 <div class="form-group col-md-3">
+                                <div class="form-group col-md-3">
                                     <label for="selling_price">Selling Price <span style="color: red;">*</span></label>
                                     <input type="number" step="0.01" class="form-control" name="selling_price" id="selling_price" placeholder="Enter selling price" value="{{ old('selling_price') }}">
                                     @error('selling_price') <p class="small text-danger">{{ $message }}</p> @enderror
