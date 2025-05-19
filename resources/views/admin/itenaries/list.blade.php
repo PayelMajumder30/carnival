@@ -114,7 +114,7 @@
 </section>
 
 @endsection
-<script>  
+{{-- <script>  
     function deleteItenary(itenaryId) {
         Swal.fire({
             icon: 'warning',
@@ -127,10 +127,10 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "/admin/itenaries/itenary-list/delete/" + itenaryId,  // ID in URL
-                    type: 'DELETE',  // Correct HTTP verb
+                    url: "/admin/itinaries/itinary-list/delete/" + itenaryId, 
+                    type: 'POST',  
                     data: {
-                        _token: '{{ csrf_token() }}',  // CSRF token is still needed
+                        _token: '{{ csrf_token() }}', 
                     },
                     success: function (data) {
                         if (data.status != 'success') {
@@ -147,4 +147,42 @@
             }
         });
     }
+</script> --}}
+
+<script>
+    function deleteItenary(itenaryId) {
+        const deleteUrl = "{{ route('admin.itenaries.delete', ['id' => '__id__']) }}".replace('__id__', itenaryId);
+
+        Swal.fire({
+            icon: 'warning',
+            title: "Are you sure you want to delete this?",
+            text: "You won't be able to revert this!",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Delete",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: deleteUrl,
+                    type: 'POST',  
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function (data) {
+                        if (data.status !== 'success') {
+                            toastFire('error', data.message);
+                        } else {
+                            toastFire('success', data.message);
+                            location.reload();
+                        }
+                    },
+                    error: function () {
+                        toastFire('error', 'Something went wrong. Please try again.');
+                    }
+                });
+            }
+        });
+    }
 </script>
+

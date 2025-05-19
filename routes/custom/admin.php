@@ -227,7 +227,7 @@ Route::name('admin.')->group(function() {
                 Route::get('/edit/{id}', [ItenaryListController::class, 'edit'])->name('itenaries.edit');
                 Route::post('/update/{id}', [ItenaryListController::class, 'update'])->name('itenaries.update');
                 Route::get('/status/{id}', [ItenaryListController::class, 'toggleStatus'])->name('itenaries.status');
-                Route::delete('/delete/{id}', [ItenaryListController::class, 'delete'])->name('itenaries.delete');
+                Route::post('/delete/{id}', [ItenaryListController::class, 'delete'])->name('itenaries.delete');
             });
 
         });
