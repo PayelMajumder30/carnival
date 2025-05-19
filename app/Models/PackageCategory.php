@@ -13,4 +13,8 @@ class PackageCategory extends Model
         'title',
         'status',
     ];
+
+    public function pckgCategoryItineraries(){
+        return $this->hasMany(DestinationWiseItinerary::class, 'package_id');
+    }
 }

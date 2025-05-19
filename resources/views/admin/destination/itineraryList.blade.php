@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('page-title', $destination->destination_name . '/' . 'Itinerary list')
+@section('page-title', $destination->destination_name . '/' . 'Itineraries')
 
 @section('section')
 <section class="content">
@@ -58,32 +58,26 @@
                                         <td class="text-center">{{ $index + $destinationItineraries->firstItem() }}</td>
                                         <td class="text-center">
                                             <div class="title-part">
-                                                <p class="text-muted mb-0">{{ $item->packageCategory->title }}</p>
+                                                <p class="text-muted mb-0">{{ ucwords($item->packageCategory->title) }}</p>
                                             </div>
                                         </td>
                                           <td class="text-center">
                                             <div class="title-part">
-                                                <p class="text-muted mb-0">{{ $item->itinerary->title }}</p>
+                                                <p class="text-muted mb-0">{{ ucwords($item->itinerary->title) }}</p>
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            @if ($item->status == 1)
+                                            @if ($item->packageCategory && $item->packageCategory->status == 1)
                                                 <span class="badge badge-success">Active</span>
                                             @else
                                                 <span class="badge badge-danger">Inactive</span>
                                             @endif
                                         </td>
-                                           <td class="text-center">
-                                            <div class="btn-group">
-                                               {{-- <a href="javascript:void(0)" class="btn btn-sm btn-info mr-1 edit-title-btn"
-                                                    data-toggle="modal" 
-                                                    data-target="#editTitleModal"
-                                                    data-id="{{ $item->id }}" 
-                                                    data-title="{{ $item->title }}" 
-                                                    title="Edit"> <i class="fa fa-edit"></i> </a>                        
-                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deletePackage({{$item->id}})" data-toggle="tooltip" title="Delete">
+                                        <td class="text-center">
+                                            <div class="btn-group">                                     
+                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deleteDestItinerary({{$item->id}})" data-toggle="tooltip" title="Delete">
                                                     <i class="fa fa-trash"></i>
-                                                </a> --}}
+                                                </a>
                                             </div>
                                         </td>
                                     </tr>
@@ -118,7 +112,7 @@
                                 <select name="package_id" id="package_id" class="form-control">
                                     <option value="">-- Select Package Category --</option>
                                     @foreach($packageCategories as $package)
-                                        <option value="{{ $package->id }}">{{ $package->title }}</option>
+                                        <option value="{{ $package->id }}">{{ ucwords($package->title) }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -128,12 +122,12 @@
                                 <select name="itinerary_id" id="itinerary_id" class="form-control">
                                     <option value="">-- Select Itinerary --</option>
                                     @foreach($itineraries as $itinerary)
-                                        <option value="{{ $itinerary->id }}">{{ $itinerary->title }}</option>
+                                        <option value="{{ $itinerary->id }}">{{ ucwords($itinerary->title) }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
-                            <input type="button" class="btn btn-primary" value="Assign" onclick="assignItinerary()" />
+                            <input type="button" class="btn btn-primary" value="Submit" onclick="assignItinerary()" />
 
                         </form>                        
                     </div>
@@ -154,5 +148,39 @@
             $('#adssign-itinerary-form').submit();
         }
     }
+
+    function deleteDestItinerary(destItinId) {
+      Swal.fire({
+          icon: 'warning',
+          title: "Are you sure you want to delete this?",
+          text: "You won't be able to revert this!",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Delete",
+      }).then((result) => {
+          /* Read more about isConfirmed, isDenied below */
+          if (result.isConfirmed) {
+              $.ajax({
+                  url: "{{ route('admin.destination.deleteItinerary')}}",
+                  type: 'POST',
+                  data: {
+                      "id": destItinId,
+                      "_token": '{{ csrf_token() }}',
+                  },
+                  success: function (data){
+                      if (data.status != 200) {
+                          toastFire('error', data.message);
+                      } else {
+                          toastFire('success', data.message);
+                          location.reload();
+                      }
+                  }
+              });
+          }
+      });
+    }
+
+
 
 </script>

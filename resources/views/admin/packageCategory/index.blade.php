@@ -50,7 +50,7 @@
                                             </div>
                                         <td>
                                            <div class="text-center">
-                                                <p class="text-muted mb-0">{{ $item->title }}</p>
+                                                <p class="text-muted mb-0">{{ ucwords($item->title) }}</p>
                                             </div>
                                         </td>
                                         <td class="text-center">

@@ -234,10 +234,19 @@ class DestinationController extends Controller
     }
 
     public function destinationItineraryIndex(Request $request, $destination_id) {
+
+        //assigned combination for destiantion
+        $assignedCombination = DestinationWiseItinerary::where('destination_id', $destination_id)
+                    ->get(['package_id', 'itinerary_id']);
+
+        //collect package_id and itinerary_id if already exist
+        $assignedPackageIds = $assignedCombination->pluck('package_id')->toArray();
+        $assignedItineraryIds = $assignedCombination->pluck('itinerary_id')->toArray();
+
         $destinationItineraries = DestinationWiseItinerary::with(['packageCategory'])->where('destination_id', $destination_id)->paginate(15);
-        $packageCategories = PackageCategory::where('status', 1)->get();
-        $itineraries = ItenaryList::select(['id', 'title'])->where('status', 1)->get();
-        $destination = Destination::select(['id', 'destination_name'])->where('id', $destination_id)->first()   ;
+        $packageCategories = PackageCategory::where('status', 1)->whereNotIn('id', $assignedPackageIds)->get();
+        $itineraries = ItenaryList::select(['id', 'title'])->where('status', 1)->whereNotIn('id', $assignedItineraryIds)->get();
+        $destination = Destination::select(['id', 'destination_name'])->where('id', $destination_id)->first();
 
         return view('admin.destination.itineraryList', compact('destination', 'destinationItineraries', 'packageCategories', 'itineraries'));
     }
@@ -260,6 +269,22 @@ class DestinationController extends Controller
             'status' => 1,
         ]);
         return redirect()->route('admin.destination.itineraryList', $request->destination_id)->with('success', 'Itinerary is assigned successfully with the destination');
+    }
+
+    public function deleteItinerary(Request $request) {
+        $data = DestinationWiseItinerary::find($request->id); // use find(), not findOrFail() to avoid immediate 404    
+        if (!$data) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Destinationwise Itinerary not found.',
+            ]);
+        }
+    
+        $data->delete(); // perform deletion
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Destinationwise Itinerary deleted successfully.',
+        ]);
     }
  
 }

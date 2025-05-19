@@ -17,4 +17,8 @@ class ItenaryList extends Model
         'actual_price',
         'status'
     ];
+
+    public function itineraryItineraries(){
+        return $this->hasMany(DestinationWiseItinerary::class, 'itinerary_id');
+    }
 }

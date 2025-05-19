@@ -170,6 +170,7 @@ Route::name('admin.')->group(function() {
                 // Routes of itineraries associated with destinations
                 Route::get('/{destiation_id}/itineraries', [DestinationController::class, 'destinationItineraryIndex'])->name('destination.itineraryList');
                 Route::post('/{destiation_id}/assign-itinerary', [DestinationController::class, 'assignItineraryToDestination'])->name('destination.assignItinerary');
+                Route::post('/delete-itinerary', [DestinationController::class, 'deleteItinerary'])->name('destination.deleteItinerary');
 
                 
             });
