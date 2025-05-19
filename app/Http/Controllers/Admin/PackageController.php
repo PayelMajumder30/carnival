@@ -34,7 +34,14 @@ class PackageController extends Controller
     }
     public function store(Request $request) {
         $request->validate([
-            'title' => 'required|string|max:255|unique:package_category,title',
+            'title' => [
+            'required',
+            'string',
+            'max:255',
+                Rule::unique('package_categories')->where(function ($query) {
+                    return $query->whereNull('deleted_at');
+                }),
+            ],
         ],[
             'title.required'    => 'The title is required.',
             'title.string'      => 'The title must be a valid string.',
@@ -71,20 +78,13 @@ class PackageController extends Controller
     }
 
     public function delete(Request $request){
-        $data = PackageCategory::find($request->id); // use find(), not findOrFail() to avoid immediate 404
-    
-        if (!$data) {
-            return response()->json([
-                'status'    => 404,
-                'message'   => 'package category not found.',
-            ]);
-        }
-    
-        $data->delete(); // perform deletion
-        return response()->json([
-            'status'    => 200,
-            'message'   => 'package category deleted successfully.',
-        ]);
+       $item = PackageCategory::findOrFail($request->id);
+
+       if($item->delete()) {
+        return response()->json(['status' => 'success', 'message' => 'Package category deleted successfully.']);
+       } else {
+        return response()->json(['status' => 'error', 'message' => 'Deletion failed.']);
+       }
     }
 
  

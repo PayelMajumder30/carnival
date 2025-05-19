@@ -235,41 +235,120 @@ class DestinationController extends Controller
 
     public function destinationItineraryIndex(Request $request, $destination_id) {
 
-        //assigned combination for destiantion
-        $assignedCombination = DestinationWiseItinerary::where('destination_id', $destination_id)
-                    ->get(['package_id', 'itinerary_id']);
+        // Get the keyword from the request
+        $keyword = $request->input('keyword');
 
-        //collect package_id and itinerary_id if already exist
-        $assignedPackageIds = $assignedCombination->pluck('package_id')->toArray();
+        // Assigned combinations
+        $assignedCombination = DestinationWiseItinerary::where('destination_id', $destination_id)
+            ->get(['package_id', 'itinerary_id']);
+
         $assignedItineraryIds = $assignedCombination->pluck('itinerary_id')->toArray();
 
-        $destinationItineraries = DestinationWiseItinerary::with(['packageCategory'])->where('destination_id', $destination_id)->paginate(15);
-        $packageCategories = PackageCategory::where('status', 1)->whereNotIn('id', $assignedPackageIds)->get();
-        $itineraries = ItenaryList::select(['id', 'title'])->where('status', 1)->whereNotIn('id', $assignedItineraryIds)->get();
+        // Base query with relationships
+        $packages = DestinationWiseItinerary::where('destination_id', $destination_id)
+            ->where(function ($q) use ($keyword) {
+                $q->whereHas('packageCategory', function ($q2) use ($keyword) {
+                    $q2->where('title', 'like', '%' . $keyword . '%');
+                })->orWhereHas('itinerary', function ($q3) use ($keyword) {
+                    $q3->where('title', 'like', '%' . $keyword . '%');
+                });
+            })
+            ->get()
+            ->toArray();
+
+        $data = [];
+        
+        foreach ($packages as $index=> $item) {
+
+            $packageTitle = PackageCategory::find($item['package_id'])->title ?? null;
+            //$itineraryTitle = ItenaryList::find($item['itinerary_id'])->title ?? null;
+            $itinerary = ItenaryList::find($item['itinerary_id']);
+
+
+            if ($packageTitle) {
+                // Group itineraries under each package title
+                //$data[$packageTitle]['itineraries'][$item['id']] = $itineraryTitle;
+                $data[$packageTitle]['itineraries'][$item['id']] = $itinerary;
+            }
+        }
+        // Get available packages and itineraries
+        $packageCategories = PackageCategory::select(['id', 'title'])->where('status', 1)->get();
+        $itineraries = ItenaryList::select(['id', 'title'])->where('status', 1)->get();
         $destination = Destination::select(['id', 'destination_name'])->where('id', $destination_id)->first();
 
-        return view('admin.destination.itineraryList', compact('destination', 'destinationItineraries', 'packageCategories', 'itineraries'));
+        return view('admin.destination.itineraryList', compact(
+            'destination',
+            'data',
+            'packageCategories',
+            'itineraries'
+        ));
     }
 
-    public function assignItineraryToDestination(Request $request) {
-        $is_exist = DestinationWiseItinerary::where([
-            'destination_id' => $request->destination_id,
-            'package_id' => $request->package_id,
-            'itinerary_id' => $request->itinerary_id,
-        ])->first();
-        // If same itinerary of same package is aleady added then return error
-        if (!empty($is_exist)) {
-            return redirect()->route('admin.destination.itineraryList', $request->destination_id)->with('failure', 'Selected destination of same package category is already added');
+    // public function assignItineraryToDestination(Request $request) {
+    //     $is_exist = DestinationWiseItinerary::where([
+    //         'destination_id' => $request->destination_id,
+    //         'package_id' => $request->package_id,
+    //         'itinerary_id' => $request->itinerary_id,
+    //     ])->first();
+    //     // If same itinerary of same package is aleady added then return error
+    //     if (!empty($is_exist)) {
+    //         return redirect()->route('admin.destination.itineraryList', $request->destination_id)->with('failure', 'Selected destination of same package category is already added');
+    //     }
+
+    //     DestinationWiseItinerary::create([
+    //         'destination_id' => $request->destination_id,
+    //         'package_id' => $request->package_id,
+    //         'itinerary_id' => $request->itinerary_id,
+    //         'status' => 1,
+    //     ]);
+    //     return redirect()->route('admin.destination.itineraryList', $request->destination_id)->with('success', 'Itinerary is assigned successfully with the destination');
+    // }
+
+    public function assignItineraryToDestination(Request $request)
+    {
+        // Validate input
+        $request->validate([
+            'destination_id' => 'required|exists:destinations,id',
+            'package_id' => 'required|exists:package_categories,id',
+            'itinerary_id' => 'required|array',
+            'itinerary_id.*' => 'exists:itenary_list,id',
+        ]);
+
+        $alreadyExists = [];
+
+        foreach ($request->itinerary_id as $itineraryId) {
+            // Check if the combination already exists
+            $is_exist = DestinationWiseItinerary::where([
+                'destination_id' => $request->destination_id,
+                'package_id' => $request->package_id,
+                'itinerary_id' => $itineraryId,
+            ])->first();
+
+            if ($is_exist) {
+                $alreadyExists[] = $itineraryId;
+                continue;
+            }
+
+            // Create new combination
+            DestinationWiseItinerary::create([
+                'destination_id' => $request->destination_id,
+                'package_id' => $request->package_id,
+                'itinerary_id' => $itineraryId,
+                'status' => 1,
+            ]);
         }
 
-        DestinationWiseItinerary::create([
-            'destination_id' => $request->destination_id,
-            'package_id' => $request->package_id,
-            'itinerary_id' => $request->itinerary_id,
-            'status' => 1,
-        ]);
-        return redirect()->route('admin.destination.itineraryList', $request->destination_id)->with('success', 'Itinerary is assigned successfully with the destination');
+        if (!empty($alreadyExists)) {
+            return redirect()
+                ->route('admin.destination.itineraryList', $request->destination_id)
+                ->with('failure', 'Some itineraries were already assigned and skipped.');
+        }
+
+        return redirect()
+            ->route('admin.destination.itineraryList', $request->destination_id)
+            ->with('success', 'Itineraries assigned successfully to the destination.');
     }
+
 
     public function deleteItinerary(Request $request) {
         $data = DestinationWiseItinerary::find($request->id); // use find(), not findOrFail() to avoid immediate 404    

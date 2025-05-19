@@ -141,13 +141,14 @@ Route::name('admin.')->group(function() {
 
             //Master modeule/package categoryPackageController
 
-            Route::prefix('packageCategory')->group(function() {
+            Route::prefix('package-category')->group(function() {
                 Route::get('/', [PackageController::class, 'index'])->name('packageCategory.list.all');
                 Route::get('/create', [PackageController::class, 'create'])->name('packageCategory.create');
                 Route::post('/store', [PackageController::class, 'store'])->name('packageCategory.store');
                 Route::post('/update', [PackageController::class, 'update'])->name('packageCategory.update');   
                 Route::get('/status/{id}', [PackageController::class, 'status'])->name('packageCategory.status');
                 Route::post('/delete', [PackageController::class, 'delete'])->name('packageCategory.delete');
+
             });
 
             //Master modeule/destination
@@ -170,9 +171,7 @@ Route::name('admin.')->group(function() {
                 // Routes of itineraries associated with destinations
                 Route::get('/{destiation_id}/itineraries', [DestinationController::class, 'destinationItineraryIndex'])->name('destination.itineraryList');
                 Route::post('/{destiation_id}/assign-itinerary', [DestinationController::class, 'assignItineraryToDestination'])->name('destination.assignItinerary');
-                Route::post('/delete-itinerary', [DestinationController::class, 'deleteItinerary'])->name('destination.deleteItinerary');
-
-                
+                Route::post('/delete-itinerary', [DestinationController::class, 'deleteItinerary'])->name('destination.deleteItinerary');               
             });
 
              //Master modeule/support
@@ -228,7 +227,7 @@ Route::name('admin.')->group(function() {
                 Route::get('/edit/{id}', [ItenaryListController::class, 'edit'])->name('itenaries.edit');
                 Route::post('/update/{id}', [ItenaryListController::class, 'update'])->name('itenaries.update');
                 Route::get('/status/{id}', [ItenaryListController::class, 'toggleStatus'])->name('itenaries.status');
-                Route::delete('/delete/{id}', [ItenaryListController::class, 'delete'])->name('itenaries.delete');
+                Route::post('/delete/{id}', [ItenaryListController::class, 'delete'])->name('itenaries.delete');
             });
 
         });

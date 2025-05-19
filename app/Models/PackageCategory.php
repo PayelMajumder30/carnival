@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PackageCategory extends Model
 {
-    use HasFactory;
-    protected $table = 'package_category';
+    use HasFactory, SoftDeletes;
+    protected $table = 'package_categories';
     protected $fillable = [
         'title',
         'status',

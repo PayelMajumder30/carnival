@@ -2,6 +2,8 @@
 @section('page-title', $destination->destination_name . '/' . 'Itineraries')
 
 @section('section')
+
+
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -45,53 +47,65 @@
                         <table class="table table-sm table-hover">
                             <thead>
                                 <tr class="text-center">
-                                    <th>#</th>
                                     <th>Package Category</th>
-                                    <th>Itinerary</th>
-                                    <th>status</th>
-                                    <th>Action</th>
+                                    <th>Itineraries</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($destinationItineraries as $index => $item)
+                               
+                                @forelse ($data as $index => $item)
                                     <tr>
-                                        <td class="text-center">{{ $index + $destinationItineraries->firstItem() }}</td>
                                         <td class="text-center">
                                             <div class="title-part">
-                                                <p class="text-muted mb-0">{{ ucwords($item->packageCategory->title) }}</p>
+                                                <p class="text-muted mb-0">{{ ucwords($index) }}</p>
                                             </div>
                                         </td>
-                                          <td class="text-center">
-                                            <div class="title-part">
-                                                <p class="text-muted mb-0">{{ ucwords($item->itinerary->title) }}</p>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            @if ($item->packageCategory && $item->packageCategory->status == 1)
-                                                <span class="badge badge-success">Active</span>
-                                            @else
-                                                <span class="badge badge-danger">Inactive</span>
-                                            @endif
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="btn-group">                                     
-                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deleteDestItinerary({{$item->id}})" data-toggle="tooltip" title="Delete">
-                                                    <i class="fa fa-trash"></i>
-                                                </a>
+                                        <td>
+                                            <div class="row">
+                                                @foreach ($item['itineraries'] as $key=>$item_itinerary)
+                                                    <div class="col-3">
+                                                        <div class="card text-center">
+                                                            <div class="card-body">
+                                                                @if (!empty($item_itinerary->main_image) && file_exists(public_path($item_itinerary->main_image)))
+                                                                    <img src="{{ asset($item_itinerary->main_image) }}"
+                                                                        alt="Itinerary Image"
+                                                                        class="img-fluid mb-2"
+                                                                        style="max-height: 120px; object-fit: cover;">
+                                                                @else
+                                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}"
+                                                                        alt="No Image"
+                                                                        class="img-fluid mb-2"
+                                                                        style="max-height: 120px; object-fit: cover;">
+                                                                @endif
+
+                                                                <p class="mb-1">{{ $item_itinerary->title }}</p>
+                                                            </div>
+                                                            <div class="card-footer d-flex flex-column align-items-center">
+                                                                <div class="btn-group mb-2">
+                                                                    <a href="javascript:void(0)" onclick="deleteDestItinerary({{ $key }})" data-toggle="tooltip" title="Delete" class="btn btn-sm btn-dark delete-btn">
+                                                                        <i class="fa fa-trash"></i>
+                                                                    </a>
+                                                                </div>
+                                                                @if ($item_itinerary->status == 1)
+                                                                    <span class="badge badge-success">Active</span>
+                                                                @else
+                                                                    <span class="badge badge-danger">Inactive</span>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                @endforeach
                                             </div>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="100%" class="text-center">No records found</td>
+                                        <td class="text-center">No records found</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
-
-                        <div class="pagination-container">
-                            {{$destinationItineraries->appends($_GET)->links()}}
-                        </div>
                     </div>
                 </div>
             </div>
@@ -119,8 +133,8 @@
                         
                             <div class="form-group" id="destination-group">
                                 <label for="itinerary_id">Itinerary</label>
-                                <select name="itinerary_id" id="itinerary_id" class="form-control">
-                                    <option value="">-- Select Itinerary --</option>
+                                <select name="itinerary_id[]" id="itinerary_id" class="form-control" multiple>
+                                    {{-- <option value="">-- Select Itinerary --</option> --}}
                                     @foreach($itineraries as $itinerary)
                                         <option value="{{ $itinerary->id }}">{{ ucwords($itinerary->title) }}</option>
                                     @endforeach
@@ -138,6 +152,10 @@
     </div>
 </section>
 @endsection
+@section('script')
+
+<link rel="stylesheet" href="{{ asset('backend-assets/css/select2.min.css') }}">
+<script src="{{ asset('backend-assets/js/select2.min.js') }}"></script> 
 <script>
     function assignItinerary() {
         if ($('#package_id').val() == '') {
@@ -181,6 +199,12 @@
       });
     }
 
-
+    //for select multiple data in itinerary
+    $(document).ready(function() {
+        $('#itinerary_id').select2({
+            placeholder: "-- Select Itinerary --"
+        });
+    });
 
 </script>
+@endsection

@@ -36,7 +36,6 @@ class PackageRepository implements PackageInterface
     public function delete($id)
     {
         $data = PackageCategory::findOrFail($id);
-        //dd($banner);
         if($data->delete()){
             return true;
         } else{

@@ -65,7 +65,8 @@
                                                     data-title="{{ $item->title }}" data-toggle="modal" data-target="#editModal" title="Edit">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
-                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark" onclick="deletePackage({{$item->id}})" data-toggle="tooltip" title="Delete">
+                                                <a href="javascript:void(0)" class="btn btn-sm btn-dark delete-btn">
+                                                    <input type="hidden" class="hidden-id" value="{{ $item->id }}">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </div>
@@ -139,37 +140,46 @@
 
 @section('script')
 <script>
-    function deletePackage(packageId) {
-      Swal.fire({
-          icon: 'warning',
-          title: "Are you sure you want to delete this?",
-          text: "You won't be able to revert this!",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Delete",
-      }).then((result) => {
-          /* Read more about isConfirmed, isDenied below */
-          if (result.isConfirmed) {
-              $.ajax({
-                  url: "{{ route('admin.packageCategory.delete')}}",
-                  type: 'POST',
-                  data: {
-                      "id": packageId,
-                      "_token": '{{ csrf_token() }}',
-                  },
-                  success: function (data){
-                      if (data.status != 200) {
-                          toastFire('error', data.message);
-                      } else {
-                          toastFire('success', data.message);
-                          location.reload();
-                      }
-                  }
-              });
-          }
-      });
-    }
+ 
+    $(document).ready(function () {
+        $('.delete-btn').click(function () {
+            let itemId = $(this).find('.hidden-id').val(); // get hidden input value
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "Are you sure you want to delete this?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('admin.packageCategory.delete') }}",
+                        type: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            id: itemId
+                        },
+                        success: function (response) {
+                            if (response.status === 'success') {
+                                toastFire('Deleted!', response.message, 'success');
+                                // Optionally remove the row
+                                $('#' + itemId).remove();
+                            } else {
+                                toastFire('Error', 'Something went wrong', 'error');
+                            }
+                        },
+                        error: function () {
+                            toastFire('Error', 'Server error occurred', 'error');
+                        }
+                    });
+                }
+            });
+        });
+    });
+
 
     //script for modal
     $(document).ready(function () {
