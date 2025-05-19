@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('page-title', 'Create Itenaries')
+@section('page-title', 'Create Itineraries')
 
 @section('section')
 <section class="content">

@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('page-title', 'Itinary List')
+@section('page-title', 'Itinerary List')
 
 @section('section')
 <section class="content">
@@ -114,40 +114,7 @@
 </section>
 
 @endsection
-{{-- <script>  
-    function deleteItenary(itenaryId) {
-        Swal.fire({
-            icon: 'warning',
-            title: "Are you sure you want to delete this?",
-            text: "You won't be able to revert this!",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Delete",
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "/admin/itinaries/itinary-list/delete/" + itenaryId, 
-                    type: 'POST',  
-                    data: {
-                        _token: '{{ csrf_token() }}', 
-                    },
-                    success: function (data) {
-                        if (data.status != 'success') {
-                            toastFire('error', data.message);
-                        } else {
-                            toastFire('success', data.message);
-                            location.reload();
-                        }
-                    },
-                    error: function () {
-                        toastFire('error', 'Something went wrong. Please try again.');
-                    }
-                });
-            }
-        });
-    }
-</script> --}}
+
 
 <script>
     function deleteItenary(itenaryId) {
