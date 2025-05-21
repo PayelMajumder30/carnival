@@ -18,4 +18,13 @@ class PackageCategory extends Model
     public function pckgCategoryItineraries(){
         return $this->hasMany(DestinationWiseItinerary::class, 'package_id');
     }
+
+    /*
+    * Relationship with `itenary_list` table
+    */
+
+    public function itineraries()
+    {
+        return $this->hasMany(ItenaryList::class, 'package_id');
+    }
 }

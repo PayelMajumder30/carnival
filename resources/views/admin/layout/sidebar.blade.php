@@ -123,6 +123,15 @@
                         </a>
                     </li>
                     @endif
+
+                    <li class="nav-item">
+                        <a href="{{ route('admin.tag.list.all')}}"
+                            class="nav-link {{ (request()->is('admin/master-module/tags*')) ? 'active active_nav_link' : ''}}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Tags List</p>
+                        </a>
+                    </li>
+                   
                 </ul>
             </li>
         @endif

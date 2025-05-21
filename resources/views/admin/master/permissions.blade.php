@@ -95,8 +95,8 @@
                                                     <label for="">Trip Category</label>
                                                     <input type="checkbox" id="offers" name="roles[]" value="offers" data-parent="MASTER MODULES" {{ in_array('offers', $permissions) ? 'checked' : '' }}>
                                                     <label for="">Offer List</label>
-                                                    <input type="checkbox" id="destination" name="roles[]" value="destination" data-parent="MASTER MODULES" {{ in_array('destination', $permissions) ? 'checked' : '' }}>
-                                                    <label for="">Destination</label>
+                                                    {{-- <input type="checkbox" id="destination" name="roles[]" value="destination" data-parent="MASTER MODULES" {{ in_array('destination', $permissions) ? 'checked' : '' }}>
+                                                    <label for="">Destination</label> --}}
                                                     <input type="checkbox" id="support" name="roles[]" value="support" data-parent="MASTER MODULES" {{ in_array('support', $permissions) ? 'checked' : '' }}>
                                                     <label for="">Support</label>
                                                     <input type="checkbox" id="packageCategory" name="roles[]" value="packageCategory" data-parent="MASTER MODULES" {{ in_array('packageCategory', $permissions) ? 'checked' : '' }}>
@@ -117,6 +117,11 @@
                                                     <input type="checkbox" id="itenary_list" name="roles[]" value="Itenary list" data-parent="ITENARIES" {{ in_array('itenary_list', $permissions) ? 'checked' : '' }}>
                                                     <label for="itenary_list">Itenary List</label>
                                                 </li>
+                                                <li>
+                                                    <input type="checkbox" id="destination" name="roles[]" value="destination" data-parent="ITENARIES" {{ in_array('destination', $permissions) ? 'checked' : '' }}>
+                                                    <label for="">Destination</label>
+                                                </li>
+                                              
                                             </ul>
                                         </li>
 

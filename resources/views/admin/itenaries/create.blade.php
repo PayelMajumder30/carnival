@@ -74,6 +74,7 @@
                                     @error('main_image') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div>
 
+
                                 <div class="form-group col-md-6">
                                     <label for="discount_start_date">Discount Start Date <span class="text-danger">*</span></label>
                                     <input type="datetime-local" class="form-control" name="discount_start_date" id="discount_start_date" required>

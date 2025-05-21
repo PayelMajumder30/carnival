@@ -184,6 +184,16 @@ Route::name('admin.')->group(function() {
                 Route::get('/status/{id}', [SupportController::class, 'status'])->name('support.status');               
                 Route::post('/delete',[SupportController::class, 'delete'])->name('support.delete');
             });
+
+            // Master module/Tags
+            Route::prefix('tags')->group(function(){
+                Route::get('/',[TagController::class, 'index'])->name('tag.list.all');
+                Route::get('/create',[TagController::class, 'create'])->name('tag.create');
+                Route::post('/store',[TagController::class, 'store'])->name('tag.store');
+                Route::post('/update',[TagController::class, 'update'])->name('tag.update');
+                Route::get('status/{id}',[TagController::class, 'status'])->name('tag.status');
+                Route::post('delete',[TagController::class, 'delete'])->name('tag.delete');
+            });
         });
         // Route::resource('article', ArticleController::class);
 
@@ -228,7 +238,12 @@ Route::name('admin.')->group(function() {
                 Route::post('/update/{id}', [ItenaryListController::class, 'update'])->name('itenaries.update');
                 Route::get('/status/{id}', [ItenaryListController::class, 'toggleStatus'])->name('itenaries.status');
                 Route::post('/delete/{id}', [ItenaryListController::class, 'delete'])->name('itenaries.delete');
-                Route::post('/add-discount', [ItenaryListController::class, 'addDiscount'])->name('itenaries.discount');
+
+                //itineararies/ assign destination & package category
+                Route::post('/assign-itinerary', [ItenaryListController::class, 'assignedItinerary'])->name('itenaries.assignedItinerary');
+                Route::post('/toggle-package-status', [ItenaryListController::class, 'togglePackageStatus'])->name('itenaries.togglePackageStatus');
+                
+
             });
 
         });

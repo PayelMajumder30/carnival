@@ -56,6 +56,9 @@ use App\Repositories\PackageRepository;
 use App\Interfaces\ItenarylistRepositoryInterface;
 use App\Repositories\ItenarylistRepository;
 
+use App\Interfaces\TaglistRepositoryInterface;
+use App\Repositories\TaglistRepository;
+
 class RepositoryServiceProvider extends ServiceProvider
 {
     /**
@@ -77,6 +80,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(SupportRepositoryInterface::class, SupportRepository::class);
         $this->app->bind(PackageInterface::class, PackageRepository::class);
         $this->app->bind(ItenarylistRepositoryInterface::class, ItenarylistRepository::class);
+        $this->app->bind(TaglistRepositoryInterface::class, TaglistRepository::class);
 
         $this->app->bind(UserInterface::class, UserRepository::class);
         // $this->app->bind(OrderInterface::class, OrderRepository::class);
