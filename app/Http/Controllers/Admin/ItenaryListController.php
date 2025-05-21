@@ -74,72 +74,6 @@ class ItenaryListController extends Controller
         return redirect()->route('admin.itenaries.list.all')->with('success', 'New Itenaries created');
     }
 
-    //for assigned the destination and packages under itinerary
-    public function assignedItinerary(Request $request)
-    {
-        try{
-            DB::beginTransaction();
-            $request->validate([
-                'itinerary_id' => 'required|exists:itenary_list,id',
-                'destination_id' => 'required|exists:destinations,id',
-                'package_id' => 'required|array',
-                'package_id.*' => 'exists:package_categories,id',
-            ]);
-            $itineraryId = $request->itinerary_id;
-            $destinationId = $request->destination_id;
-                foreach ($request->package_id as $packageId) {
-                    DestinationWiseItinerary::updateOrCreate(
-                    [
-                        'destination_id' => (int)$destinationId,
-                        'package_id' => (int)$packageId,
-                        'itinerary_id' => (int)$itineraryId,
-                    ],
-                    [
-                        'status' => 1,
-                    ]
-                );
-            }
-            DB::commit();
-
-            return redirect()->back()->with('success', 'Destination and Packages assigned successfully.');
-        }catch(\Exception $e){
-            dd($e->getMessage());
-            DB::rollback();
-            \Log::error($e);
-            // Redirect back with an error message
-            return redirect()->back()->with('failure', 'Failed to create offer. Please try again.');
-        }
-    }
-
-    //for check uncheck the destinationwise package categories
-    public function togglePackageStatus(Request $request)
-    {
-        $request->validate([
-            'itinerary_id'   => 'required|exists:itenary_list,id',
-            'destination_id' => 'required|exists:destinations,id',
-            'package_id'     => 'required|exists:package_categories,id',
-            'status'         => 'required|in:0,1',
-        ]);
-
-        //dd($request->all());
-
-         $row = DestinationWiseItinerary::where('itinerary_id', $request->itinerary_id)
-                ->where('destination_id', $request->destination_id)
-                ->where('package_id', $request->package_id)
-                ->first();
-
-        //dd($row);
-
-        if($row) {
-            $row->status = $request->status;
-            $row->save();
-
-            return response()->json(['success' => true]);
-        }
-
-        return response()->json(['success' => false]);
-    }
-
 
     public function edit($id)
     {
@@ -204,6 +138,100 @@ class ItenaryListController extends Controller
         $this->ItenarylistRepository->delete($id);
 
         return response()->json(['status' => 'success', 'message' => 'Itenary Deleted Successfully']);
+    }
+
+    
+    //for assigned the destination and packages under itinerary
+    public function assignedItinerary(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            $request->validate([
+                'itinerary_id' => 'required|exists:itenary_list,id',
+                'destination_id' => 'required|exists:destinations,id',
+                'package_id' => 'required|array',
+                'package_id.*' => 'exists:package_categories,id',
+            ]);
+            $itineraryId = $request->itinerary_id;
+            $destinationId = $request->destination_id;
+                foreach ($request->package_id as $packageId) {
+                    DestinationWiseItinerary::updateOrCreate(
+                    [
+                        'destination_id' => (int)$destinationId,
+                        'package_id' => (int)$packageId,
+                        'itinerary_id' => (int)$itineraryId,
+                    ],
+                    [
+                        'status' => 1,
+                    ]
+                );
+            }
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Destination and Packages assigned successfully.');
+        }catch(\Exception $e){
+            dd($e->getMessage());
+            DB::rollback();
+            \Log::error($e);
+            // Redirect back with an error message
+            return redirect()->back()->with('failure', 'Failed to create offer. Please try again.');
+        }
+    }
+
+    //for check uncheck the destinationwise package categories
+    public function togglePackageStatus(Request $request)
+    {
+        $request->validate([
+            'itinerary_id'   => 'required|exists:itenary_list,id',
+            'destination_id' => 'required|exists:destinations,id',
+            'package_id'     => 'required|exists:package_categories,id',
+            'status'         => 'required|in:0,1',
+        ]);
+
+        //dd($request->all());
+        $row = DestinationWiseItinerary::where('itinerary_id', $request->itinerary_id)
+                ->where('destination_id', $request->destination_id)
+                ->where('package_id', $request->package_id)
+                ->first();
+
+        if($row) {
+            $row->status = $request->status;
+            $row->save();
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false]);
+    }
+
+    //for delete itinerarywise package
+    public function packageItineraryDelete(Request $request)
+    {
+        $pckg = DestinationWiseItinerary::find($request->id); 
+
+        if (!$pckg) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Itinerarywise package not found.',
+            ]);
+        }
+
+        // Store related values before deletion
+        $itineraryId    = $pckg->itinerary_id;
+        $destinationId  = $pckg->destination_id;
+
+        $pckg->delete();
+
+        // Check if any more packages remain for this destination in the same itinerary
+        $remaining = DestinationWiseItinerary::where('itinerary_id', $itineraryId)
+            ->where('destination_id', $destinationId)
+            ->count();
+        return response()->json([
+            'status'             => 200,
+            'message'            => 'Itinerarywise package deleted successfully.',
+            'remove_destination' => !$remaining,
+            'destination_id'     => $destinationId,
+        ]);
     }
 
 }

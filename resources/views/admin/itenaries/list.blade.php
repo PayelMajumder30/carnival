@@ -82,55 +82,6 @@
                                         </td>
                                        <td>
                                         <div class="container mt-5">
-                                            
-                                            {{-- <table class="table table-bordered">
-                                                <thead class="table-light">
-                                                    <tr>
-                                                        <th style="width: 20%;">Destination</th>
-                                                        <th>Packages</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td><strong>Assam</strong></td>
-                                                        <td>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox" name="packages[]" value="Wellness Tour" id="wellness_assam">
-                                                                <label class="form-check-label" for="wellness_assam">Wellness Tour</label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox" name="packages[]" value="Holiday Tours" id="holiday_assam">
-                                                                <label class="form-check-label" for="holiday_assam">Holiday Tours</label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox" name="packages[]" value="Family Tours" id="family_assam">
-                                                                <label class="form-check-label" for="family_assam">Family Tours</label>
-                                                            </div>
-                                                        </td>
-
-                                                    </tr>
-                                                    <tr>
-                                                        <td><strong>Goa</strong></td>
-                                                        <td>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox" name="packages[]" value="Wellness Tour" id="wellness_assam">
-                                                                <label class="form-check-label" for="wellness_assam">Wellness Tour</label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox" name="packages[]" value="Holiday Tours" id="holiday_assam">
-                                                                <label class="form-check-label" for="holiday_assam">Holiday Tours</label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox" name="packages[]" value="Family Tours" id="family_assam">
-                                                                <label class="form-check-label" for="family_assam">Family Tours</label>
-                                                            </div>
-                                                        </td>
-
-                                                    </tr>
-                                                    <!-- Add more destinations as needed -->
-                                                </tbody>
-                                            </table> --}}
-
                                             <table class="table table-bordered">
                                                 <thead class="table-light">
                                                     <tr>
@@ -140,20 +91,31 @@
                                                 </thead>
                                                 <tbody>
                                                     @foreach($item->itineraryItineraries->groupBy('destination_id') as $destinationId => $items)
-                                                        <tr>
+                                                        <tr id="destination-row-{{ $destinationId }}">
                                                             <td><strong>{{ $items->first()->destination->destination_name }}</strong></td>
                                                             <td>
                                                                 @foreach($items as $pckg)
                                                                     @if($pckg->packageCategory)
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input package-checkbox"
-                                                                                data-itinerary-id="{{ $item->id }}"
-                                                                                data-destination-id="{{ $pckg->destination_id }}"
-                                                                                data-package-id="{{ $pckg->package_id }}"
-                                                                                type="checkbox" {{ $pckg->status == 1 ? 'checked' : ''}}>
-                                                                                <label class="form-check-label">
+                                                                        <div class="form-check d-flex align-items-center justify-content-between mb-2">
+                                                                            <div class="d-flex align-items-center">
+                                                                                <input class="form-check-input package-checkbox me-2"
+                                                                                    data-itinerary-id="{{ $item->id }}"
+                                                                                    data-destination-id="{{ $pckg->destination_id }}"
+                                                                                    data-package-id="{{ $pckg->package_id }}"
+                                                                                    type="checkbox"
+                                                                                    {{ $pckg->status == 1 ? 'checked' : '' }}>
+                                                                                
+                                                                                <label class="form-check-label me-2 mb-0">
                                                                                     {{ $pckg->packageCategory->title }}
                                                                                 </label>
+                                                                            </div>
+
+                                                                            <a href="javascript:void(0)" class="btn btn-sm btn-outline-danger"
+                                                                                onclick="deleteItenaryPackage({{ $pckg->id }})"
+                                                                                title="Delete"
+                                                                                style="padding: 0.2rem 0.4rem; font-size: 0.7rem;">
+                                                                                <i class="fa fa-trash"></i>
+                                                                            </a>
                                                                         </div>
                                                                     @endif
                                                                 @endforeach
@@ -162,9 +124,7 @@
                                                     @endforeach
                                                 </tbody>
                                             </table>
-
                                         </div>
-
                                        </td>
                                         <td class="d-flex">
                                             <div class="btn-group">
@@ -176,7 +136,7 @@
                                                 </a>
 
                                                 <!-- Modal Trigger Button -->
-                                                <a href="javascript:void(0)" class="btn btn-sm btn-dark ml-1" data-toggle="modal" data-target="#assignModal{{ $item->id }}" title="Assign Itinerary">
+                                                <a href="javascript:void(0)" class="btn btn-sm btn-warning ml-1" data-toggle="modal" data-target="#assignModal{{ $item->id }}" title="Assign Itinerary">
                                                     <i class="fa fa-link"></i>
                                                 </a>
                                             </div>
@@ -294,7 +254,7 @@
         });
     });
     
-    // for check uncheck the destinationwise package categories
+    // for check, uncheck the destinationwise package categories
     $(document).on('change', '.package-checkbox', function () {
         const checkbox = $(this);
         const isChecked = checkbox.is(':checked') ? 1 : 0;
@@ -345,7 +305,51 @@
         });
     });
 
-   
+
+    //for delete Itinerary packages
+    function deleteItenaryPackage(itinPckgId) {
+        Swal.fire({
+            icon: 'warning',
+            title: "Are you sure you want to delete this?",
+            text: "You won't be able to revert this!",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Delete",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('admin.itenaries.packageItineraryDelete') }}",
+                    type: 'POST',
+                    data: {
+                        id: itinPckgId,
+                        _token: '{{ csrf_token() }}',
+                    },
+                    success: function (data) {
+                        if (data.status != 200) {
+                            toastFire('error', data.message);
+                        } else {
+                            toastFire('success', data.message);
+
+                            // Remove the individual package row
+                            let packageBtn      = $(`[onclick="deleteItenaryPackage(${itinPckgId})"]`);
+                            let formCheck       = packageBtn.closest('.form-check');
+                            let destinationRow  = packageBtn.closest('tr');
+
+                            formCheck.remove();
+
+                            if (destinationRow.find('.form-check').length === 0) {
+                                destinationRow.remove();
+                            }
+                        }
+                    },
+                    error: function () {
+                        toastFire('error', 'Something went wrong. Please try again.');
+                    }
+                });
+            }
+        });
+    }
 </script>
 @endsection
 
