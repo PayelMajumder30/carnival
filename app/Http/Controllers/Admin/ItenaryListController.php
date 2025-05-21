@@ -34,13 +34,18 @@ class ItenaryListController extends Controller
 
     public function store(Request $request)
     {
-        //dd($request->all());
+        // dd($request->all());
         $request->validate([
         'main_image' => 'required|image|mimes:jpg,jpeg,png,webp,gif,svg|max:5120',
         'title' => 'required|string|max:255|unique:itenary_list,title',
         'short_description' => 'nullable|string|max:255',
+        'duration' => 'required|string|max:255',
         'selling_price' => 'required|numeric|lte:actual_price',
         'actual_price' => 'required|numeric',
+        'discount_type' => 'required',
+        'discount_value' => 'required',
+        'discount_start_date' => 'required|date',
+        'discount_end_date' => 'required|date|after_or_equal:discount_start_date',
         ],[
         'title.required' => 'The title is required.',
         'title.string' => 'The title must be a valid string.',
@@ -79,8 +84,13 @@ class ItenaryListController extends Controller
             'main_image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif,svg|max:5120',
             'title' => 'required|string|max:255|unique:itenary_list,title,' . $id,
             'short_description' => 'nullable|string|max:255',
+            'duration' => 'required|string|max:255',
             'selling_price' => 'required|numeric|lte:actual_price',
             'actual_price' => 'required|numeric',
+            'discount_type' => 'required',
+            'discount_value' => 'required',
+            'discount_start_date' => 'required|date',
+            'discount_end_date' => 'required|date|after_or_equal:discount_start_date'
         ]);
 
         $itenary = $this->ItenarylistRepository->findById($id);
@@ -131,5 +141,6 @@ class ItenaryListController extends Controller
 
         return response()->json(['status' => 'success', 'message' => 'Itenary Deleted Successfully']);
     }
+
 
 }

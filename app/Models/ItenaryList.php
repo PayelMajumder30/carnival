@@ -13,8 +13,13 @@ class ItenaryList extends Model
         'main_image',
         'title',
         'short_description',
+        'duration',
         'selling_price',
         'actual_price',
+        'discount_type',
+        'discount_value',
+        'discount_start_date',
+        'discount_end_date',
         'status'
     ];
 

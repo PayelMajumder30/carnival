@@ -43,10 +43,15 @@
                                 <tr>
                                     <th style="width: 5%">#</th>
                                     <th width="15%">Main Image</th>
-                                    <th width="15%">Title</th>
-                                    <th width="15%">Short Description</th>
+                                    <th width="8%">Title</th>
+                                    <th width="8%">Duration</th>
+                                    <th width="14%">Short Description</th>
                                     <th width="15%">Selling Price</th>
-                                    <th width="15%">Actual Price</th>
+                                    <th width="15%">Discount Type</th>
+                                    <th width="10%">Discount Value</th>
+                                    <th width="10%">Actual Price</th>
+                                    <th width="5%">Discount Start Date</th>
+                                    <th width="5%">Discount End Date</th>
                                     <th>Status</th>
                                     <th width="10%">Action</th>
                                 </tr>
@@ -66,13 +71,27 @@
 
                                         <td>{{ ucwords($item->title) }}</td>
 
-        
-                                        <td>{{ ucwords($item->short_description ?? '-') }}</td>
+                                        <td>{{$item->duration}}</td>
 
-                      
+                                        <td>{{ \Str::limit(ucwords($item->short_description ?? '-'), 10, '...') }}</td>
+                                       
                                         <td>{{ $item->selling_price ?? '-' }}</td>
 
+                                        <td>{{ $item->discount_type ?? '_'}}</td>
+
+                                        <td> 
+                                            @if($item->discount_type === 'percentage')
+                                                {{$item->discount_value}}%
+                                            @elseif($item->discount_type === 'flat')
+                                                ₹{{ number_format($item->discount_value, 2) }}
+                                            @endif
+                                        </td>
+
                                         <td>{{ $item->actual_price ?? '-' }}</td>
+
+                                        <td>{{ $item->discount_start_date}}</td>
+
+                                        <td>{{ $item->discount_end_date}}</td>
 
                                         <td>
                                             <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
@@ -102,6 +121,8 @@
                             </tbody>
 
                         </table>
+
+
                        {{-- Pagination Links --}}
                         <div class="pagination-container">
                             {{$data->links()}}
@@ -151,5 +172,6 @@
             }
         });
     }
+
 </script>
 
