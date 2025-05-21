@@ -10,6 +10,8 @@ class ItenaryList extends Model
     use HasFactory;
     protected $table = 'itenary_list';
     protected $fillable = [
+        'destination_id',
+        'package_id',
         'main_image',
         'title',
         'short_description',
@@ -20,5 +22,19 @@ class ItenaryList extends Model
 
     public function itineraryItineraries(){
         return $this->hasMany(DestinationWiseItinerary::class, 'itinerary_id');
+    }
+
+    /*
+    * Relationship with destination
+    */
+    public function destination(){
+        return $this->belongsTo(Destination::class, 'destination_id', 'id');
+    }
+
+    /*
+    * Relationship with package category
+    */
+    public function packageCategory(){
+        return $this->belongsTo(PackageCategory::class, 'package_id', 'id');
     }
 }

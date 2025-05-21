@@ -10,7 +10,6 @@
     
     <link rel="stylesheet" href="{{ asset('backend-assets/plugins/fontawesome-free/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('backend-assets/css/adminlte.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('backend-assets/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('backend-assets/css/style.css') }}">
     
     <link rel="stylesheet" href="{{ asset('backend-assets/plugins/fontawesome-free/css/toastr.min.css') }}">
@@ -133,7 +132,6 @@
     <form action="{{ route('admin.logout') }}" id="logout-form" method="post" class="d-none">@csrf</form>
     <script src="{{ asset('backend-assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('backend-assets/js/jquery-ui.min.js') }}"></script> 
-    <script src="{{ asset('backend-assets/js/select2.min.js') }}"></script> 
     <script src="{{ asset('backend-assets/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('backend-assets/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('backend-assets/js/adminlte.min.js') }}"></script>

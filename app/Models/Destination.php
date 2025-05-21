@@ -50,4 +50,12 @@ class Destination extends Model
                     ->with(['packageCategory', 'itinerary']);
     }
 
+    /*
+    * Relationship with `itenary_list` table
+    */
+
+    public function itineraries()
+    {
+        return $this->hasMany(ItenaryList::class, 'destination_id');
+    }
 }

@@ -45,68 +45,59 @@
 
                     <div class="card-body">
                         <table class="table table-sm table-hover">
-                            <thead>
-                                <tr class="text-center">
-                                    <th>Package Category</th>
+                            <thead class="text-center">
+                                <tr>
+                                    <th style="width: 20%;">Package Category</th>
                                     <th>Itineraries</th>
                                 </tr>
                             </thead>
                             <tbody>
-                               
                                 @forelse ($data as $index => $item)
                                     <tr>
-                                        <td class="text-center">
-                                            <div class="title-part">
-                                                <p class="text-muted mb-0">{{ ucwords($index) }}</p>
-                                            </div>
+                                        <td class="align-middle text-center">
+                                            <div>{{ ucwords($index) }}</div>
                                         </td>
                                         <td>
-                                            <div class="row">
-                                                @foreach ($item['itineraries'] as $key=>$item_itinerary)
-                                                    <div class="col-3">
-                                                        <div class="card text-center">
-                                                            <div class="card-body">
-                                                                @if (!empty($item_itinerary->main_image) && file_exists(public_path($item_itinerary->main_image)))
-                                                                    <img src="{{ asset($item_itinerary->main_image) }}"
-                                                                        alt="Itinerary Image"
-                                                                        class="img-fluid mb-2"
-                                                                        style="max-height: 120px; object-fit: cover;">
-                                                                @else
-                                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}"
-                                                                        alt="No Image"
-                                                                        class="img-fluid mb-2"
-                                                                        style="max-height: 120px; object-fit: cover;">
-                                                                @endif
-
-                                                                <p class="mb-1">{{ $item_itinerary->title }}</p>
+                                            <div class="d-flex gap-3">
+                                                @foreach ($item['itineraries'] as $key => $item_itinerary)
+                                                    <div class="card text-center" style="width: 150px;">
+                                                        <div class="card-body p-2">
+                                                            @if (!empty($item_itinerary->main_image) && file_exists(public_path($item_itinerary->main_image)))
+                                                                <img src="{{ asset($item_itinerary->main_image) }}" alt="Itinerary Image"
+                                                                    class="img-fluid mb-2" style="height: 80px; object-fit: cover;">
+                                                            @else
+                                                                <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="No Image"
+                                                                    class="img-fluid mb-2" style="height: 80px; object-fit: cover;">
+                                                            @endif
+                                                            <p class="mb-1">{{ $item_itinerary->title }}</p>
+                                                        </div>
+                                                        <div class="card-footer p-1">
+                                                            <div class="mb-1">
+                                                                <a href="javascript:void(0)" onclick="deleteDestItinerary({{ $key }})"
+                                                                class="btn btn-sm btn-dark" title="Delete">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </a>
                                                             </div>
-                                                            <div class="card-footer d-flex flex-column align-items-center">
-                                                                <div class="btn-group mb-2">
-                                                                    <a href="javascript:void(0)" onclick="deleteDestItinerary({{ $key }})" data-toggle="tooltip" title="Delete" class="btn btn-sm btn-dark delete-btn">
-                                                                        <i class="fa fa-trash"></i>
-                                                                    </a>
-                                                                </div>
-                                                                @if ($item_itinerary->status == 1)
-                                                                    <span class="badge badge-success">Active</span>
-                                                                @else
-                                                                    <span class="badge badge-danger">Inactive</span>
-                                                                @endif
-                                                            </div>
+                                                            @if ($item_itinerary->status == 1)
+                                                                <span class="badge badge-success">Active</span>
+                                                            @else
+                                                                <span class="badge badge-danger">Inactive</span>
+                                                            @endif
                                                         </div>
                                                     </div>
-
                                                 @endforeach
                                             </div>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td class="text-center">No records found</td>
+                                        <td colspan="2" class="text-center">No records found</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
+
                 </div>
             </div>
 
