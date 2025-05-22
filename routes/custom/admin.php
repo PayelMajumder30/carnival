@@ -160,12 +160,6 @@ Route::name('admin.')->group(function() {
                 Route::post('/destination/add',[DestinationController::class, 'destinationAdd'])->name('destination.add'); 
                 Route::post('/destination/create-image', [DestinationController::class, 'createDestImage'])->name('destination.createImage'); 
                 Route::get('/destination/status/{id}', [DestinationController::class, 'destinationStatus'])->name('destination.status');
-                // Route::get('/destination/package-category/{id}', [DestinationController::class, 'packageCategoryIndex'])->name('country/destinations.packageCategory');
-                // Route::get('/destination/package-category/create/{id}', [DestinationController::class, 'packageCategoryCreate'])->name('country/destinations.packageCategoryCreate');
-                // Route::post('/destination/package-category/store', [DestinationController::class, 'packageCategoryStore'])->name('country/destinations.packageCategoryStore');
-                // Route::post('/destination/package-category/update', [DestinationController::class, 'packageCategoryUpdate'])->name('country/destinations.packageCategoryUpdate');
-                // Route::get('/destination/package-category/status/{id}', [DestinationController::class, 'packageCategoryStatus'])->name('country/destinations.packageCategoryStatus');
-                // Route::post('/destination/package-category/delete', [DestinationController::class, 'packageCategoryDelete'])->name('country/destinations.packageCategorydelete');
                 Route::post('/delete', [DestinationController::class, 'destinationDelete'])->name('destination.delete');
 
                 // Routes of itineraries associated with destinations
@@ -239,13 +233,12 @@ Route::name('admin.')->group(function() {
                 Route::get('/status/{id}', [ItenaryListController::class, 'toggleStatus'])->name('itenaries.status');
                 Route::post('/delete/{id}', [ItenaryListController::class, 'delete'])->name('itenaries.delete');
 
+                Route::post('/assign-tag', [ItenaryListController::class, 'assignTagToItenary'])->name('itenaries.assignTagToItenary');
+
                 //itineararies/ assign destination & package category
                 Route::post('/assign-itinerary', [ItenaryListController::class, 'assignedItinerary'])->name('itenaries.assignedItinerary');
                 Route::post('/toggle-package-status', [ItenaryListController::class, 'togglePackageStatus'])->name('itenaries.togglePackageStatus');
-                
-                Route::post('/toggle-tag', [ItenaryListController::class, 'toggleTag']);
-
-
+                Route::post('/package-itinerary-delete',[ItenaryListController::class, 'packageItineraryDelete'])->name('itenaries.packageItineraryDelete');
             });
 
         });
