@@ -300,21 +300,24 @@ class ItenaryListController extends Controller
             'itinerary_id' => 'required|exists:itenary_list,id',
         ]);
     
-        $data = $request->all();   
-        // Handle Image Upload
-        if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $file       = $request->file('image');
-            $extension  = $file->extension(); 
-            $fileName   = time() . rand(10000, 99999) . '.' . $extension;           
-            // Ensure we store only the relative path in the database
-            $filePath   = 'uploads/itinerary_galleries/' . $fileName;   
-            $file->move(public_path('uploads/itinerary_galleries'), $fileName);
-    
-            $data['image'] = $filePath; // Store the relative path in the DB
+            $itineraryId = $request->input('itinerary_id');
+
+        if ($request->hasFile('image')) {
+            foreach ($request->file('image') as $file) {
+                if ($file->isValid()) {
+                    $fileName = time() . rand(10000, 99999) . '.' . $file->extension();
+                    $filePath = 'uploads/itinerary_galleries/' . $fileName;
+                    $file->move(public_path('uploads/itinerary_galleries'), $fileName);
+
+                    // Save each image using the repository
+                    $this->ItenarylistRepository->gallery_create([
+                        'itinerary_id' => $itineraryId,
+                        'image' => $filePath,
+                    ]);
+                }
+            }
         }
-    
-        // Save data using the repository
-        $this->ItenarylistRepository->gallery_create($data);   
+
         return redirect()->back()->with('success', 'Gallery created successfully.');    
     }
 
