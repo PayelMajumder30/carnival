@@ -2,6 +2,15 @@
 @section('page-title', 'Itineraries')
 
 @section('section')
+<style>
+    .tag-button {
+      border-radius: 20px;
+      font-size: 0.85rem;
+      padding: 6px 16px;
+      margin: 4px;
+      font-weight: 500;
+    }
+  </style>
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -38,7 +47,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <table class="table table-sm table-hover">
+                        <table class="table table-sm">
                             <thead>
                                 <tr>
                                     <th width="15%">Itinerary</th>
@@ -73,15 +82,31 @@
                                                     
                                                     <p class="card-text text-muted mb-2">{{ \Str::limit(ucwords($item->short_description ?? '-'), 10, '...') }}</p>
                                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                                        <span class="text-success fw-bold">{{ENV('CURRENCY')}}{{number_format($item->selling_price,2)}}</span>
-                                                        <span class="text-decoration-line-through text-muted">{{ENV('CURRENCY')}}{{number_format($item->actual_price,2)}}</span>
+                                                        <span class="text-success fw-bold">{{ENV('CURRENCY')}}{{number_format($item->selling_price)}}(
+                                                            @if($item->discount_type === 'percentage')
+                                                                {{ $item->discount_value }}{{ENV('PERCENTAGE')}}
+                                                            @elseif($item->discount_type === 'flat')
+                                                                Flat {{ number_format($item->discount_value) }}
+                                                            @else
+                                                                _
+                                                            @endif)
+                                                        </span>
+                                                        <span class="text-decoration-line-through text-muted">{{ENV('CURRENCY')}}{{number_format($item->actual_price)}}</span>
                                                     </div>
-                                                    <a href="javascript:void(0)" class="btn btn-primary w-100">{{ENV('CURRENCY')}}{{number_format($item->selling_price,2)}}</a>
+                                                    <a href="javascript:void(0)" class="btn btn-primary w-100">{{ENV('CURRENCY')}}{{number_format($item->selling_price)}}</a>
                                                 </div>
                                             </div>
                                         </td>
                                        <td>
                                         <div class="container mt-5">
+
+                                            <div class="d-flex flex-wrap">
+                                                @foreach($tags as $tag)
+                                                    <span class="btn btn-outline-success tag-button">{{ $tag->title }}</span>
+                                                @endforeach
+                                            </div>
+
+
                                             <table class="table table-bordered">
                                                 <thead class="table-light">
                                                     <tr>
@@ -193,6 +218,8 @@
 
 
                         </table>
+
+
                        {{-- Pagination Links --}}
                         <div class="pagination-container">
                             {{$data->links()}}
@@ -304,7 +331,7 @@
             }
         });
     });
-
+    
 
     //for delete Itinerary packages
     function deleteItenaryPackage(itinPckgId) {

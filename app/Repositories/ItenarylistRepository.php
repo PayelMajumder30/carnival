@@ -24,10 +24,15 @@ class ItenarylistRepository implements ItenarylistRepositoryInterface
             'main_image' =>$data['main_image'],    
             'title' => $data['title'],
             'short_description' => $data['short_description'], 
+            'duration' => $data['duration'],
             'selling_price' => $data['selling_price'],
-            'actual_price' => $data['actual_price'],   
+            'actual_price' => $data['actual_price'], 
+            'discount_type' => $data['discount_type'],
+            'discount_value' => $data['discount_value'],
+            'discount_start_date' => $data['discount_start_date'],
+            'discount_end_date' => $data['discount_end_date'],
         ];
-        // Create the banner media and return the created instance
+       
         return ItenaryList::create($supportData);
     }
 

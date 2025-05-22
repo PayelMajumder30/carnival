@@ -178,6 +178,16 @@ Route::name('admin.')->group(function() {
                 Route::get('/status/{id}', [SupportController::class, 'status'])->name('support.status');               
                 Route::post('/delete',[SupportController::class, 'delete'])->name('support.delete');
             });
+
+            // Master module/Tags
+            Route::prefix('tags')->group(function(){
+                Route::get('/',[TagController::class, 'index'])->name('tag.list.all');
+                Route::get('/create',[TagController::class, 'create'])->name('tag.create');
+                Route::post('/store',[TagController::class, 'store'])->name('tag.store');
+                Route::post('/update',[TagController::class, 'update'])->name('tag.update');
+                Route::get('status/{id}',[TagController::class, 'status'])->name('tag.status');
+                Route::post('delete',[TagController::class, 'delete'])->name('tag.delete');
+            });
         });
         // Route::resource('article', ArticleController::class);
 

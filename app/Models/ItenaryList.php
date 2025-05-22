@@ -10,13 +10,16 @@ class ItenaryList extends Model
     use HasFactory;
     protected $table = 'itenary_list';
     protected $fillable = [
-        'destination_id',
-        'package_id',
         'main_image',
         'title',
         'short_description',
+        'duration',
         'selling_price',
         'actual_price',
+        'discount_type',
+        'discount_value',
+        'discount_start_date',
+        'discount_end_date',
         'status'
     ];
 
@@ -37,4 +40,11 @@ class ItenaryList extends Model
     public function packageCategory(){
         return $this->belongsTo(PackageCategory::class, 'package_id', 'id');
     }
+
+    public function tags()
+    {
+        return $this->belongsToMany(TagList::class, 'itenaries_tag', 'itenary_id', 'tag_id');
+    }
+
+
 }
