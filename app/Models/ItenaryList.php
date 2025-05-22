@@ -10,8 +10,7 @@ class ItenaryList extends Model
     use HasFactory;
     protected $table = 'itenary_list';
     protected $fillable = [
-        'destination_id',
-        'package_id',
+        
         'main_image',
         'title',
         'short_description',
@@ -45,7 +44,7 @@ class ItenaryList extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(TagList::class, 'itenaries_tag', 'itenary_id', 'tag_id');
+        return $this->belongsToMany(TagList::class, 'itenaries_tags', 'itenary_id', 'tag_id');
     }
 
 

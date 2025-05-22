@@ -106,7 +106,6 @@
                                                 @endforeach
                                             </div>
 
-
                                             <table class="table table-bordered">
                                                 <thead class="table-light">
                                                     <tr>
@@ -322,7 +321,7 @@
             }
         });
     });
-    
+
    
 </script>
 @endsection

@@ -243,6 +243,8 @@ Route::name('admin.')->group(function() {
                 Route::post('/assign-itinerary', [ItenaryListController::class, 'assignedItinerary'])->name('itenaries.assignedItinerary');
                 Route::post('/toggle-package-status', [ItenaryListController::class, 'togglePackageStatus'])->name('itenaries.togglePackageStatus');
                 
+                Route::post('/toggle-tag', [ItenaryListController::class, 'toggleTag']);
+
 
             });
 

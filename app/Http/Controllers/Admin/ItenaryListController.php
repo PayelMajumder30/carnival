@@ -218,6 +218,6 @@ class ItenaryListController extends Controller
 
         return response()->json(['status' => 'success', 'message' => 'Itenary Deleted Successfully']);
     }
-    
+
 
 }
