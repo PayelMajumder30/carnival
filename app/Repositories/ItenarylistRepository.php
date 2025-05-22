@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\ItenaryList;
+use App\Models\{ItenaryList, ItineraryGallery};
 use App\Interfaces\ItenarylistRepositoryInterface;
 //use Auth;
 
@@ -48,6 +48,43 @@ class ItenarylistRepository implements ItenarylistRepositoryInterface
         $itenary = ItenaryList::findOrFail($id);
         return $itenary->delete();
     }
+
+
+    //itineraries/gallery
+    public function gallery_create(array $data)
+    {       
+        $itineraryGalleryData = [  
+            'itinerary_id'  => $data['itinerary_id'] ?? null, 
+            'image' => $data['image'] ?? null,
+        ];
+
+        return ItineraryGallery::create($itineraryGalleryData);
+    }
+
+    public function gallery_update(array $data)
+    {
+        // Find the gallery ID
+        $itineraryGallery = ItineraryGallery::findOrFail($data['id']);
+        $imagePath  = $itineraryGallery->image;
+        if (isset($data['image']) && $data['image']->isValid()) {
+            if (!empty($imagePath) && file_exists(public_path($imagePath))) {
+                unlink(public_path($imagePath));
+            }
+            $image   = $data['image'];
+            $extension  = $image->getClientOriginalExtension();
+            $filename   = time() . rand(10000, 99999) . '.' . $extension;
+            $filePath   = 'uploads/itinerary_galleries/' . $filename;
+            $image->move(public_path('uploads/itinerary_galleries'), $filename);
+            $imagePath  = $filePath;
+        }
+        
+        $updateData = [            
+            'image'   => $imagePath, // Assign the image path
+        ];
+        $itineraryGallery->update($updateData);
+        return $itineraryGallery;
+    }
+
 
 
 }

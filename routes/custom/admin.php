@@ -237,6 +237,14 @@ Route::name('admin.')->group(function() {
                 Route::post('/assign-itinerary', [ItenaryListController::class, 'assignedItinerary'])->name('itenaries.assignedItinerary');
                 Route::post('/toggle-package-status', [ItenaryListController::class, 'togglePackageStatus'])->name('itenaries.togglePackageStatus');
                 Route::post('/package-itinerary-delete',[ItenaryListController::class, 'packageItineraryDelete'])->name('itenaries.packageItineraryDelete');
+
+                //itineraries/ gallery
+                Route::get('/galleries/{itinerary_id}', [ItenaryListController::class, 'galleryIndex'])->name('itenaries.galleries.list');
+                Route::get('galleries/create/{itinerary_id}', [ItenaryListController::class, 'galleryCreate'])->name('itenaries.galleryCreate');
+                Route::post('galleries/store', [ItenaryListController::class, 'galleryStore'])->name('itenaries.galleryStore');
+                Route::get('galleries/edit/{id}', [ItenaryListController::class, 'galleryEdit'])->name('itenaries.galleryEdit');
+                Route::post('galleries/update', [ItenaryListController::class, 'galleryUpdate'])->name('itenaries.galleryUpdate');
+                Route::post('galleries/delete', [ItenaryListController::class, 'galleryDelete'])->name('itenaries.galleryDelete');
             });
 
         });

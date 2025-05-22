@@ -78,7 +78,7 @@
                                 <input type="duration" class="form-control" name="duration" id="duration"
                                     value="{{ old('duration', $itenary->duration) }}" placeholder="Enter itinerary duration..">
                                 @error('duration') 
-                                    p class="small text-danger">{{ $message }}</p>
+                                    <p class="small text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
 

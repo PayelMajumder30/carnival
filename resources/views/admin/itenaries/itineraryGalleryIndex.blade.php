@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('page-title', $trip->title . '/' .'Category Banner List')
+@section('page-title', ucwords($itinerary->title) . '/' .'Galleries')
 
 @section('section')
 <section class="content">
@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-6">
-                                <a href="{{ route('admin.tripcategory.list.all')}}" class="btn btn-sm btn-primary"> <i class="fa fa-chevron-left"></i> Back</a>
+                                <a href="{{ route('admin.itenaries.list.all')}}" class="btn btn-sm btn-primary"> <i class="fa fa-chevron-left"></i> Back</a>
                             </div>
                             <div class="col-md-6">
                             </div>
@@ -22,35 +22,28 @@
                                 <tr class="text-center">
                                     <th>#</th>
                                     <th>Image</th>
-                                    <th>status</th>
                                     <th style="width: 100px">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($banner as $index => $item)
-                                    <tr id="banner_section_{{$item->id}}">
-                                        <td class="text-center">{{ $index + $banner->firstItem() }}</td>
+                                @forelse ($gallery as $index => $item)
+                                    <tr id="gallery_section_{{$item->id}}">
+                                        <td class="text-center">{{ $index + $gallery->firstItem() }}</td>
                                         <td>
                                             <div class="text-center">
                                                 @if (!empty($item->image) && file_exists(public_path($item->image)))
-                                                    <img src="{{ asset($item->image) }}" alt="tripcategorybanner-image" style="height: 50px; width: 70px; object-position: center;" class="img-thumbnail mr-2">
+                                                    <img src="{{ asset($item->image) }}" alt="image_gallery" style="height: 50px; width: 70px; object-position: center;" class="img-thumbnail mr-2">
                                                 @else
-                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="tripcategorybanner-image" style="height: 50px" class="mr-2">
+                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="image-gallery" style="height: 50px" class="mr-2">
                                                 @endif
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
-                                                <input type="checkbox" class="custom-control-input" id="customSwitch{{$item->id}}" {{ ($item->status == 1) ? 'checked' : '' }} onchange="statusAllToggle('{{ route('admin.tripcategory.bannerStatus', $item->id) }}')">
-                                                <label class="custom-control-label" for="customSwitch{{$item->id}}"></label>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="{{route('admin.tripcategory.bannerEdit',($item->id))}}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
+                                                <a href="{{route('admin.itenaries.galleryEdit',($item->id))}}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
-                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark" onclick="deleteBanner({{$item->id}})" data-toggle="tooltip" title="Delete">
+                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark" onclick="deleteGallery({{$item->id}})" data-toggle="tooltip" title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             </div>
@@ -65,7 +58,7 @@
                         </table>
 
                         <div class="pagination-container">
-                            {{$banner->appends($_GET)->links()}}
+                            {{$gallery->appends($_GET)->links()}}
                         </div>
                     </div>
                 </div>
@@ -73,19 +66,18 @@
             <div class="col-4">
                 <div class="card">
                     <div class="card-header">
-                        <h4>New Trip Category Banner</h4>
+                        <h4>Upload Gallery</h4>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.tripcategory.bannerStore') }}" method="post" enctype="multipart/form-data">@csrf
+                        <form action="{{ route('admin.itenaries.galleryStore') }}" method="post" enctype="multipart/form-data">@csrf
                             <div class="row form-group">
                                 <div class="col-md-6">
                                     <label for="image">Image <span style="color: red;">*</span></label>
-                                    <input type="file" class="form-control" name="image" id="image">
-                                    <p class="small text-muted"></p>
-                                    @error('image') <p class="small text-danger">{{ $message }}</p> @enderror
+                                    <input type="file" class="form-control" name="image[]" id="image" multiple>
+                                    @error('image.*') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div>
                             </div>
-                            <input type="hidden" name="trip_cat_id" value="{{$trip->id}}">
+                            <input type="hidden" name="itinerary_id" value="{{ $itinerary->id }}">
                             <button type="submit" class="btn btn-primary">Upload</button>
                         </form>
                     </div>
@@ -98,7 +90,7 @@
 
 @section('script')
 <script>
-    function deleteBanner(bannerId) {
+    function deleteGallery(galleryId) {
         Swal.fire({
             icon: 'warning',
             title: "Are you sure you want to delete this?",
@@ -111,10 +103,10 @@
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "{{ route('admin.tripcategory.bannerDelete')}}",
+                    url: "{{ route('admin.itenaries.galleryDelete')}}",
                     type: 'POST',
                     data: {
-                        "id": bannerId,
+                        "id": galleryId,
                         "_token": '{{ csrf_token() }}',
                     },
                     success: function (data){
@@ -123,7 +115,6 @@
                         } else {
                             toastFire('success', data.message);
                             location.reload();
-                            // $("#banner_section_" + bannerId).hide();
                         }
                     }
                 });

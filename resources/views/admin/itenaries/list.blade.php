@@ -80,7 +80,7 @@
                                                         </div>
                                                     </div>
                                                     
-                                                    <p class="card-text text-muted mb-2">{{ \Str::limit(ucwords($item->short_description ?? '-'), 10, '...') }}</p>
+                                                    <p class="card-text text-muted mb-2">{{ \Str::limit(ucwords($item->short_description ?? '-'), 30, '...') }}</p>
                                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                                         <span class="text-success fw-bold">{{ENV('CURRENCY')}}{{number_format($item->selling_price)}}(
                                                             @if($item->discount_type === 'percentage')
@@ -131,7 +131,7 @@
                                                                                     {{ $pckg->status == 1 ? 'checked' : '' }}>
                                                                                 
                                                                                 <label class="form-check-label me-2 mb-0">
-                                                                                    {{ $pckg->packageCategory->title }}
+                                                                                    {{ ucwords($pckg->packageCategory->title) }}
                                                                                 </label>
                                                                             </div>
 
@@ -149,6 +149,11 @@
                                                     @endforeach
                                                 </tbody>
                                             </table>
+
+                                            {{-- pagination link --}}
+                                            <div class="pagination-container">
+                                                {{$data->links()}}
+                                            </div>
                                         </div>
                                        </td>
                                         <td class="d-flex">
@@ -163,6 +168,9 @@
                                                 <!-- Modal Trigger Button -->
                                                 <a href="javascript:void(0)" class="btn btn-sm btn-warning ml-1" data-toggle="modal" data-target="#assignModal{{ $item->id }}" title="Assign Itinerary">
                                                     <i class="fa fa-link"></i>
+                                                </a>
+                                                <a href="{{ route('admin.itenaries.galleries.list', ['itinerary_id' => $item->id])}}" class="btn btn-sm btn-success ml-1" data-toggle="tooltip" title="Manage Gallery">
+                                                    <i class="fa fa-image"></i>
                                                 </a>
                                             </div>
                                         </td>

@@ -47,4 +47,12 @@ class ItenaryList extends Model
     }
 
 
+    /*
+    * Relationship with itinerary_galleries
+    */
+    public function itineraryGallery(){
+        return $this->hasMany(itinerary_gallery::class, 'itinerary_id', 'id');
+    }
+
+
 }

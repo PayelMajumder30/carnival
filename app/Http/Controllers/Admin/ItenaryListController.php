@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\ItenarylistRepositoryInterface;
-use App\Models\{ItenaryList, Destination, PackageCategory, DestinationWiseItinerary, TagList};
+use App\Models\{ItenaryList, Destination, PackageCategory, DestinationWiseItinerary, TagList, ItineraryGallery};
 
 class ItenaryListController extends Controller
 {
@@ -247,5 +247,82 @@ class ItenaryListController extends Controller
             'destination_id'     => $destinationId,
         ]);
     }
+
+    //itineraries/create gallery
+    public function galleryIndex(Request $request, $itinerary_id) {
+        $itinerary = ItenaryList::findOrFail($itinerary_id);
+        $gallery   = ItineraryGallery::where('itinerary_id', $itinerary_id)->paginate(25);
+        return view('admin.itenaries.itineraryGalleryIndex', compact('itinerary', 'gallery'));   
+    }
+
+    public function galleryCreate($itinerary_id) {       
+        $itinerary  = ItenaryList::findOrFail($itinerary_id);
+        return view('admin.itenaries.itineraryGalleryIndex', compact('itinerary'));
+    }
+
+    public function galleryStore(Request $request)
+    {
+        $request->validate([
+            'image' => 'required', 
+            'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
+            'itinerary_id' => 'required|exists:itenary_list,id',
+        ]);
+    
+        $data = $request->all();   
+        // Handle Image Upload
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $file       = $request->file('image');
+            $extension  = $file->extension(); 
+            $fileName   = time() . rand(10000, 99999) . '.' . $extension;           
+            // Ensure we store only the relative path in the database
+            $filePath   = 'uploads/itinerary_galleries/' . $fileName;   
+            $file->move(public_path('uploads/itinerary_galleries'), $fileName);
+    
+            $data['image'] = $filePath; // Store the relative path in the DB
+        }
+    
+        // Save data using the repository
+        $this->ItenarylistRepository->gallery_create($data);   
+        return redirect()->back()->with('success', 'Gallery created successfully.');    
+    }
+
+    public function galleryEdit($id) {
+        $itineraryGallery = ItineraryGallery::findOrFail($id);
+        return view('admin.itenaries.galleryEdit', compact('itineraryGallery'));
+    }
+
+    public function galleryUpdate(Request $request) {
+        $request->validate([
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120', 
+        ]);
+        $data = $request->all();
+        $this->ItenarylistRepository->gallery_update($data);
+        return redirect()->route('admin.itenaries.galleries.list', $request->itinerary_id)->with('success', 'Gallery updated successfully.');
+    }
+
+    public function galleryDelete(Request $request) 
+    {
+        $itineraryGallery = ItineraryGallery::findOrFail($request->id);
+        
+        if (!$itineraryGallery) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Gallery is not found',
+            ]);
+        }
+        $imagePath = $itineraryGallery->image;
+
+        $itineraryGallery->delete();
+        // If file is exist then remove from target directory
+        if (!empty($imagePath) && file_exists(public_path($imagePath))) {
+            unlink(public_path($imagePath));
+        }
+        // Return suceess response with message
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Gallery has been deleted successfully',
+        ]);
+    }
+
 
 }
