@@ -278,18 +278,20 @@ class ItenaryListController extends Controller
     }
 
 
-    //itineraries/create gallery
+    //itineraries/gallery
     public function galleryIndex(Request $request, $itinerary_id) {
         $itinerary = ItenaryList::findOrFail($itinerary_id);
         $gallery   = ItineraryGallery::where('itinerary_id', $itinerary_id)->paginate(25);
         return view('admin.itenaries.itineraryGalleryIndex', compact('itinerary', 'gallery'));   
     }
 
+    //itineraries/create gallery
     public function galleryCreate($itinerary_id) {       
         $itinerary  = ItenaryList::findOrFail($itinerary_id);
         return view('admin.itenaries.itineraryGalleryIndex', compact('itinerary'));
     }
 
+    //itineraries/store gallery
     public function galleryStore(Request $request)
     {
         $request->validate([
@@ -316,6 +318,7 @@ class ItenaryListController extends Controller
         return redirect()->back()->with('success', 'Gallery created successfully.');    
     }
 
+    //itineraries/edit gallery
     public function galleryEdit($id) {
         $itineraryGallery = ItineraryGallery::findOrFail($id);
         return view('admin.itenaries.galleryEdit', compact('itineraryGallery'));
@@ -330,6 +333,7 @@ class ItenaryListController extends Controller
         return redirect()->route('admin.itenaries.galleries.list', $request->itinerary_id)->with('success', 'Gallery updated successfully.');
     }
 
+    //itineraries/delete gallery
     public function galleryDelete(Request $request) 
     {
         $itineraryGallery = ItineraryGallery::findOrFail($request->id);
