@@ -18,7 +18,7 @@ class ItenaryListController extends Controller
 
     public function index(Request $request){
         $keyword  = $request->keyword;
-        $query    = ItenaryList::with(['itineraryItineraries.destination', 'itineraryItineraries.packageCategory']);
+        $query    = ItenaryList::with(['itineraryItineraries.destination', 'itineraryItineraries.packageCategory','tags']);
 
         if ($keyword) {
             $query->where(function($q) use ($keyword) {
@@ -152,7 +152,7 @@ class ItenaryListController extends Controller
 
         return response()->json(['status' => 'success', 'message' => 'Itenary Deleted Successfully']);
     }
-    
+
 
     
     //for assigned the destination and packages under itinerary
@@ -247,6 +247,36 @@ class ItenaryListController extends Controller
             'destination_id'     => $destinationId,
         ]);
     }
+
+    public function assignTagToItenary(Request $request)
+    {
+        $tagId = $request->tag_id;
+        $itenaryId = $request->itenary_id;
+
+        $exists = DB::table('itenaries_tags')
+            ->where('tag_id', $tagId)
+            ->where('itenary_id', $itenaryId)
+            ->exists();
+
+        if ($exists) {
+            DB::table('itenaries_tags')
+                ->where('tag_id', $tagId)
+                ->where('itenary_id', $itenaryId)
+                ->delete();
+
+            return response()->json(['status' => 'detached']);
+        } else {
+            DB::table('itenaries_tags')->insert([
+                'tag_id' => $tagId,
+                'itenary_id' => $itenaryId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            return response()->json(['status' => 'attached']);
+        }
+    }
+
 
     //itineraries/create gallery
     public function galleryIndex(Request $request, $itinerary_id) {

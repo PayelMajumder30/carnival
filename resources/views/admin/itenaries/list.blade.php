@@ -98,11 +98,21 @@
                                             </div>
                                         </td>
                                        <td>
-                                        <div class="container mt-5">
-
+                                        <div class="container">
                                             <div class="d-flex flex-wrap">
+                                                @php
+                                                    $assignedTagIds = DB::table('itenaries_tags')
+                                                        ->where('itenary_id', $item->id)
+                                                        ->pluck('tag_id')
+                                                        ->toArray();
+                                                @endphp
+
                                                 @foreach($tags as $tag)
-                                                    <span class="btn btn-outline-success tag-button">{{ $tag->title }}</span>
+                                                    <span class="btn tag-button {{ in_array($tag->id, $assignedTagIds) ? 'btn-success' : 'btn-outline-success' }}" 
+                                                        data-tag-id="{{ $tag->id }}" 
+                                                        data-itenary-id="{{ $item->id }}">
+                                                        {{ $tag->title }}
+                                                    </span>
                                                 @endforeach
                                             </div>
 
@@ -385,6 +395,49 @@
             }
         });
     }
+
+    $(document).on('click', '.tag-button', function () {
+        let button = $(this);
+        let tagId = button.data('tag-id');
+        let itenaryId = button.data('itenary-id');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you want to assign/unassign this tag to the itinerary?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, do it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '{{ route("admin.itenaries.assignTagToItenary") }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        tag_id: tagId,
+                        itenary_id: itenaryId
+                    },
+                    success: function (response) {
+                        if (response.status === 'attached') {
+                            button.removeClass('btn-outline-success').addClass('btn-success');
+                            Swal.fire('Assigned!', 'Tag has been assigned.', 'success');
+                        } else if (response.status === 'detached') {
+                            button.removeClass('btn-success').addClass('btn-outline-success');
+                            Swal.fire('Removed!', 'Tag has been unassigned.', 'info');
+                        } else {
+                            Swal.fire('Oops!', 'Unexpected response from server.', 'warning');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error!', 'Server error occurred.', 'error');
+                    }
+                });
+            }
+        });
+    });
+
 </script>
 @endsection
 

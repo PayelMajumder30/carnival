@@ -233,6 +233,8 @@ Route::name('admin.')->group(function() {
                 Route::get('/status/{id}', [ItenaryListController::class, 'toggleStatus'])->name('itenaries.status');
                 Route::post('/delete/{id}', [ItenaryListController::class, 'delete'])->name('itenaries.delete');
 
+                Route::post('/assign-tag', [ItenaryListController::class, 'assignTagToItenary'])->name('itenaries.assignTagToItenary');
+
                 //itineararies/ assign destination & package category
                 Route::post('/assign-itinerary', [ItenaryListController::class, 'assignedItinerary'])->name('itenaries.assignedItinerary');
                 Route::post('/toggle-package-status', [ItenaryListController::class, 'togglePackageStatus'])->name('itenaries.togglePackageStatus');
