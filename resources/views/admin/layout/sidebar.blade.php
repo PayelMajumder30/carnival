@@ -145,17 +145,6 @@
                     <p> Itineraries <i class="right fas fa-angle-left"></i></p>
                 </a>
                 <ul class="nav nav-treeview">
-                    @if(in_array('Upcoming events', $RolePass))
-                        <li class="nav-item">
-                            <a href="{{ route('admin.upcomingevents.list.all') }}"
-                            class="nav-link {{ (request()->is('admin/itenaries*')) ? 'active active_nav_link' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Upcoming Events </p>
-                            </a>
-                        </li>
-                    @endif
-                </ul>
-                <ul class="nav nav-treeview">
                     @if(in_array('Itenary list', $RolePass))
                         <li class="nav-item">
                             <a href="{{ route('admin.itenaries.list.all') }}"
@@ -165,6 +154,16 @@
                             </a>
                         </li>
                     @endif
+                </ul>
+
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="{{ route('admin.popularpackages.list.all') }}"
+                        class="nav-link {{ (request()->is('admin/itenaries*')) ? 'active active_nav_link' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Popular Packages </p>
+                        </a>
+                    </li>
                 </ul>
             </li>
         @endif

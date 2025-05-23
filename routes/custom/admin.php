@@ -225,10 +225,15 @@ Route::name('admin.')->group(function() {
         //Itenaries
         Route::prefix('itineraries')->group(function() {
 
-            //upcoming events  
-            Route::prefix('upcoming-events')->group(function() {
-                Route::get('/', [itenariesController::class, 'index'])->name('upcomingevents.list.all');
-                
+            //popular packages  
+            Route::prefix('popular-packages')->group(function() {
+                Route::get('/', [PopularpackagesController::class, 'index'])->name('popularpackages.list.all');
+                Route::get('/destinations/{id}/get-itineraries', [PopularpackagesController::class, 'fetchItineraries'])->name('popularpackages.fetch');
+                Route::post('/assign-itineraries', [PopularpackagesController::class, 'storeAssign'])->name('popularpackages.assign');
+                Route::post('/update-status', [PopularpackagesController::class, 'updateStatus'])->name('popularpackages.updateStatus');
+               // Route::delete('/popular-itinerary/{id}', [PopularpackagesController::class, 'delete'])->name('popularpackages.delete');
+                Route::post('/popular-itinerary-delete',[PopularpackagesController::class, 'delete'])->name('popularpackages.delete');
+
             });
 
             //itenary list
