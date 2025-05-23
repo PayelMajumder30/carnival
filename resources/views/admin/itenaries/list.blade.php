@@ -86,7 +86,7 @@
                                                             @if($item->discount_type === 'percentage')
                                                                 {{ $item->discount_value }}{{ENV('PERCENTAGE')}}
                                                             @elseif($item->discount_type === 'flat')
-                                                                Flat {{ number_format($item->discount_value) }}
+                                                                {{ENV('CURRENCY')}}{{ number_format($item->discount_value) }} Flat
                                                             @else
                                                                 _
                                                             @endif)
