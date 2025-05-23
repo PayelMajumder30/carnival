@@ -72,7 +72,7 @@
                         <form action="{{ route('admin.itenaries.galleryStore') }}" method="post" enctype="multipart/form-data">@csrf
                             <div class="row form-group">
                                 <div class="col-md-6">
-                                    <label for="image">Image <span style="color: red;">*</span></label>
+                                    <label for="image">Image(Multiple) <span style="color: red;">*</span></label>
                                     <input type="file" class="form-control" name="image[]" id="image" multiple>
                                     @error('image.*') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div>

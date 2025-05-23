@@ -58,4 +58,10 @@ class Destination extends Model
     {
         return $this->hasMany(ItenaryList::class, 'destination_id');
     }
+
+    public function popularItineraries()
+    {
+        return $this->hasMany(DestinationWisePopularPackages::class, 'destination_id', 'id');
+    }
+
 }
