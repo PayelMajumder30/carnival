@@ -286,7 +286,7 @@ class ItenaryListController extends Controller
     }
 
     //itineraries/create gallery
-    public function galleryCreate($itinerary_id) {       
+    public function aboutDestiCreate($itinerary_id) {       
         $itinerary  = ItenaryList::findOrFail($itinerary_id);
         return view('admin.itenaries.itineraryGalleryIndex', compact('itinerary'));
     }
@@ -300,7 +300,7 @@ class ItenaryListController extends Controller
             'itinerary_id' => 'required|exists:itenary_list,id',
         ]);
     
-            $itineraryId = $request->input('itinerary_id');
+        $itineraryId = $request->input('itinerary_id');
 
         if ($request->hasFile('image')) {
             foreach ($request->file('image') as $file) {

@@ -58,4 +58,13 @@ class Destination extends Model
     {
         return $this->hasMany(ItenaryList::class, 'destination_id');
     }
+
+    /*
+    * Relationship with `about_destinations` table
+    */
+
+    public function aboutDestination()
+    {
+        return $this->hasMany(AboutDestination::class, 'destination_id');
+    }
 }

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\{TripCategoryDestination, SocialMedia, Banner, TripCategory, Partner, 
-    WhyChooseUs, Setting, Blog, Offer, PageContent, Destination, TripCategoryActivities, ItenaryList};
+    WhyChooseUs, Setting, Blog, Offer, PageContent, Destination, TripCategoryActivities, ItenaryList, ItineraryGallery};
 
 class ApiController extends Controller
 {
@@ -487,6 +487,46 @@ class ApiController extends Controller
         return response()->json([
             'status' => true,
             'data'   => $result
+        ]);
+    }
+
+    // Itineraries / Gallery
+   public function itinerariesWithGallery() 
+   {
+       $data = ItineraryGallery::with('itinerary')->get();
+        $result = [];
+        foreach($data as $key=>$item)
+        {
+            // check if related itinerary exists and is active
+            if($item->itinerary && $item->itinerary->status == 1) {
+                $result[] = [
+                    'id' => $item->id,
+                    'title' => $item->itinerary->title, // fetch title from related itinerary
+                    'image' =>asset($item->image),                   
+                ];
+            }         
+        }
+        return response()->json([
+            'status' => true,
+            'data' => $result
+        ]);
+    }
+
+    public function itinerariesWithGalleryByid($id)
+    {
+        $gallery = ItineraryGallery::with(['itinerary' => function($query) {
+            $query->where('status', 1);
+        }])->find($id);
+
+        if(!$gallery || !$gallery->itinerary) {
+            return response()->json(['status' => false, 'message' => 'Image of Galleries not found.']);
+        }
+
+        return response()->json([
+            'data'=>[
+                'title' => $gallery->itinerary->title,
+                'image' => asset($gallery->image),
+            ]
         ]);
     }
 

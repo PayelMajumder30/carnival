@@ -51,7 +51,7 @@
                             <thead>
                                 <tr>
                                     <th width="15%">Itinerary</th>
-                                    <th>Destination Wise Package View</th>
+                                    <th>Destination Wise Package Category</th>
                                     <th width="10%">Action</th>
                                 </tr>
                             </thead>
@@ -86,7 +86,7 @@
                                                             @if($item->discount_type === 'percentage')
                                                                 {{ $item->discount_value }}{{ENV('PERCENTAGE')}}
                                                             @elseif($item->discount_type === 'flat')
-                                                                Flat {{ number_format($item->discount_value) }}
+                                                                {{ENV('CURRENCY')}}{{ number_format($item->discount_value) }} Flat
                                                             @else
                                                                 _
                                                             @endif)
@@ -121,7 +121,7 @@
                                                 <thead class="table-light">
                                                     <tr>
                                                         <th style="width: 20%;">Destination</th>
-                                                        <th>Packages</th>
+                                                        <th>Package Category</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -194,7 +194,7 @@
                                                 <input type="hidden" name="itinerary_id" value="{{ $item->id }}">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="assignModalLabel{{ $item->id }}">Assign Destination Wise Package</h5>
+                                                        <h5 class="modal-title" id="assignModalLabel{{ $item->id }}">Assign Package Category</h5>
                                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">&times;</button>
                                                     </div>
                                                     <div class="modal-body">
@@ -210,7 +210,7 @@
 
 
                                                         <div class="form-group">
-                                                            <label for="package_id">Select Packages</label>
+                                                            <label for="package_id">Package Category</label>
                                                             <select name="package_id[]" class="form-control select2" multiple required>
                                                                 @foreach ($packageCategories as $category)
                                                                     <option value="{{ $category->id }}">{{ ucwords($category->title) }}</option>

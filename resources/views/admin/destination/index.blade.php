@@ -169,7 +169,7 @@
                                                         </td>
                                                         <td>
                                                             <div class="text-center">
-                                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark mr-1" onclick="deleteDesti({{$desti_item->id}})" data-toggle="tooltip" title="Delete">
+                                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark" onclick="deleteDesti({{$desti_item->id}})" data-toggle="tooltip" title="Delete">
                                                                     <i class="fa fa-trash"></i>
                                                                 </a>
                                                                 {{-- modal for upload image and logo  --}}
@@ -187,8 +187,12 @@
                                                                 <i class="fa fa-image"></i>
                                                                 </a>
 
-                                                                <a href="{{ route('admin.destination.itineraryList', $desti_item->id) }}" class="btn btn-sm btn-warning" title="Manage Itineraries">
+                                                                {{-- <a href="{{ route('admin.destination.itineraryList', $desti_item->id) }}" class="btn btn-sm btn-warning" title="Manage Itineraries">
                                                                     <i class="fa fa-folder"></i>
+                                                                </a> --}}
+
+                                                                 <a href="{{ route('admin.destination.aboutDestination.list', $desti_item->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip">
+                                                                    About Destination
                                                                 </a>
                                                             </div>
                                                         </td>

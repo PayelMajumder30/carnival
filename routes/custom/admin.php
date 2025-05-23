@@ -165,7 +165,15 @@ Route::name('admin.')->group(function() {
                 // Routes of itineraries associated with destinations
                 Route::get('/{destiation_id}/itineraries', [DestinationController::class, 'destinationItineraryIndex'])->name('destination.itineraryList');
                 Route::post('/{destiation_id}/assign-itinerary', [DestinationController::class, 'assignItineraryToDestination'])->name('destination.assignItinerary');
-                Route::post('/delete-itinerary', [DestinationController::class, 'deleteItinerary'])->name('destination.deleteItinerary');               
+                Route::post('/delete-itinerary', [DestinationController::class, 'deleteItinerary'])->name('destination.deleteItinerary');    
+                
+                //About destination
+                Route::get('/about-destination/{destination_id}', [DestinationController::class, 'aboutDestiIndex'])->name('destination.aboutDestination.list');
+                Route::get('about-destination/create/{destination_id}', [DestinationController::class, 'aboutDestiCreate'])->name('destination.aboutDestiCreate');
+                Route::post('about-destination/store', [DestinationController::class, 'aboutDestiStore'])->name('destination.aboutDestiStore');
+                Route::get('about-destination/edit/{id}', [DestinationController::class, 'aboutDestiEdit'])->name('destination.aboutDestiEdit');
+                Route::post('about-destination/update', [DestinationController::class, 'aboutDestiUpdate'])->name('destination.aboutDestiUpdate');
+                Route::post('about-destination/delete', [DestinationController::class, 'aboutDestiDelete'])->name('destination.aboutDestiDelete');
             });
 
              //Master modeule/support
@@ -240,7 +248,7 @@ Route::name('admin.')->group(function() {
                 Route::post('/toggle-package-status', [ItenaryListController::class, 'togglePackageStatus'])->name('itenaries.togglePackageStatus');
                 Route::post('/package-itinerary-delete',[ItenaryListController::class, 'packageItineraryDelete'])->name('itenaries.packageItineraryDelete');
 
-                //itineraries/ gallery
+                //itineraries/ gallery for selecting multiple images
                 Route::get('/galleries/{itinerary_id}', [ItenaryListController::class, 'galleryIndex'])->name('itenaries.galleries.list');
                 Route::get('galleries/create/{itinerary_id}', [ItenaryListController::class, 'galleryCreate'])->name('itenaries.galleryCreate');
                 Route::post('galleries/store', [ItenaryListController::class, 'galleryStore'])->name('itenaries.galleryStore');

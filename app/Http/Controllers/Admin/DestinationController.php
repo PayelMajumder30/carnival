@@ -4,16 +4,24 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Interfaces\AboutDestinationInterface;
 use App\Interfaces\DestiantionPackageInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use App\Models\{Country, Destination, ItenaryList, PackageCategory, DestinationWisePackageCat, DestinationWiseItinerary};
+use App\Models\{Country, Destination, ItenaryList, PackageCategory, DestinationWiseItinerary,
+                AboutDestination};
 
 
 class DestinationController extends Controller
 {
     
+   //construct from repository
+    private $aboutDestinationRepository;
 
+    public function __construct(AboutDestinationInterface $aboutDestinationRepository)
+    {
+        $this->aboutDestinationRepository = $aboutDestinationRepository;
+    }
     //
     public function index(Request $request)
     {
@@ -363,6 +371,84 @@ class DestinationController extends Controller
         return response()->json([
             'status'    => 200,
             'message'   => 'Destinationwise Itinerary deleted successfully.',
+        ]);
+    }
+
+
+ 
+
+    //master modules/destionation/about destination Index
+    public function aboutDestiIndex(Request $request, $destination_id) {
+
+        $keyword = $request->keyword ?? '';
+        $destination = Destination::findOrFail($destination_id);
+
+        $aboutDestination = AboutDestination::where('destination_id', $destination_id)->first();
+
+        return view('admin.destination.aboutDestinationIndex', compact('destination', 'aboutDestination')); 
+    }
+
+    //master modules/destionation/create content for about destination
+    public function aboutDestiCreate($destination_id) {       
+        $destination  = Destination::findOrFail($destination_id);
+        return view('admin.destination.aboutDestinationCreate', compact('destination'));
+    }
+
+    //master modules/destionation/store content for about destination 
+    public function aboutDestiStore(Request $request)
+    {
+        $request->validate([
+            'content' => 'required|unique:about_destinations,content', 
+            'destination_id' => 'required|exists:destinations,id',
+        ]);
+    
+        // Call repository to store content
+        $data = [
+            'destination_id' => $request->input('destination_id'),
+            'content' => $request->input('content'),
+        ];
+        $this->aboutDestinationRepository->create($data);
+
+        return redirect()->route('admin.destination.aboutDestination.list', $request->destination_id)
+                            ->with('success', 'About Destination content created successfully');    
+    }
+
+    //master modules/destionation/edit content for about destination 
+    public function aboutDestiEdit($id)
+    {
+        $data = $this->aboutDestinationRepository->findById($id);
+        $destination = Destination::findOrFail($data->destination_id);
+        return view('admin.destination.aboutDestinationEdit', compact('data', 'destination'));
+    }
+
+    //master modules/destionation/store content for about destination 
+    public function aboutDestiUpdate(Request $request)
+    {
+        $id = $request->input('id');
+        $request->validate([
+           'content' => 'required|unique:about_destinations,content,'. $id,
+        ]);
+        
+        $this->aboutDestinationRepository->update($id, ['content'=> $request->get('content')]);
+    
+        return redirect()->route('admin.destination.aboutDestination.list', ['destination_id' => $request->destination_id])
+                    ->with('success', 'About Destination content updated successfully.');
+    }
+
+    //master modules/destionation/delete content for about destination
+    public function aboutDestiDelete(Request $request){
+        $content = AboutDestination::find($request->id); 
+    
+        if (!$content) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Content not found.',
+            ]);
+        } 
+        $content->delete(); 
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Content deleted successfully.',
         ]);
     }
  
