@@ -5,9 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Interfaces\PopularPackagesRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\DestinationWisePopularPackages;
 use App\Models\Destination;
 use App\Models\ItenaryList;
+use App\Models\TagList;
+use App\Models\DestinationWisePopularPackageTag;
+
 
 class PopularpackagesController extends Controller
 {
@@ -43,7 +47,9 @@ class PopularpackagesController extends Controller
                 ->orderBy('destination_name', 'asc')
                 ->get();
 
-        return view('admin.popularpackages.index', compact('destinations','popularPackages','keyword'));
+        $tags = TagList::where('status',1)->get();
+
+        return view('admin.popularpackages.index', compact('destinations','popularPackages','keyword','tags'));
     }
 
     public function fetchItineraries($destinationId)
@@ -73,7 +79,7 @@ class PopularpackagesController extends Controller
             ]);
         }
 
-        return redirect()->back()->with('success', 'Itineraries assigned successfully!');
+        return redirect()->back()->with('success', 'Packages and tags assigned successfully!');
     }
 
     public function updateStatus(Request $request)
@@ -90,6 +96,7 @@ class PopularpackagesController extends Controller
         return response()->json(['success' => true]);
     }
 
+
     public function delete(Request $request)
     {
         $pckg = DestinationWisePopularPackages::find($request->id); 
@@ -101,7 +108,7 @@ class PopularpackagesController extends Controller
             ]);
         }
 
-        // Store related values before deletion
+        
         $itineraryId    = $pckg->itinerary_id;
         $destinationId  = $pckg->destination_id;
 
@@ -109,9 +116,35 @@ class PopularpackagesController extends Controller
 
         return response()->json([
             'status'             => 200,
-            'message'            => 'Itinerarywise package deleted successfully.',
+            'message'            => 'Package deleted successfully.',
             'destination_id'     => $destinationId,
         ]);
     }
+
+    public function assignTags(Request $request)
+    {
+        $request->validate([
+            'popular_package_id' => 'required|exists:destination_wise_popular_packages,id',
+            'tag_ids' => 'required|array|min:1',
+            'tag_ids.*' => 'exists:tag_list,id',
+        ]);
+
+        $packageId = $request->popular_package_id;
+        $existingTagIds = DestinationWisePopularPackageTag::where('popular_package_id', $packageId)
+                            ->pluck('tag_id')
+                            ->toArray();
+
+        foreach ($request->tag_ids as $tagId) {
+            if (!in_array($tagId, $existingTagIds)) {
+                DestinationWisePopularPackageTag::create([
+                    'popular_package_id' => $packageId,
+                    'tag_id' => $tagId,
+                ]);
+            }
+        }
+
+        return redirect()->back()->with('success', 'Tags assigned successfully to the package.');
+    }
+
 
 }

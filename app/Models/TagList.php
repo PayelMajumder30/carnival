@@ -20,4 +20,9 @@ class TagList extends Model
         return $this->belongsToMany(ItenaryList::class, 'itenaries_tags', 'tag_id', 'itenary_id');
     }
 
+    public function packages()
+    {
+        return $this->hasMany(DestinationWisePopularPackageTag::class, 'tag_id');
+    }
+
 }
