@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 // use App\Http\Controllers\PageContentController;
 
-Route::name('admin.')->group(function() {
+Route::prefix('admin/')->name('admin.')->group(function() {
     // login
     Route::middleware('guest:admin', 'PreventBackHistory')->group(function() {
         Route::view('/login', 'admin.auth.login')->name('login');
