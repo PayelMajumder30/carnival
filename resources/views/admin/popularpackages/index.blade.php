@@ -11,7 +11,7 @@
                         <div class="row">
                             <div class="col-md-6"></div>
                             <div class="col-md-6">
-                                <form action="" method="get">
+                                <form action="{{ route('admin.popularpackages.list.all') }}" method="get">
                                     <div class="d-flex justify-content-end">
                                         <div class="form-group ml-2">
                                             <input type="search" class="form-control form-control-sm" name="keyword" id="keyword" value="{{ request()->input('keyword') }}" placeholder="Search something...">

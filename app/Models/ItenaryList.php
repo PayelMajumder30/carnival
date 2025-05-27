@@ -17,6 +17,7 @@ class ItenaryList extends Model
         'duration',
         'selling_price',
         'actual_price',
+        'destination_id',
         'discount_type',
         'discount_value',
         'discount_start_date',

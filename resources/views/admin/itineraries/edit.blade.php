@@ -36,6 +36,17 @@
                                 @enderror
                             </div>
 
+                            <div class="form-group col-md-3">
+                                <label for="destination_id">Destination</label>
+                                <select name="destination_id" id="destination_id" class="form-control" required>
+                                    <option value="" disabled {{ !$itenary->destination_id ? 'selected' : '' }}>--Select Destination--</option>
+                                    @foreach($destinations as $destination) 
+                                        <option value="{{ $destination->id }}" {{ $itenary->destination_id == $destination->id ? 'selected' : '' }}>
+                                            {{ $destination->destination_name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <div class="form-group col-md-6">
                                 <div class="form-group">
                                     <label for="discount_type">Discount Type</label>

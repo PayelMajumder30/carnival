@@ -30,6 +30,16 @@
                                     @error('actual_price') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div>
 
+                                <div class="form-group col-md-3">
+                                    <label for="destination_id">Destination<span style="color: red;">*</span></label>
+                                    <select name="destination_id" id="destination_id" class="form-control" required>
+                                        <option value="" selected hidden>--Select Destination--</option>
+                                        @foreach($destinations as $destination) 
+                                            <option value="{{ $destination->id }}">{{ $destination->destination_name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
                                 <div class="form-group col-md-6">
                                     <div class="form-group">
                                         <label for="discount_type">Discount Type <span style="color: red;">*</span></label>

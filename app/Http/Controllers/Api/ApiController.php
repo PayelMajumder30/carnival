@@ -164,6 +164,7 @@ class ApiController extends Controller
                     $logo  = $tripDest && $tripDest->logo  ? asset($tripDest->logo) : null;
 
                     $destinations[$key] = [
+                        'id'          => $tripDest ? $tripDest->id : null,
                         'name'        => $tripDest ? $tripDest->destination_name : "N/A",
                         'logo'        => $logo,
                         'image'       => $image,
@@ -171,7 +172,7 @@ class ApiController extends Controller
                     ];
                 }
 
-                $result[$index]['destinations'] = $destinations;
+                $result[$index]['destinations'] = $destinations; 
             }
 
             // Activities
@@ -449,6 +450,8 @@ class ApiController extends Controller
         $result = [
             'id'   => $destination->id,
             'name' => $destination->destination_name,
+            'banner_image' => asset($destination->banner_image),
+            'short_desc' => $destination->short_desc,
         ];
 
         $groupedPackages = [];

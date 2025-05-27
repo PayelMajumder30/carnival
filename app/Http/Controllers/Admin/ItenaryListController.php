@@ -39,7 +39,10 @@ class ItenaryListController extends Controller
 
     public function create()
     {
-        return view('admin.itineraries.create');
+        $destinations = Destination::where('status', 1)
+                        ->orderby('destination_name','ASC')
+                        ->get();
+        return view('admin.itineraries.create', compact('destinations'));
     }
 
     public function store(Request $request)
@@ -52,6 +55,7 @@ class ItenaryListController extends Controller
         'duration' => 'required|string|max:255',
         'selling_price' => 'required|numeric|lte:actual_price',
         'actual_price' => 'required|numeric',
+        'destination_id' => 'required|exists:destinations,id',
         'discount_type' => 'required',
         'discount_value' => 'required',
         'discount_start_date' => 'required|date',
@@ -86,7 +90,10 @@ class ItenaryListController extends Controller
     public function edit($id)
     {
         $itenary = $this->ItenarylistRepository->findById($id);
-        return view('admin.itineraries.edit', compact('itenary'));
+        $destinations = Destination::where('status', 1)
+                        ->orderby('destination_name','ASC')
+                        ->get();
+        return view('admin.itineraries.edit', compact('itenary', 'destinations'));
     }
 
     public function update(Request $request, $id)
