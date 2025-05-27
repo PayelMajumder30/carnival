@@ -295,8 +295,8 @@ class ItenaryListController extends Controller
     public function galleryStore(Request $request)
     {
         $request->validate([
-            'image' => 'required', 
-            'image.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
+            'image'     => 'required', 
+            'image.*'   => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'itinerary_id' => 'required|exists:itenary_list,id',
         ]);
     
