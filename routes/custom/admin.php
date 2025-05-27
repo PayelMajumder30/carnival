@@ -176,7 +176,15 @@ Route::name('admin.')->group(function() {
                 Route::post('about-destination/delete', [DestinationController::class, 'aboutDestiDelete'])->name('destination.aboutDestiDelete');
             });
 
-             //Master modeule/support
+            //Master Module/ Packages from top cities
+            Route::prefix('packages-from-top-cities')->group(function(){
+                Route::get('/', [PackageFromCityController::class, 'index'])->name('assignCitytoPackage.index');
+                Route::post('/store', [PackageFromCityController::class, 'store'])->name('assignCitytoPackage.store');
+                Route::get('/status/{id}', [PackageFromCityController::class, 'status'])->name('assignCitytoPackage.status'); 
+                Route::post('/delete', [PackageFromCityController::class, 'delete'])->name('assignCitytoPackage.delete');
+            });
+
+            //Master modeule/support
             Route::prefix('support')->group(function(){
                 Route::get('/',[SupportController::class, 'index'])->name('support.list.all');
                 Route::get('/create',[SupportController::class, 'create'])->name('support.create');

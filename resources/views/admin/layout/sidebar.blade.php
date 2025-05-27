@@ -104,6 +104,15 @@
                     </li>
                     @endif
 
+                    
+                    <li class="nav-item">
+                        <a href="{{ route('admin.assignCitytoPackage.index')}}"
+                            class="nav-link {{ (request()->is('admin/master-module/packages_from_top_cities*')) ? 'active active_nav_link' : ''}}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Packages from Top Cities</p>
+                        </a>
+                    </li>
+
                     @if(in_array('packageCategory', $RolePass))
                     <li class="nav-item">
                         <a href="{{ route('admin.packageCategory.list.all')}}"

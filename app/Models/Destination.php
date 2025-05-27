@@ -74,4 +74,14 @@ class Destination extends Model
         return $this->hasMany(DestinationWisePopularPackages::class, 'destination_id', 'id');
     }
 
+    
+    /*
+    * Relationship with `about_destinations` table
+    */
+
+    public function packagesFromTopCities()
+    {
+        return $this->hasMany(PackagesFromTopCities::class, 'destination_id');
+    }
+
 }
