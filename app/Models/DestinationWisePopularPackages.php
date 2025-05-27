@@ -26,5 +26,14 @@ class DestinationWisePopularPackages extends Model
         return $this->belongsTo(Destination::class, 'destination_id', 'id');
     }
 
+    // public function tags()
+    // {
+    //     return $this->hasMany(DestinationWisePopularPackageTag::class, 'popular_package_id');
+    // }
+
+    public function tags()
+    {
+        return $this->belongsToMany(TagList::class, 'destination_wise_popular_package_tags', 'popular_package_id', 'tag_id');
+    }
 
 }

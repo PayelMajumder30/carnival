@@ -239,8 +239,9 @@ Route::name('admin.')->group(function() {
                 Route::get('/destinations/{id}/get-itineraries', [PopularpackagesController::class, 'fetchItineraries'])->name('popularpackages.fetch');
                 Route::post('/assign-itineraries', [PopularpackagesController::class, 'storeAssign'])->name('popularpackages.assign');
                 Route::post('/update-status', [PopularpackagesController::class, 'updateStatus'])->name('popularpackages.updateStatus');
-               // Route::delete('/popular-itinerary/{id}', [PopularpackagesController::class, 'delete'])->name('popularpackages.delete');
                 Route::post('/popular-itinerary-delete',[PopularpackagesController::class, 'delete'])->name('popularpackages.delete');
+                Route::post('/assign-tags', [PopularpackagesController::class, 'assignTags'])->name('popularpackages.assign.tags');
+
 
             });
 
