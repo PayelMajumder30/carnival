@@ -58,9 +58,9 @@
                                         </td>
                                         <td>
                                             <div class="btn-group">
-                                                <a href="#" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
+                                                {{-- <a href="#" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
-                                                </a>
+                                                </a> --}}
                                                 <a href="javascript:void(0);" class="btn btn-sm btn-dark mr-1" onclick="deleteTopCity({{ $item->id }})" data-toggle="tooltip" title="Delete">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
