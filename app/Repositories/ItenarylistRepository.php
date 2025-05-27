@@ -27,6 +27,7 @@ class ItenarylistRepository implements ItenarylistRepositoryInterface
             'duration' => $data['duration'],
             'selling_price' => $data['selling_price'],
             'actual_price' => $data['actual_price'], 
+            'destination_id' => $data['destination_id'],
             'discount_type' => $data['discount_type'],
             'discount_value' => $data['discount_value'],
             'discount_start_date' => $data['discount_start_date'],

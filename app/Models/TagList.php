@@ -15,9 +15,9 @@ class TagList extends Model
         'status'
     ];
 
-    public function itenaries()
+    public function itineraries()
     {
-        return $this->belongsToMany(ItenaryList::class, 'itenaries_tags', 'tag_id', 'itenary_id');
+        return $this->belongsToMany(ItenaryList::class, 'itineraries_tags', 'tag_id', 'itenary_id');
     }
 
     public function packages()

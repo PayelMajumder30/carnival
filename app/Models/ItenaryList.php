@@ -17,6 +17,7 @@ class ItenaryList extends Model
         'duration',
         'selling_price',
         'actual_price',
+        'destination_id',
         'discount_type',
         'discount_value',
         'discount_start_date',
@@ -44,7 +45,7 @@ class ItenaryList extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(TagList::class, 'itenaries_tags', 'itenary_id', 'tag_id');
+        return $this->belongsToMany(TagList::class, 'itineraries_tags', 'itenary_id', 'tag_id');
     }
 
 

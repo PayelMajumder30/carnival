@@ -13,8 +13,15 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <div class="row mb-3">
+                        <div class="row justify-content-end">
+                            <div class="form-group">
+                                <a href="{{route('admin.destination.fetch-data-from-crm')}}" class="btn btn-sm btn-primary" data-toggle="tooltip">
+                                    Pull Destination From CRM
+                                </a>
+                            </div>
                         </div>
+                    </div>
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-md-6"></div>
                             <div class="col-md-6">
@@ -48,216 +55,148 @@
                                 </form>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row justify-content-end">
-                            <div class="form-group">
-                                <select name="" class="form-control" onchange="UpdateNewCountry(event)">
-                                    <option value="" selected hidden>Add New Country</option>
-                                    @forelse ($new_country as $country_item)
-                                        @if(!in_array($country_item['id'], $existing_country))
-                                            <option value="{{ucwords($country_item['country_name'])}}" data-id="{{$country_item['id']}}">{{ucwords($country_item['country_name'])}}</option>
-                                        @endif
-                                    @empty
-                                        <option value="">No new data found</option>
-                                    @endforelse
-                                </select>
-                            </div>
-                        </div>
-                        <table class="table">
+                        <table class="table table-sm table-hover">
                             <thead>
                                 <tr class="text-center">
-                                    <th>SL</th>
-                                    <th>Country Name</th>
+                                    <th>Logo</th>
+                                    <th>Name</th>
+                                    <th>Image</th>
+                                    <th>Banner Image</th>
+                                    <th>Short Description</th>
                                     <th>Status</th>
-                                    <th>Destinations</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($data as $k=> $item)
-                                    <tr>
-                                        <td>{{$k+1}}</td>
-                                        <td>{{ucwords($item->country_name)}}</td>
-                                        <td>
-                                            <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
-                                                <input type="checkbox" class="custom-control-input" id="countrySwitch{{ $item->id }}"
-                                                    {{ $item->status == 1 ? 'checked' : '' }}
-                                                    onchange="statusToggle('{{ route('admin.country.status', $item->id) }}')">
-                                                <label class="custom-control-label" for="countrySwitch{{ $item->id }}"></label>
-                                            </div>
-                                        </td>
-                                        <td class="destination_div" width="60%">
-                                            <div class="row justify-content-end mr-1">
-                                                <div class="form-group">
-                                                    @php
-                                                        $Country_destination = GetDestinationBycountryId($item->crm_country_id);
+                            @forelse ($data as $desti_item)
+                                <tr class="text-center">
+                                    <td>
+                                        <div class="text-center">
+                                            @if (!empty($desti_item->logo) && file_exists(public_path($desti_item->logo)))
+                                                <img src="{{ asset($desti_item->logo) }}" alt="destination-logo" style="height: 40px; width: 40px;background-color: #524242 !important;" class="img-thumbnail">
+                                            @else
+                                                <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="placeholder-logo" title="logo" style="height: 40px; width: 40px;" class="rounded-circle">
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-center">
+                                            {{$desti_item->destination_name}}
+                                        </div>
+                                    </td>
+                                    <td id="image-col-{{ $desti_item->id }}">
+                                        <div class="text-center">
+                                            @if (!empty($desti_item->image) && file_exists(public_path($desti_item->image)))
+                                                <img src="{{ asset($desti_item->image) }}" alt="destination-image" style="height: 50px; width: 70px; object-position: center;" class="img-thumbnail">
+                                            @else
+                                                <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="placeholder-image" title="image" style="height: 50px; width: 70px;" class="img-thumbnail">
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-center">
+                                            @if (!empty($desti_item->banner_image) && file_exists(public_path($desti_item->banner_image)))
+                                                <img src="{{ asset($desti_item->banner_image) }}" alt="destination-banner-image" style="height: 50px; width: 70px; object-position: center;" class="img-thumbnail">
+                                            @else
+                                                <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="placeholder-banner_image" title="banner image" style="height: 50px; width: 70px;" class="img-thumbnail">
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-center">
+                                                {{ \Str::limit(($desti_item->short_desc), 10, '...') }}
+                                        </div>                                                     
+                                    </td>
+                                    <td> 
+                                        <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch{{ $desti_item->id }}"
+                                                {{ $desti_item->status == 1 ? 'checked' : '' }}
+                                                onchange="statusToggle('{{ route('admin.destination.status', $desti_item->id) }}')">
+                                            <label class="custom-control-label" for="customSwitch{{ $desti_item->id }}"></label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-center">
+                                            <a href="javascript: void(0)" class="btn btn-sm btn-dark" onclick="deleteDesti({{$desti_item->id}})" data-toggle="tooltip" title="Delete">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                            <a href="javascript:void(0)" 
+                                                class="btn btn-sm btn-info edit-media-btn" 
+                                                data-toggle="modal" 
+                                                data-target="#editMediaModal" 
+                                                data-id="{{ $desti_item->id }}" 
+                                                data-name="{{ $desti_item->name }}" 
+                                                data-short_desc="{{ $desti_item->short_desc ?? '' }}" 
+                                                title="Edit Logo & Image">
+                                            <i class="fa fa-image"></i>
+                                            </a>
 
-                                                        $country_wise_destinations= App\Models\Destination::orderBy('destination_name', 'ASC')->where('country_id', $item->id)->get();
-                                                        $existing_destination = $country_wise_destinations->pluck('crm_destination_id')->toArray();
-                                                    @endphp
-                                                    <select name="" class="form-control" onchange="addNewDestination(event)">
-                                                        <option value="" selected hidden>Add New Destination</option>
-                                                        @forelse ($Country_destination as $destination_item)
-                                                            @if(!in_array($destination_item['id'], $existing_destination))
-                                                                <option value="{{ucwords($destination_item['name'])}}" data-id="{{$destination_item['id']}}" data-country="{{$item->id}}">{{ucwords($destination_item['name'])}}</option>
-                                                            @endif
-                                                        @empty
-                                                            <option value="">No new data found</option>
-                                                        @endforelse
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <table class="table table-sm table-hover">
-                                                <thead>
-                                                    <tr class="text-center">
-                                                        <th>Logo</th>
-                                                        <th>Name</th>
-                                                        <th>Image</th>
-                                                        <th>Banner Image</th>
-                                                        <th>Short Description</th>
-                                                        <th>Status</th>
-                                                        <th>Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach ($country_wise_destinations as $desti_item)
-                                                    <tr class="text-center">
-                                                        <td>
-                                                            <div class="text-center">
-                                                                @if (!empty($desti_item->logo) && file_exists(public_path($desti_item->logo)))
-                                                                    <img src="{{ asset($desti_item->logo) }}" alt="destination-logo" style="height: 40px; width: 40px;background-color: #524242 !important;" class="img-thumbnail">
-                                                                @else
-                                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="placeholder-logo" title="logo" style="height: 40px; width: 40px;" class="rounded-circle">
-                                                                @endif
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="text-center">
-                                                                {{$desti_item->destination_name}}
-                                                            </div>
-                                                        </td>
-                                                        <td id="image-col-{{ $desti_item->id }}">
-                                                            <div class="text-center">
-                                                                @if (!empty($desti_item->image) && file_exists(public_path($desti_item->image)))
-                                                                    <img src="{{ asset($desti_item->image) }}" alt="destination-image" style="height: 50px; width: 70px; object-position: center;" class="img-thumbnail">
-                                                                @else
-                                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="placeholder-image" title="image" style="height: 50px; width: 70px;" class="img-thumbnail">
-                                                                @endif
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="text-center">
-                                                                @if (!empty($desti_item->banner_image) && file_exists(public_path($desti_item->banner_image)))
-                                                                    <img src="{{ asset($desti_item->banner_image) }}" alt="destination-banner-image" style="height: 50px; width: 70px; object-position: center;" class="img-thumbnail">
-                                                                @else
-                                                                    <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="placeholder-banner_image" title="banner image" style="height: 50px; width: 70px;" class="img-thumbnail">
-                                                                @endif
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="text-center">
-                                                                   {{ \Str::limit(($desti_item->short_desc), 10, '...') }}
-                                                            </div>                                                     
-                                                        </td>
-                                                        <td> 
-                                                            <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
-                                                                <input type="checkbox" class="custom-control-input" id="customSwitch{{ $desti_item->id }}"
-                                                                    {{ $desti_item->status == 1 ? 'checked' : '' }}
-                                                                    onchange="statusToggle('{{ route('admin.destination.status', $desti_item->id) }}')">
-                                                                <label class="custom-control-label" for="customSwitch{{ $desti_item->id }}"></label>
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <div class="text-center">
-                                                                <a href="javascript: void(0)" class="btn btn-sm btn-dark" onclick="deleteDesti({{$desti_item->id}})" data-toggle="tooltip" title="Delete">
-                                                                    <i class="fa fa-trash"></i>
-                                                                </a>
-                                                                {{-- modal for upload image and logo  --}}
-                                                                {{-- <a href="javascript:void(0)" class="btn btn-sm btn-info edit-media-btn" data-toggle="modal" data-target="#editMediaModal" data-id="{{ $desti_item->id }}"
-                                                                    data-name="{{ $desti_item->name }}" title="Edit Logo & Image"><i class="fa fa-image"></i>
-                                                                </a>  --}}
-                                                                <a href="javascript:void(0)" 
-                                                                    class="btn btn-sm btn-info edit-media-btn" 
-                                                                    data-toggle="modal" 
-                                                                    data-target="#editMediaModal" 
-                                                                    data-id="{{ $desti_item->id }}" 
-                                                                    data-name="{{ $desti_item->name }}" 
-                                                                    data-short_desc="{{ $desti_item->short_desc ?? '' }}" 
-                                                                    title="Edit Logo & Image">
-                                                                <i class="fa fa-image"></i>
-                                                                </a>
-
-                                                                {{-- <a href="{{ route('admin.destination.itineraryList', $desti_item->id) }}" class="btn btn-sm btn-warning" title="Manage Itineraries">
-                                                                    <i class="fa fa-folder"></i>
-                                                                </a> --}}
-
-                                                                 <a href="{{ route('admin.destination.aboutDestination.list', $desti_item->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip">
-                                                                    About Destination
-                                                                </a>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    @endforeach
-                                                </tbody>
-                                            </table>
-
-                                            <!-- Upload Modal -->
-
-                                            <div class="modal fade" id="editMediaModal" tabindex="-1" role="dialog" aria-labelledby="editMediaModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog" role="document">
-                                                    <form method="POST" enctype="multipart/form-data" id="editMediaForm">
-                                                        @csrf
-                                                        <input type="hidden" name="id" id="modal-destination-id">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title">Update Logo & Image</h5>
-                                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <div class="form-group">
-                                                                    <label for="logo">Upload Logo</label>
-                                                                    <input type="file" class="form-control" name="logo" id="logo">
-                                                                    <div class="error text-danger" id="logo-error"></div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label for="image">Upload Image</label>
-                                                                    <input type="file" class="form-control" name="image" id="image">
-                                                                    <div class="error text-danger" id="image-error"></div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label for="banner_image">Upload Banner Image</label>
-                                                                    <input type="file" class="form-control" name="banner_image" id="banner_image">
-                                                                    <div class="error text-danger" id="banner-image-error"></div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label for="short_desc">Upload Short Description</label>
-                                                                    <textarea class="form-control" name="short_desc" id="short_desc" rows="4" 
-                                                                        placeholder="Enter short description...">{{ old('short_desc', $destination->short_desc ?? '') }}</textarea>
-                                                                    <div class="error text-danger" id="short-desc-error"></div>
-                                                                </div>
-
-                                                            </div>
-                                                            
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                                <button type="button" id="editMediaSubmit" class="btn btn-primary">Update</button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </td>                                       
-                                    </tr>
+                                            <a href="{{ route('admin.destination.aboutDestination.list', $desti_item->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip">
+                                                About Destination
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
                                 @empty
-                                    <tr>
-                                        <td colspan="5">
-                                            <li class="list-group-item text-center">No records found</li>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="alert alert-light" role="alert">
+                                            Destination not found!
+                                        </div>
+                                    </td>
+                                </tr>
                                 @endforelse
-                                
                             </tbody>
                         </table>
+                        <div class="pagination-container">
+                            {{$data->appends($_GET)->links()}}
+                        </div>
+                        <!-- Upload Modal -->
+
+                        <div class="modal fade" id="editMediaModal" tabindex="-1" role="dialog" aria-labelledby="editMediaModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <form method="POST" enctype="multipart/form-data" id="editMediaForm">
+                                    @csrf
+                                    <input type="hidden" name="id" id="modal-destination-id">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Update Logo & Image</h5>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <label for="logo">Upload Logo</label>
+                                                <input type="file" class="form-control" name="logo" id="logo">
+                                                <div class="error text-danger" id="logo-error"></div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="image">Upload Image</label>
+                                                <input type="file" class="form-control" name="image" id="image">
+                                                <div class="error text-danger" id="image-error"></div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="banner_image">Upload Banner Image</label>
+                                                <input type="file" class="form-control" name="banner_image" id="banner_image">
+                                                <div class="error text-danger" id="banner-image-error"></div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="short_desc">Upload Short Description</label>
+                                                <textarea class="form-control" name="short_desc" id="short_desc" rows="4" 
+                                                    placeholder="Enter short description...">{{ old('short_desc', $destination->short_desc ?? '') }}</textarea>
+                                                <div class="error text-danger" id="short-desc-error"></div>
+                                            </div>
+
+                                        </div>
+                                        
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <button type="button" id="editMediaSubmit" class="btn btn-primary">Update</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                                       
                     </div>
                 </div>
             </div>

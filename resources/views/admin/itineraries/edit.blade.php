@@ -10,12 +10,12 @@
                     <div class="card-header">
                         <div class="row mb-3">
                             <div class="col-md-12 text-right">
-                                <a href="{{ route('admin.itenaries.list.all') }}" class="btn btn-sm btn-primary"> <i class="fa fa-chevron-left"></i> Back</a>
+                                <a href="{{ route('admin.itineraries.list.all') }}" class="btn btn-sm btn-primary"> <i class="fa fa-chevron-left"></i> Back</a>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
-                    <form action="{{ route('admin.itenaries.update', $itenary->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('admin.itineraries.update', $itenary->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             <div class="form-group col-md-6">
@@ -34,6 +34,17 @@
                                 @error('actual_price') 
                                     <p class="small text-danger">{{ $message }}</p>
                                 @enderror
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="destination_id">Destination</label>
+                                <select name="destination_id" id="destination_id" class="form-control" required>
+                                    <option value="" disabled {{ !$itenary->destination_id ? 'selected' : '' }}>--Select Destination--</option>
+                                    @foreach($destinations as $destination) 
+                                        <option value="{{ $destination->id }}" {{ $itenary->destination_id == $destination->id ? 'selected' : '' }}>
+                                            {{ $destination->destination_name}}</option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="form-group col-md-6">

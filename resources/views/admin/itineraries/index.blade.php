@@ -1,5 +1,5 @@
 @extends('admin.layout.app')
-@section('page-title', 'Itenaries list')
+@section('page-title', 'itineraries list')
 @section('section')
 
 

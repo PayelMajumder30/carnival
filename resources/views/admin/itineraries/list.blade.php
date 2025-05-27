@@ -19,7 +19,7 @@
                     <div class="card-header">
                         <div class="row mb-3">
                             <div class="col-md-12 text-right">
-                                <a href="{{ route('admin.itenaries.create')}}" class="btn btn-sm btn-primary"> <i class="fa fa-plus"></i> Create</a>
+                                <a href="{{ route('admin.itineraries.create')}}" class="btn btn-sm btn-primary"> <i class="fa fa-plus"></i> Create</a>
                             </div>
                         </div>
                         <div class="row">
@@ -74,7 +74,7 @@
                                                             <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
                                                                 <input type="checkbox" class="custom-control-input" id="statusSwitch{{ $item->id }}"
                                                                     {{ $item->status == 1 ? 'checked' : '' }}
-                                                                    onchange="statusToggle('{{ route('admin.itenaries.status', $item->id) }}')">
+                                                                    onchange="statusToggle('{{ route('admin.itineraries.status', $item->id) }}')">
                                                                 <label class="custom-control-label" for="statusSwitch{{ $item->id }}"></label>
                                                             </div>
                                                         </div>
@@ -101,7 +101,7 @@
                                         <div class="container">
                                             <div class="d-flex flex-wrap">
                                                 @php
-                                                    $assignedTagIds = DB::table('itenaries_tags')
+                                                    $assignedTagIds = DB::table('itineraries_tags')
                                                         ->where('itenary_id', $item->id)
                                                         ->pluck('tag_id')
                                                         ->toArray();
@@ -168,7 +168,7 @@
                                        </td>
                                         <td class="d-flex">
                                             <div class="btn-group">
-                                                <a href="{{ route('admin.itenaries.edit', $item->id) }}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
+                                                <a href="{{ route('admin.itineraries.edit', $item->id) }}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
                                                 <a href="javascript:void(0)" class="btn btn-sm btn-dark ml-1" onclick="deleteItenary({{ $item->id }})" data-toggle="tooltip" title="Delete">
@@ -179,7 +179,7 @@
                                                 <a href="javascript:void(0)" class="btn btn-sm btn-warning ml-1" data-toggle="modal" data-target="#assignModal{{ $item->id }}" title="Assign Itinerary">
                                                     <i class="fa fa-link"></i>
                                                 </a>
-                                                <a href="{{ route('admin.itenaries.galleries.list', ['itinerary_id' => $item->id])}}" class="btn btn-sm btn-success ml-1" data-toggle="tooltip" title="Manage Gallery">
+                                                <a href="{{ route('admin.itineraries.galleries.list', ['itinerary_id' => $item->id])}}" class="btn btn-sm btn-success ml-1" data-toggle="tooltip" title="Manage Gallery">
                                                     <i class="fa fa-image"></i>
                                                 </a>
                                             </div>
@@ -189,7 +189,7 @@
                                     <!-- Assign Destination and Package Modal -->
                                     <div class="modal fade" id="assignModal{{ $item->id }}" tabindex="-1" aria-labelledby="assignModalLabel{{ $item->id }}" aria-hidden="true">
                                         <div class="modal-dialog modal-md">
-                                            <form action="{{ route('admin.itenaries.assignedItinerary') }}" method="POST">
+                                            <form action="{{ route('admin.itineraries.assignedItinerary') }}" method="POST">
                                                 @csrf
                                                 <input type="hidden" name="itinerary_id" value="{{ $item->id }}">
                                                 <div class="modal-content">
@@ -257,7 +257,7 @@
 <script src="{{ asset('backend-assets/js/select2.min.js') }}"></script> 
 <script>
     function deleteItenary(itenaryId) {
-        const deleteUrl = "{{ route('admin.itenaries.delete', ['id' => '__id__']) }}".replace('__id__', itenaryId);
+        const deleteUrl = "{{ route('admin.itineraries.delete', ['id' => '__id__']) }}".replace('__id__', itenaryId);
 
         Swal.fire({
             icon: 'warning',
@@ -305,7 +305,7 @@
         const isChecked = checkbox.is(':checked') ? 1 : 0;
 
         $.ajax({
-            url: "{{ route('admin.itenaries.togglePackageStatus') }}",
+            url: "{{ route('admin.itineraries.togglePackageStatus') }}",
             method: "POST",
             data: {
                 _token: "{{ csrf_token() }}",
@@ -364,7 +364,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "{{ route('admin.itenaries.packageItineraryDelete') }}",
+                    url: "{{ route('admin.itineraries.packageItineraryDelete') }}",
                     type: 'POST',
                     data: {
                         id: itinPckgId,
@@ -412,7 +412,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '{{ route("admin.itenaries.assignTagToItenary") }}',
+                    url: '{{ route("admin.itineraries.assignTagToItenary") }}',
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
