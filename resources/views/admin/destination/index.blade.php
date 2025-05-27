@@ -125,10 +125,10 @@
                                                 data-toggle="modal" 
                                                 data-target="#editMediaModal" 
                                                 data-id="{{ $desti_item->id }}" 
-                                                data-name="{{ $desti_item->name }}" 
+                                                data-name="{{ $desti_item->destination_name }}" 
                                                 data-short_desc="{{ $desti_item->short_desc ?? '' }}" 
-                                                title="Edit Logo & Image">
-                                            <i class="fa fa-image"></i>
+                                                title="Edit Destination">
+                                                <i class="fa fa-edit"></i>
                                             </a>
 
                                             <a href="{{ route('admin.destination.aboutDestination.list', $desti_item->id)}}" class="btn btn-sm btn-primary" data-toggle="tooltip">
@@ -160,7 +160,7 @@
                                     <input type="hidden" name="id" id="modal-destination-id">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">Update Logo & Image</h5>
+                                            <h5 class="modal-title" id="editMediaModalLabel">Edit Destination</h5>
                                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                                         </div>
                                         <div class="modal-body">
@@ -338,13 +338,17 @@
         });
     }
 
+    //for open modal and image,logo, short description, banner image
     document.addEventListener('DOMContentLoaded', function () {
         $(document).on('click', '.edit-media-btn', function () {
             const destinationId = $(this).data('id');
+            const destinationName = $(this).data('name');
             const shortDesc = $(this).data('short_desc'); // Get the short description
 
             $('#modal-destination-id').val(destinationId);
             $('#short_desc').val(shortDesc); // Set it in the textarea
+
+            $('#editMediaModalLabel').text('Edit ' + destinationName);
         });
 
         $('#editMediaSubmit').on('click', function () {
