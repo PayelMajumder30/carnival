@@ -90,44 +90,6 @@ Route::prefix('admin/')->name('admin.')->group(function() {
                 Route::post('/sort', [WhyChooseController::class, 'sort'])->name('whychooseus.sort');
             });
 
-            //trip categories
-            Route::prefix('tripcategory')->group(function() {
-                Route::get('/', [TripcategoryController::class, 'index'])->name('tripcategory.list.all');
-                Route::get('/create', [TripcategoryController::class, 'create'])->name('tripcategory.create');
-                Route::post('/store', [TripcategoryController::class, 'store'])->name('tripcategory.store');
-                Route::get('/edit/{id}', [TripcategoryController::class, 'edit'])->name('tripcategory.edit');
-                Route::post('/update/{id}', [TripcategoryController::class, 'update'])->name('tripcategory.update');
-                Route::get('/status/{id}', [TripcategoryController::class, 'status'])->name('tripcategory.status'); 
-                //Route::get('/isHighlight/{id}', [TripcategoryController::class, 'isHighlight'])->name('tripcategory.isHighlight');
-                Route::post('/highlight/update', [TripcategoryController::class, 'updateHighlights'])->name('tripcategory.updateHighlights');
-                Route::post('/delete', [TripcategoryController::class, 'delete'])->name('tripcategory.delete');
-                Route::post('/sort', [TripcategoryController::class, 'sort'])->name('tripcategory.sort');
-
-                //trip category banner
-                Route::get('/banner/{trip_cat_id}', [TripcategoryController::class, 'bannerIndex'])->name('tripcategorybanner.list.all');
-                Route::get('banner/create/{trip_cat_id}', [TripcategoryController::class, 'bannerCreate'])->name('tripcategory.bannerCreate');
-                Route::post('banner/store', [TripcategoryController::class, 'bannerStore'])->name('tripcategory.bannerStore');
-                Route::get('banner/edit/{id}', [TripcategoryController::class, 'bannerEdit'])->name('tripcategory.bannerEdit');
-                Route::post('banner/update', [TripcategoryController::class, 'bannerUpdate'])->name('tripcategory.bannerUpdate');
-                Route::get('banner/status/{id}', [TripcategoryController::class, 'bannerStatus'])->name('tripcategory.bannerStatus'); 
-                Route::post('banner/delete', [TripcategoryController::class, 'bannerDelete'])->name('tripcategory.bannerDelete');
-
-                //trip category destination
-                Route::get('/destination/{trip_cat_id}', [TripcategoryController::class, 'destinationIndex'])->name('tripcategorydestination.list.all');
-                Route::get('destination/by-country/{country_id}/{trip_cat_id}', [TripcategoryController::class, 'getDestinationsByCountry'])->name('tripcategorydestination.getDestination');
-                Route::post('destination/add', [TripcategoryController::class, 'destinationAdd'])->name('tripcategorydestination.destinationAdd');
-                Route::post('destination/update-price', [TripcategoryController::class, 'updatePrice'])->name('tripcategory.updatePrice');
-                Route::post('destination/delete', [TripcategoryController::class, 'destinationDelete'])->name('tripcategory.destinationDelete');
-
-                //trip category activities
-                Route::get('/activities/{trip_cat_id}', [TripcategoryController::class, 'activitiesIndex'])->name('tripcategoryactivities.list.all');
-                Route::get('activities/by-destination/{country_id}/{trip_cat_id}', [TripcategoryController::class, 'getActivitiesByDestination'])->name('tripcategorydestination.getActivities');
-                Route::post('activities/add', [TripcategoryController::class, 'activityAdd'])->name('tripcategorydestination.activityAdd');
-                Route::post('activities/update', [TripcategoryController::class, 'updateActivities'])->name('tripcategory.updateActivities');
-                Route::get('activities/status/{id}',[TripcategoryController::class, 'activitiesStatus'])->name('tripcategory.activitiesStatus');
-                Route::post('activities/delete', [TripcategoryController::class, 'activitiesDelete'])->name('tripcategory.activitiesDelete');
-            });
-
             //offer list
             Route::prefix('offers')->group(function() {
                 Route::get('/', [OfferController::class, 'index'])->name('offers.list.all');
@@ -137,51 +99,6 @@ Route::prefix('admin/')->name('admin.')->group(function() {
                 Route::post('/update', [OfferController::class, 'update'])->name('offers.update');
                 Route::get('/status/{id}', [OfferController::class, 'status'])->name('offers.status'); 
                 Route::post('/delete', [OfferController::class, 'delete'])->name('offers.delete');
-            });
-
-            //Master modeule/package categoryPackageController
-
-            Route::prefix('package-category')->group(function() {
-                Route::get('/', [PackageController::class, 'index'])->name('packageCategory.list.all');
-                Route::get('/create', [PackageController::class, 'create'])->name('packageCategory.create');
-                Route::post('/store', [PackageController::class, 'store'])->name('packageCategory.store');
-                Route::post('/update', [PackageController::class, 'update'])->name('packageCategory.update');   
-                Route::get('/status/{id}', [PackageController::class, 'status'])->name('packageCategory.status');
-                Route::post('/delete', [PackageController::class, 'delete'])->name('packageCategory.delete');
-
-            });
-
-            //Master modeule/destination
-            Route::prefix('country/destinations')->group(function(){
-                Route::get('/',[DestinationController::class, 'index'])->name('destination.list.all');
-                Route::get('/country_show',[DestinationController::class, 'show'])->name('destination.show');
-                Route::post('/country/add',[DestinationController::class, 'countryAdd'])->name('country.add');
-                Route::get('/country/status/{id}', [DestinationController::class, 'countryStatus'])->name('country.status'); 
-                Route::post('/destination/add',[DestinationController::class, 'destinationAdd'])->name('destination.add'); 
-                Route::post('/destination/create-image', [DestinationController::class, 'createDestImage'])->name('destination.createImage'); 
-                Route::get('/destination/status/{id}', [DestinationController::class, 'destinationStatus'])->name('destination.status');
-                Route::post('/delete', [DestinationController::class, 'destinationDelete'])->name('destination.delete');
-
-                // Routes of itineraries associated with destinations
-                Route::get('/{destiation_id}/itineraries', [DestinationController::class, 'destinationItineraryIndex'])->name('destination.itineraryList');
-                Route::post('/{destiation_id}/assign-itinerary', [DestinationController::class, 'assignItineraryToDestination'])->name('destination.assignItinerary');
-                Route::post('/delete-itinerary', [DestinationController::class, 'deleteItinerary'])->name('destination.deleteItinerary');    
-                
-                //About destination
-                Route::get('/about-destination/{destination_id}', [DestinationController::class, 'aboutDestiIndex'])->name('destination.aboutDestination.list');
-                Route::get('about-destination/create/{destination_id}', [DestinationController::class, 'aboutDestiCreate'])->name('destination.aboutDestiCreate');
-                Route::post('about-destination/store', [DestinationController::class, 'aboutDestiStore'])->name('destination.aboutDestiStore');
-                Route::get('about-destination/edit/{id}', [DestinationController::class, 'aboutDestiEdit'])->name('destination.aboutDestiEdit');
-                Route::post('about-destination/update', [DestinationController::class, 'aboutDestiUpdate'])->name('destination.aboutDestiUpdate');
-                Route::post('about-destination/delete', [DestinationController::class, 'aboutDestiDelete'])->name('destination.aboutDestiDelete');
-            });
-
-            //Master Module/ Packages from top cities
-            Route::prefix('packages-from-top-cities')->group(function(){
-                Route::get('/', [PackageFromCityController::class, 'index'])->name('assignCitytoPackage.index');
-                Route::post('/store', [PackageFromCityController::class, 'store'])->name('assignCitytoPackage.store');
-                Route::get('/status/{id}', [PackageFromCityController::class, 'status'])->name('assignCitytoPackage.status'); 
-                Route::post('/delete', [PackageFromCityController::class, 'delete'])->name('assignCitytoPackage.delete');
             });
 
             //Master modeule/support
@@ -230,7 +147,7 @@ Route::prefix('admin/')->name('admin.')->group(function() {
             });
         });
 
-        //Itenaries
+        //itineraries
         Route::prefix('itineraries')->group(function() {
 
             //popular packages  
@@ -247,28 +164,111 @@ Route::prefix('admin/')->name('admin.')->group(function() {
 
             //itenary list
             Route::prefix('itinerary-list')->group(function() {
-                Route::get('/', [ItenaryListController::class, 'index'])->name('itenaries.list.all');
-                Route::get('/create', [ItenaryListController::class, 'create'])->name('itenaries.create');
-                Route::post('/store', [ItenaryListController::class, 'store'])->name('itenaries.store');
-                Route::get('/edit/{id}', [ItenaryListController::class, 'edit'])->name('itenaries.edit');
-                Route::post('/update/{id}', [ItenaryListController::class, 'update'])->name('itenaries.update');
-                Route::get('/status/{id}', [ItenaryListController::class, 'toggleStatus'])->name('itenaries.status');
-                Route::post('/delete/{id}', [ItenaryListController::class, 'delete'])->name('itenaries.delete');
+                Route::get('/', [ItenaryListController::class, 'index'])->name('itineraries.list.all');
+                Route::get('/create', [ItenaryListController::class, 'create'])->name('itineraries.create');
+                Route::post('/store', [ItenaryListController::class, 'store'])->name('itineraries.store');
+                Route::get('/edit/{id}', [ItenaryListController::class, 'edit'])->name('itineraries.edit');
+                Route::post('/update/{id}', [ItenaryListController::class, 'update'])->name('itineraries.update');
+                Route::get('/status/{id}', [ItenaryListController::class, 'toggleStatus'])->name('itineraries.status');
+                Route::post('/delete/{id}', [ItenaryListController::class, 'delete'])->name('itineraries.delete');
 
-                Route::post('/assign-tag', [ItenaryListController::class, 'assignTagToItenary'])->name('itenaries.assignTagToItenary');
+                Route::post('/assign-tag', [ItenaryListController::class, 'assignTagToItenary'])->name('itineraries.assignTagToItenary');
 
                 //itineararies/ assign destination & package category
-                Route::post('/assign-itinerary', [ItenaryListController::class, 'assignedItinerary'])->name('itenaries.assignedItinerary');
-                Route::post('/toggle-package-status', [ItenaryListController::class, 'togglePackageStatus'])->name('itenaries.togglePackageStatus');
-                Route::post('/package-itinerary-delete',[ItenaryListController::class, 'packageItineraryDelete'])->name('itenaries.packageItineraryDelete');
+                Route::post('/assign-itinerary', [ItenaryListController::class, 'assignedItinerary'])->name('itineraries.assignedItinerary');
+                Route::post('/toggle-package-status', [ItenaryListController::class, 'togglePackageStatus'])->name('itineraries.togglePackageStatus');
+                Route::post('/package-itinerary-delete',[ItenaryListController::class, 'packageItineraryDelete'])->name('itineraries.packageItineraryDelete');
 
                 //itineraries/ gallery for selecting multiple images
-                Route::get('/galleries/{itinerary_id}', [ItenaryListController::class, 'galleryIndex'])->name('itenaries.galleries.list');
-                Route::get('galleries/create/{itinerary_id}', [ItenaryListController::class, 'galleryCreate'])->name('itenaries.galleryCreate');
-                Route::post('galleries/store', [ItenaryListController::class, 'galleryStore'])->name('itenaries.galleryStore');
-                Route::get('galleries/edit/{id}', [ItenaryListController::class, 'galleryEdit'])->name('itenaries.galleryEdit');
-                Route::post('galleries/update', [ItenaryListController::class, 'galleryUpdate'])->name('itenaries.galleryUpdate');
-                Route::post('galleries/delete', [ItenaryListController::class, 'galleryDelete'])->name('itenaries.galleryDelete');
+                Route::get('/galleries/{itinerary_id}', [ItenaryListController::class, 'galleryIndex'])->name('itineraries.galleries.list');
+                Route::get('galleries/create/{itinerary_id}', [ItenaryListController::class, 'galleryCreate'])->name('itineraries.galleryCreate');
+                Route::post('galleries/store', [ItenaryListController::class, 'galleryStore'])->name('itineraries.galleryStore');
+                Route::get('galleries/edit/{id}', [ItenaryListController::class, 'galleryEdit'])->name('itineraries.galleryEdit');
+                Route::post('galleries/update', [ItenaryListController::class, 'galleryUpdate'])->name('itineraries.galleryUpdate');
+                Route::post('galleries/delete', [ItenaryListController::class, 'galleryDelete'])->name('itineraries.galleryDelete');
+            });
+
+            //Master modeule/destination
+            Route::prefix('destinations')->group(function(){
+                Route::get('/',[DestinationController::class, 'index'])->name('destination.list.all');
+                Route::get('/fetch-data-from-crm',[DestinationController::class, 'FetchDataFromCRM'])->name('destination.fetch-data-from-crm');
+                Route::get('/country_show',[DestinationController::class, 'show'])->name('destination.show');
+                Route::post('/country/add',[DestinationController::class, 'countryAdd'])->name('country.add');
+                Route::get('/country/status/{id}', [DestinationController::class, 'countryStatus'])->name('country.status'); 
+                Route::post('/destination/add',[DestinationController::class, 'destinationAdd'])->name('destination.add'); 
+                Route::post('/destination/create-image', [DestinationController::class, 'createDestImage'])->name('destination.createImage'); 
+                Route::get('/destination/status/{id}', [DestinationController::class, 'destinationStatus'])->name('destination.status');
+                Route::post('/delete', [DestinationController::class, 'destinationDelete'])->name('destination.delete');
+
+                // Routes of itineraries associated with destinations
+                Route::get('/{destiation_id}/itineraries', [DestinationController::class, 'destinationItineraryIndex'])->name('destination.itineraryList');
+                Route::post('/{destiation_id}/assign-itinerary', [DestinationController::class, 'assignItineraryToDestination'])->name('destination.assignItinerary');
+                Route::post('/delete-itinerary', [DestinationController::class, 'deleteItinerary'])->name('destination.deleteItinerary');    
+                
+                //About destination
+                Route::get('/about-destination/{destination_id}', [DestinationController::class, 'aboutDestiIndex'])->name('destination.aboutDestination.list');
+                Route::get('about-destination/create/{destination_id}', [DestinationController::class, 'aboutDestiCreate'])->name('destination.aboutDestiCreate');
+                Route::post('about-destination/store', [DestinationController::class, 'aboutDestiStore'])->name('destination.aboutDestiStore');
+                Route::get('about-destination/edit/{id}', [DestinationController::class, 'aboutDestiEdit'])->name('destination.aboutDestiEdit');
+                Route::post('about-destination/update', [DestinationController::class, 'aboutDestiUpdate'])->name('destination.aboutDestiUpdate');
+                Route::post('about-destination/delete', [DestinationController::class, 'aboutDestiDelete'])->name('destination.aboutDestiDelete');
+            });
+            
+            //Master Module/ Packages from top cities
+            Route::prefix('packages-from-top-cities')->group(function(){
+                Route::get('/', [PackageFromCityController::class, 'index'])->name('assignCitytoPackage.index');
+                Route::post('/store', [PackageFromCityController::class, 'store'])->name('assignCitytoPackage.store');
+                Route::get('/status/{id}', [PackageFromCityController::class, 'status'])->name('assignCitytoPackage.status'); 
+                Route::post('/delete', [PackageFromCityController::class, 'delete'])->name('assignCitytoPackage.delete');
+            });
+
+             //trip categories
+            Route::prefix('tripcategory')->group(function() {
+                Route::get('/', [TripcategoryController::class, 'index'])->name('tripcategory.list.all');
+                Route::get('/create', [TripcategoryController::class, 'create'])->name('tripcategory.create');
+                Route::post('/store', [TripcategoryController::class, 'store'])->name('tripcategory.store');
+                Route::get('/edit/{id}', [TripcategoryController::class, 'edit'])->name('tripcategory.edit');
+                Route::post('/update/{id}', [TripcategoryController::class, 'update'])->name('tripcategory.update');
+                Route::get('/status/{id}', [TripcategoryController::class, 'status'])->name('tripcategory.status'); 
+                //Route::get('/isHighlight/{id}', [TripcategoryController::class, 'isHighlight'])->name('tripcategory.isHighlight');
+                Route::post('/highlight/update', [TripcategoryController::class, 'updateHighlights'])->name('tripcategory.updateHighlights');
+                Route::post('/delete', [TripcategoryController::class, 'delete'])->name('tripcategory.delete');
+                Route::post('/sort', [TripcategoryController::class, 'sort'])->name('tripcategory.sort');
+
+                //trip category banner
+                Route::get('/banner/{trip_cat_id}', [TripcategoryController::class, 'bannerIndex'])->name('tripcategorybanner.list.all');
+                Route::get('banner/create/{trip_cat_id}', [TripcategoryController::class, 'bannerCreate'])->name('tripcategory.bannerCreate');
+                Route::post('banner/store', [TripcategoryController::class, 'bannerStore'])->name('tripcategory.bannerStore');
+                Route::get('banner/edit/{id}', [TripcategoryController::class, 'bannerEdit'])->name('tripcategory.bannerEdit');
+                Route::post('banner/update', [TripcategoryController::class, 'bannerUpdate'])->name('tripcategory.bannerUpdate');
+                Route::get('banner/status/{id}', [TripcategoryController::class, 'bannerStatus'])->name('tripcategory.bannerStatus'); 
+                Route::post('banner/delete', [TripcategoryController::class, 'bannerDelete'])->name('tripcategory.bannerDelete');
+
+                //trip category destination
+                Route::get('/destination/{trip_cat_id}', [TripcategoryController::class, 'destinationIndex'])->name('tripcategorydestination.list.all');
+                Route::get('destination/by-country/{country_id}/{trip_cat_id}', [TripcategoryController::class, 'getDestinationsByCountry'])->name('tripcategorydestination.getDestination');
+                Route::post('destination/add', [TripcategoryController::class, 'destinationAdd'])->name('tripcategorydestination.destinationAdd');
+                Route::post('destination/update-price', [TripcategoryController::class, 'updatePrice'])->name('tripcategory.updatePrice');
+                Route::post('destination/delete', [TripcategoryController::class, 'destinationDelete'])->name('tripcategory.destinationDelete');
+
+                //trip category activities
+                Route::get('/activities/{trip_cat_id}', [TripcategoryController::class, 'activitiesIndex'])->name('tripcategoryactivities.list.all');
+                Route::get('activities/by-destination/{country_id}/{trip_cat_id}', [TripcategoryController::class, 'getActivitiesByDestination'])->name('tripcategorydestination.getActivities');
+                Route::post('activities/add', [TripcategoryController::class, 'activityAdd'])->name('tripcategorydestination.activityAdd');
+                Route::post('activities/update', [TripcategoryController::class, 'updateActivities'])->name('tripcategory.updateActivities');
+                Route::get('activities/status/{id}',[TripcategoryController::class, 'activitiesStatus'])->name('tripcategory.activitiesStatus');
+                Route::post('activities/delete', [TripcategoryController::class, 'activitiesDelete'])->name('tripcategory.activitiesDelete');
+
+            });
+            //Master modeule/package categoryPackageController
+            Route::prefix('package-category')->group(function() {
+                Route::get('/', [PackageController::class, 'index'])->name('packageCategory.list.all');
+                Route::get('/create', [PackageController::class, 'create'])->name('packageCategory.create');
+                Route::post('/store', [PackageController::class, 'store'])->name('packageCategory.store');
+                Route::post('/update', [PackageController::class, 'update'])->name('packageCategory.update');   
+                Route::get('/status/{id}', [PackageController::class, 'status'])->name('packageCategory.status');
+                Route::post('/delete', [PackageController::class, 'delete'])->name('packageCategory.delete');
+
             });
 
         });

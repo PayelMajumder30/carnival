@@ -44,7 +44,7 @@ class ItenaryList extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(TagList::class, 'itenaries_tags', 'itenary_id', 'tag_id');
+        return $this->belongsToMany(TagList::class, 'itineraries_tags', 'itenary_id', 'tag_id');
     }
 
 

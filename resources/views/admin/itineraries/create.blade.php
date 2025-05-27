@@ -10,12 +10,12 @@
                     <div class="card-header">
                         <div class="row mb-3">
                             <div class="col-md-12 text-right">
-                                <a href="{{ route('admin.itenaries.list.all') }}" class="btn btn-sm btn-primary"> <i class="fa fa-chevron-left"></i> Back</a>
+                                <a href="{{ route('admin.itineraries.list.all') }}" class="btn btn-sm btn-primary"> <i class="fa fa-chevron-left"></i> Back</a>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.itenaries.store') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('admin.itineraries.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="row">
                                 <div class="form-group col-md-6">

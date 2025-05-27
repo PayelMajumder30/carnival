@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Itinaries_tag extends Model
 {
     use HasFactory;
-    protected $table = 'itenaries_tags';
+    protected $table = 'itineraries_tags';
     protected $fillable = [
         'tag_id',
         'itenary_id',

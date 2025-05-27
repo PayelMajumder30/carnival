@@ -26,50 +26,91 @@ class DestinationController extends Controller
     public function index(Request $request)
     {
 
-        $Url = env('CRM_BASEPATH').'api/crm/active/country';
-        $ch = curl_init($Url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // $Url = env('CRM_BASEPATH').'api/crm/active/country';
+        // $ch = curl_init($Url);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        $countryResponse = curl_exec($ch);
-        curl_close($ch);
-        $countryData = json_decode($countryResponse, true);
-        //dd(env('CRM_BASEPATH'));
-        if ($countryData['status']==true) {
-            $new_country = $countryData['data'];
-        } else {
-            $new_country = [];
-        }
-       // dd($new_country);
-       
+        // $countryResponse = curl_exec($ch);
+        // curl_close($ch);
+        // $countryData = json_decode($countryResponse, true);
+        // //dd(env('CRM_BASEPATH'));
+        // if ($countryData['status']==true) {
+        //     $new_country = $countryData['data'];
+        // } else {
+        //     $new_country = [];
+        // }
        $showCountry = Country::select('country_name')
         ->orderBy('country_name')
         ->pluck('country_name');
 
-        $country_filter = $request->input('country_filter');
+       $country_filter = $request->input('country_filter');
         $keyword = $request->input('keyword');
 
-        if ($country_filter) {
-            $data = Country::where('country_name', 'like', '%' . $country_filter . '%')
-                ->orderBy('country_name', 'ASC')
-                ->get();
-        } elseif ($keyword) {
-            $data = Country::select('countries.*')
-            ->whereHas('destinations', function($query) use ($keyword) {
+        $data = Destination::with('country') // if you want to eager load related country
+            ->when($country_filter, function ($query) use ($country_filter) {
+                $query->whereHas('country', function ($q) use ($country_filter) {
+                    $q->where('country_name', 'like', '%' . $country_filter . '%');
+                });
+            })
+            ->when($keyword, function ($query) use ($keyword) {
                 $query->where('destination_name', 'like', '%' . $keyword . '%');
             })
-            ->orWhere('countries.country_name', 'like', '%' . $keyword . '%')
-            ->with('destinations') 
-            ->orderBy('countries.country_name', 'ASC')
-            ->get();
-        } else {
-            $data = Country::orderBy('country_name', 'ASC')->get();
-        }
-
-        $existing_country = $data->pluck('crm_country_id')->toArray();
-
-        return view('admin.destination.index', compact('new_country', 'existing_country', 'data', 'showCountry'));
+            ->orderBy('country_id', 'ASC')
+            ->orderBy('destination_name', 'ASC')
+            ->paginate(25);
+        return view('admin.destination.index', compact('data', 'showCountry'));
     }
 
+    public function FetchDataFromCRM(){
+        // $Url = env('CRM_BASEPATH').'api/crm/active/country';
+        // $ch = curl_init($Url);
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        // $countryResponse = curl_exec($ch);
+        // curl_close($ch);
+        // $countryData = json_decode($countryResponse, true);
+        // //dd(env('CRM_BASEPATH'));
+        // if ($countryData['status']==true) {
+        //     $new_country = $countryData['data'];
+        // } else {
+        //     $new_country = [];
+        // }
+        $country_id = 2; //India
+        $Url = env('CRM_BASEPATH').'api/crm/active/country/destinations/'.$country_id;
+        $ch = curl_init($Url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);;
+
+        $countryResponse = curl_exec($ch);
+        curl_close($ch);
+
+        $countryData = json_decode($countryResponse, true);
+        // dd($countryData);
+        if ($countryData['status'] == true) {
+            $new_destination = $countryData['data'];
+            
+            if (count($new_destination) > 0) {
+                $existing_country_id = Country::where('crm_country_id',2)->value('id');
+                if($existing_country_id){
+                    foreach ($new_destination as $key => $item) {
+                        Destination::updateOrCreate(
+                            ['crm_destination_id' => (int)$item['id']],
+                            [
+                                'destination_name' => $item['name'],
+                                'country_id' => (int)$existing_country_id
+                            ],
+                        );
+                    }
+                }
+                session()->flash('success', 'Destinations updated successfully.');
+            } else {
+                session()->flash('failure', 'No destinations found to update.');
+            }
+        } else {
+            session()->flash('failure', 'Failed to fetch country data.');
+        }
+        return redirect()->route('admin.destination.list.all');
+
+    }
     public function show(Request $request)
     {
         $showCountry = Country::where('status',1)

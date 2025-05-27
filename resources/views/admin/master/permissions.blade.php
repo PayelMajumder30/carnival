@@ -106,19 +106,19 @@
                                         </li>
 
                                         <li>
-                                            <input type="checkbox" id="itenaries" name="roles[]" value="ITENARIES" data-parent="" {{ in_array('ITENARIES', $permissions) ? 'checked' : '' }}>
-                                            <label for="itenaries">Itenaries</label>
+                                            <input type="checkbox" id="itineraries" name="roles[]" value="ITINERIES" data-parent="" {{ in_array('ITINERIES', $permissions) ? 'checked' : '' }}>
+                                            <label for="itineraries">itineraries</label>
                                             <ul>
                                                 <li>
-                                                    <input type="checkbox" id="upcoming_events" name="roles[]" value="Upcoming events" data-parent="ITENARIES" {{ in_array('Upcoming events', $permissions) ? 'checked' : '' }}>
+                                                    <input type="checkbox" id="upcoming_events" name="roles[]" value="Upcoming events" data-parent="ITINERIES" {{ in_array('Upcoming events', $permissions) ? 'checked' : '' }}>
                                                     <label for="upcoming_events">Upcoming Events</label>
                                                 </li>
                                                  <li>
-                                                    <input type="checkbox" id="itenary_list" name="roles[]" value="Itenary list" data-parent="ITENARIES" {{ in_array('itenary_list', $permissions) ? 'checked' : '' }}>
+                                                    <input type="checkbox" id="itenary_list" name="roles[]" value="Itenary list" data-parent="ITINERIES" {{ in_array('itenary_list', $permissions) ? 'checked' : '' }}>
                                                     <label for="itenary_list">Itenary List</label>
                                                 </li>
                                                 <li>
-                                                    <input type="checkbox" id="destination" name="roles[]" value="destination" data-parent="ITENARIES" {{ in_array('destination', $permissions) ? 'checked' : '' }}>
+                                                    <input type="checkbox" id="destination" name="roles[]" value="destination" data-parent="ITINERIES" {{ in_array('destination', $permissions) ? 'checked' : '' }}>
                                                     <label for="">Destination</label>
                                                 </li>
                                               

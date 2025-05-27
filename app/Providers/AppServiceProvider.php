@@ -42,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
             if ($permissionsTableExists) {
                $admin_id = Auth::check() ? Auth::user()->id : "";
                 $RolePass = Permission::where('admin_id', $admin_id)->get()->pluck('value')->toArray();
+                // dd($RolePass);
             }
             $settingsTableExists = Schema::hasTable('settings');
             if ($settingsTableExists) {

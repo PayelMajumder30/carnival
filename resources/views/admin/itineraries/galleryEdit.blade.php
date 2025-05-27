@@ -10,12 +10,12 @@
                     <div class="card-header">
                         <div class="row mb-3">
                             <div class="col-md-12 text-right">
-                                <a href="{{ route('admin.itenaries.galleries.list', $itineraryGallery->itinerary_id)}}" class="btn btn-sm btn-primary"> <i class="fa fa-chevron-left"></i> Back</a>
+                                <a href="{{ route('admin.itineraries.galleries.list', $itineraryGallery->itinerary_id)}}" class="btn btn-sm btn-primary"> <i class="fa fa-chevron-left"></i> Back</a>
                             </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.itenaries.galleryUpdate')}}" method="post" enctype="multipart/form-data">
+                        <form action="{{ route('admin.itineraries.galleryUpdate')}}" method="post" enctype="multipart/form-data">
                             @csrf
                             @method('POST') 
                             <div class="row form-group">
