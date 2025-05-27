@@ -105,9 +105,9 @@
                             </div>
                         </div> --}}
 
-                        {{-- <div class="pagination-container">
-                            {{$data->appends($_GET)->links()}}
-                        </div> --}}
+                        <div class="pagination-container">
+                            {{$assignedCities->appends($_GET)->links()}}
+                        </div>
                     </div>
                 </div>
             </div>

@@ -43,8 +43,8 @@ class PackageFromCityController extends Controller
             });
         }
 
-        $assignedCities = $query->get();
-        $assignedCityNames = $assignedCities->pluck('city')->toArray();
+        $assignedCities     = $query->latest('id')->paginate(25);
+        $assignedCityNames  = $assignedCities->pluck('city')->toArray();
 
         return view('admin.packageFromtopCity.index', compact(
             'destinations',
