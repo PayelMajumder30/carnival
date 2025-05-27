@@ -34,12 +34,12 @@ class ItenaryListController extends Controller
         $destinations = Destination::select('id', 'destination_name')->get(); //for fetching destination_name from destination table
         $packageCategories = PackageCategory::select('id', 'title')->get(); //for fetching title from package_categories table
 
-        return view('admin.itenaries.list', compact('data', 'destinations', 'packageCategories', 'tags'));
+        return view('admin.itineraries.list', compact('data', 'destinations', 'packageCategories', 'tags'));
     }
 
     public function create()
     {
-        return view('admin.itenaries.create');
+        return view('admin.itineraries.create');
     }
 
     public function store(Request $request)
@@ -71,22 +71,22 @@ class ItenaryListController extends Controller
         if ($request->hasFile('main_image') && $request->file('main_image')->isValid()) {
             $image = $request->file('main_image');
             $imageName = time().rand(10000, 99999).'.'.$image->extension();
-            $imagePath = 'uploads/itenaries_list/'.$imageName;
-            $image->move(public_path('uploads/itenaries_list'), $imageName);
+            $imagePath = 'uploads/itineraries_list/'.$imageName;
+            $image->move(public_path('uploads/itineraries_list'), $imageName);
 
             $data['main_image'] = $imagePath;
         }
 
 
         $this->ItenarylistRepository->create($data);
-        return redirect()->route('admin.itenaries.list.all')->with('success', 'New Itenaries created');
+        return redirect()->route('admin.itineraries.list.all')->with('success', 'New itineraries created');
     }
 
 
     public function edit($id)
     {
         $itenary = $this->ItenarylistRepository->findById($id);
-        return view('admin.itenaries.edit', compact('itenary'));
+        return view('admin.itineraries.edit', compact('itenary'));
     }
 
     public function update(Request $request, $id)
@@ -115,15 +115,15 @@ class ItenaryListController extends Controller
 
             $image = $request->file('main_image');
             $imageName = time() . rand(10000, 99999) . '.' . $image->extension();
-            $imagePath = 'uploads/itenaries_list/' . $imageName;
-            $image->move(public_path('uploads/itenaries_list'), $imageName);
+            $imagePath = 'uploads/itineraries_list/' . $imageName;
+            $image->move(public_path('uploads/itineraries_list'), $imageName);
 
             $data['main_image'] = $imagePath; 
         }
         
         $this->ItenarylistRepository->update($id, $data);
 
-        return redirect()->route('admin.itenaries.list.all')->with('success', 'Itenary updated successfully.');
+        return redirect()->route('admin.itineraries.list.all')->with('success', 'Itenary updated successfully.');
     }
 
     public function toggleStatus($id)
@@ -253,20 +253,20 @@ class ItenaryListController extends Controller
         $tagId = $request->tag_id;
         $itenaryId = $request->itenary_id;
 
-        $exists = DB::table('itenaries_tags')
+        $exists = DB::table('itineraries_tags')
             ->where('tag_id', $tagId)
             ->where('itenary_id', $itenaryId)
             ->exists();
 
         if ($exists) {
-            DB::table('itenaries_tags')
+            DB::table('itineraries_tags')
                 ->where('tag_id', $tagId)
                 ->where('itenary_id', $itenaryId)
                 ->delete();
 
             return response()->json(['status' => 'detached']);
         } else {
-            DB::table('itenaries_tags')->insert([
+            DB::table('itineraries_tags')->insert([
                 'tag_id' => $tagId,
                 'itenary_id' => $itenaryId,
                 'created_at' => now(),
@@ -282,13 +282,13 @@ class ItenaryListController extends Controller
     public function galleryIndex(Request $request, $itinerary_id) {
         $itinerary = ItenaryList::findOrFail($itinerary_id);
         $gallery   = ItineraryGallery::where('itinerary_id', $itinerary_id)->paginate(25);
-        return view('admin.itenaries.itineraryGalleryIndex', compact('itinerary', 'gallery'));   
+        return view('admin.itineraries.itineraryGalleryIndex', compact('itinerary', 'gallery'));   
     }
 
     //itineraries/create gallery
     public function aboutDestiCreate($itinerary_id) {       
         $itinerary  = ItenaryList::findOrFail($itinerary_id);
-        return view('admin.itenaries.itineraryGalleryIndex', compact('itinerary'));
+        return view('admin.itineraries.itineraryGalleryIndex', compact('itinerary'));
     }
 
     //itineraries/store gallery
@@ -324,7 +324,7 @@ class ItenaryListController extends Controller
     //itineraries/edit gallery
     public function galleryEdit($id) {
         $itineraryGallery = ItineraryGallery::findOrFail($id);
-        return view('admin.itenaries.galleryEdit', compact('itineraryGallery'));
+        return view('admin.itineraries.galleryEdit', compact('itineraryGallery'));
     }
 
     public function galleryUpdate(Request $request) {
@@ -333,7 +333,7 @@ class ItenaryListController extends Controller
         ]);
         $data = $request->all();
         $this->ItenarylistRepository->gallery_update($data);
-        return redirect()->route('admin.itenaries.galleries.list', $request->itinerary_id)->with('success', 'Gallery updated successfully.');
+        return redirect()->route('admin.itineraries.galleries.list', $request->itinerary_id)->with('success', 'Gallery updated successfully.');
     }
 
     //itineraries/delete gallery

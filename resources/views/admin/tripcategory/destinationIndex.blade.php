@@ -214,7 +214,7 @@
         const tripCatId = $('#trip_cat_id').val(); // Ensure this input exists in your Blade
 
         $.ajax({
-            url: "{{ URL::to('/admin/master-module/tripcategory/destination/by-country') }}/" + countryId + "/" + tripCatId,
+         url: "{{ route('admin.tripcategorydestination.getDestination', [':countryId', ':tripCatId']) }}".replace(':countryId', countryId).replace(':tripCatId', tripCatId),
             type: 'GET',
             success: function (data) {
                 $("#destination_id").html("<option value=''>-- Select Destination --</option>");

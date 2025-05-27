@@ -75,50 +75,12 @@
                     </li>
                     @endif
                     
-                    @if(in_array('tripcategory', $RolePass))
-                    <li class="nav-item">
-                        <a href="{{ route('admin.tripcategory.list.all')}}"
-                            class="nav-link {{ (request()->is('admin/master-module/tripcategory*')) ? 'active active_nav_link' : ''}}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Trip Category</p>
-                        </a>
-                    </li>
-                    @endif
                     @if(in_array('offers', $RolePass))
                     <li class="nav-item">
                         <a href="{{ route('admin.offers.list.all')}}"
                             class="nav-link {{ (request()->is('admin/master-module/offers*')) ? 'active active_nav_link' : ''}}">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Offer List</p>
-                        </a>
-                    </li>
-                    @endif
-
-                    @if(in_array('destination', $RolePass))
-                    <li class="nav-item">
-                        <a href="{{ route('admin.destination.list.all')}}"
-                            class="nav-link {{ (request()->is('admin/master-module/destination*')) ? 'active active_nav_link' : ''}}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Destinations</p>
-                        </a>
-                    </li>
-                    @endif
-
-                    
-                    <li class="nav-item">
-                        <a href="{{ route('admin.assignCitytoPackage.index')}}"
-                            class="nav-link {{ (request()->is('admin/master-module/packages_from_top_cities*')) ? 'active active_nav_link' : ''}}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Packages from Top Cities</p>
-                        </a>
-                    </li>
-
-                    @if(in_array('packageCategory', $RolePass))
-                    <li class="nav-item">
-                        <a href="{{ route('admin.packageCategory.list.all')}}"
-                            class="nav-link {{ (request()->is('admin/master-module/packageCategory*')) ? 'active active_nav_link' : ''}}">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Package Category</p>
                         </a>
                     </li>
                     @endif
@@ -146,31 +108,54 @@
         @endif
 
         {{-- <pre>{{ print_r($RolePass, true) }}</pre> --}}
-
-        @if(in_array('ITENARIES', $RolePass))
-            <li class="nav-item {{ (request()->is('admin/itenaries*')) ? 'menu-open' : '' }}">
-                <a href="#" class="nav-link {{ (request()->is('admin/itenaries*')) ? 'active' : '' }}">
+            {{-- {{dd($RolePass)}} --}}
+        @if(in_array('ITINERARIES', $RolePass))
+            <li class="nav-item {{ (request()->is('admin/itineraries*')) ? 'menu-open' : '' }}">
+                <a href="#" class="nav-link {{ (request()->is('admin/itineraries*')) ? 'active' : '' }}">
                     <i class="nav-icon fas fa-file-alt"></i>
-                    <p> Itineraries <i class="right fas fa-angle-left"></i></p>
+                    <p> Itinerary Management <i class="right fas fa-angle-left"></i></p>
                 </a>
                 <ul class="nav nav-treeview">
-                    @if(in_array('Itenary list', $RolePass))
-                        <li class="nav-item">
-                            <a href="{{ route('admin.itenaries.list.all') }}"
-                            class="nav-link {{ (request()->is('admin/itenaries*')) ? 'active active_nav_link' : '' }}">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Itinerary List </p>
-                            </a>
-                        </li>
-                    @endif
-                </ul>
-
-                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="{{ route('admin.itineraries.list.all') }}"
+                        class="nav-link {{ (request()->is('admin/itineraries/itinerary*')) ? 'active active_nav_link' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Itinerary List </p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.destination.list.all')}}"
+                            class="nav-link {{ (request()->is('admin/itineraries/destinations*')) ? 'active active_nav_link' : ''}}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Destinations</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.tripcategory.list.all')}}"
+                            class="nav-link {{ (request()->is('admin/itineraries/tripcategory*')) ? 'active active_nav_link' : ''}}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Trip Category</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.packageCategory.list.all')}}"
+                            class="nav-link {{ (request()->is('admin/itineraries/package-category*')) ? 'active active_nav_link' : ''}}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Package Category</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.assignCitytoPackage.index')}}"
+                            class="nav-link {{ (request()->is('admin/itineraries/packages-from-top-cities*')) ? 'active active_nav_link' : ''}}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Packages from Top Cities</p>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a href="{{ route('admin.popularpackages.list.all') }}"
-                        class="nav-link {{ (request()->is('admin/itenaries*')) ? 'active active_nav_link' : '' }}">
+                        class="nav-link {{ (request()->is('admin/itineraries/popular-packages*')) ? 'active active_nav_link' : '' }}">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>Popular Packages </p>
+                            <p>Popular Packages</p>
                         </a>
                     </li>
                 </ul>

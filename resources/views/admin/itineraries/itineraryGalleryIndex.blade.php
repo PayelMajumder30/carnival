@@ -10,7 +10,7 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-md-6">
-                                <a href="{{ route('admin.itenaries.list.all')}}" class="btn btn-sm btn-primary"> <i class="fa fa-chevron-left"></i> Back</a>
+                                <a href="{{ route('admin.itineraries.list.all')}}" class="btn btn-sm btn-primary"> <i class="fa fa-chevron-left"></i> Back</a>
                             </div>
                             <div class="col-md-6">
                             </div>
@@ -40,7 +40,7 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="{{route('admin.itenaries.galleryEdit',($item->id))}}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
+                                                <a href="{{route('admin.itineraries.galleryEdit',($item->id))}}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
                                                 <a href="javascript: void(0)" class="btn btn-sm btn-dark" onclick="deleteGallery({{$item->id}})" data-toggle="tooltip" title="Delete">
@@ -69,7 +69,7 @@
                         <h4>Upload Gallery</h4>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('admin.itenaries.galleryStore') }}" method="post" enctype="multipart/form-data">@csrf
+                        <form action="{{ route('admin.itineraries.galleryStore') }}" method="post" enctype="multipart/form-data">@csrf
                             <div class="row form-group">
                                 <div class="col-md-6">
                                     <label for="image">Image(Multiple) <span style="color: red;">*</span></label>
@@ -103,7 +103,7 @@
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "{{ route('admin.itenaries.galleryDelete')}}",
+                    url: "{{ route('admin.itineraries.galleryDelete')}}",
                     type: 'POST',
                     data: {
                         "id": galleryId,
