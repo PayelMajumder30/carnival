@@ -37,7 +37,7 @@
                             <thead>
                                 <tr>
                                     <th>Destination Name</th>
-                                    <th>Popular Packages</th>
+                                    <th>Popular Packages(Itineraries)</th>
                                     <th>Assign Packages</th>
                                 </tr>
                             </thead>
@@ -170,7 +170,7 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="itinerary_id" class="form-label">Select Packages</label>
+                                            <label for="itinerary_id" class="form-label">Select Packages(Itineraries)</label>
                                             <select name="itinerary_ids[]" id="itineraryDropdown" class="form-control" multiple required>
                                                 <option value="">-- Select Itinerary --</option>
                                                 

@@ -72,7 +72,7 @@ class ItenaryListController extends Controller
     }
     public function store(Request $request)
     {
-        dd($request->all());
+        //dd($request->all());
         $request->validate([
         'main_image' => 'required|image|mimes:jpg,jpeg,png,webp,gif,svg|max:5120',
         'title' => 'required|string|max:255|unique:itenary_list,title',
