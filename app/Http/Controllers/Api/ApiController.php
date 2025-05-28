@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\{TripCategoryDestination, SocialMedia, Banner, TripCategory, Partner, 
-    WhyChooseUs, Setting, Blog, Offer, PageContent, Destination, TripCategoryActivities, ItenaryList, ItineraryGallery};
+    WhyChooseUs, Setting, Blog, Offer, PageContent, Destination, TripCategoryActivities, ItenaryList, 
+    ItineraryGallery, Support};
 
 class ApiController extends Controller
 {
@@ -479,6 +480,7 @@ class ApiController extends Controller
                 'title'             => $itinerary->title,
                 'short_description' => $itinerary->short_description,
                 'main_image'        => $itinerary->main_image ? asset($itinerary->main_image) : null,
+                'duration'          => $itinerary->duration,
                 'selling_price'     => $itinerary->selling_price,
                 'actual_price'      => $itinerary->actual_price,
             ];
@@ -486,6 +488,10 @@ class ApiController extends Controller
 
         // Assign grouped package data to result
         $result['packages'] = array_values($groupedPackages);
+
+        //Fetch all active support
+        $supports = Support::where('status', 1)->orderBy('id', 'asc')->get(['id', 'title', 'description']);           
+        $result['supports'] = $supports;
 
         return response()->json([
             'status' => true,
