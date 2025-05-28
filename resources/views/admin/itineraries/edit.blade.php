@@ -18,6 +18,19 @@
                     <form action="{{ route('admin.itineraries.update', $itenary->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
+
+                            <div class="form-group col-md-3">
+                                <label for="destination_id">Destination</label>
+                                <select name="destination_id" id="destination_id" class="form-control" required>
+                                    <option value="" disabled {{ !$itenary->destination_id ? 'selected' : '' }}>--Select Destination--</option>
+                                    @foreach($destinations as $destination) 
+                                        <option value="{{ $destination->id }}" {{ $itenary->destination_id == $destination->id ? 'selected' : '' }}>
+                                            {{ $destination->destination_name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+
                             <div class="form-group col-md-6">
                                 <label for="title">Title </span></label>
                                 <input type="text" class="form-control" name="title" id="title"
@@ -36,16 +49,7 @@
                                 @enderror
                             </div>
 
-                            <div class="form-group col-md-3">
-                                <label for="destination_id">Destination</label>
-                                <select name="destination_id" id="destination_id" class="form-control" required>
-                                    <option value="" disabled {{ !$itenary->destination_id ? 'selected' : '' }}>--Select Destination--</option>
-                                    @foreach($destinations as $destination) 
-                                        <option value="{{ $destination->id }}" {{ $itenary->destination_id == $destination->id ? 'selected' : '' }}>
-                                            {{ $destination->destination_name}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+
 
                             <div class="form-group col-md-6">
                                 <div class="form-group">
@@ -85,7 +89,7 @@
                             </div>
 
                             <div class="form-group col-md-3">
-                                <label for="duration">Duration </span></label>
+                                <label for="duration">Trip Duration </span></label>
                                 <input type="duration" class="form-control" name="duration" id="duration"
                                     value="{{ old('duration', $itenary->duration) }}" placeholder="Enter itinerary duration..">
                                 @error('duration') 

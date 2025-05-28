@@ -45,18 +45,47 @@ class ItenaryListController extends Controller
         return view('admin.itineraries.create', compact('destinations'));
     }
 
+    public function get_itineraries_from_crm(Request $request){
+
+         $url = env('CRM_BASEPATH').'api/crm/active/destinations/'.$request->destination_id.'/itinerary';
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+            $itineraryResponse = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            $itineraryData = json_decode($itineraryResponse, true);
+            if ($httpCode === 200 && isset($itineraryData['status']) && $itineraryData['status'] === true) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Itineraries fetched successfully.',
+                    'data' => $itineraryData['data']
+                ], 200);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => $itineraryData['message'] ?? 'Failed to fetch itineraries.',
+                'data' => []
+            ], 400);
+    }
     public function store(Request $request)
     {
-        // dd($request->all());
+       // dd($request->all());
         $request->validate([
         'main_image' => 'required|image|mimes:jpg,jpeg,png,webp,gif,svg|max:5120',
         'title' => 'required|string|max:255|unique:itenary_list,title',
         'short_description' => 'nullable|string|max:255',
-        'duration' => 'required|string|max:255',
+        'trip_durations' => 'required|string|max:255',
         'selling_price' => 'required|numeric|lte:actual_price',
         'actual_price' => 'required|numeric',
         'destination_id' => 'required|exists:destinations,id',
-        'discount_type' => 'required',
+        'crm_itinerary_id' => 'required|string|max:255',
+        'stay_by_division_journey' => 'nullable|string|max:255',
+        'total_nights' => 'required|integer|min:1',
+        'total_days' => 'required|integer|min:1',
+        'discount_type' => 'nullable|in:percentage,flat',
         'discount_value' => 'required',
         'discount_start_date' => 'required|date',
         'discount_end_date' => 'required|date|after_or_equal:discount_start_date',
@@ -102,10 +131,10 @@ class ItenaryListController extends Controller
             'main_image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif,svg|max:5120',
             'title' => 'required|string|max:255|unique:itenary_list,title,' . $id,
             'short_description' => 'nullable|string|max:255',
-            'duration' => 'required|string|max:255',
+            'trip_durations' => 'required|string|max:255',
             'selling_price' => 'required|numeric|lte:actual_price',
             'actual_price' => 'required|numeric',
-            'discount_type' => 'required',
+            'discount_type' => 'required|in:flat,percentage',
             'discount_value' => 'required',
             'discount_start_date' => 'required|date',
             'discount_end_date' => 'required|date|after_or_equal:discount_start_date'
