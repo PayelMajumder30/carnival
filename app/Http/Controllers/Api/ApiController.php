@@ -435,10 +435,10 @@ class ApiController extends Controller
     // Itineraries / Itinerary_list
     public function getDestinationPackagesWithItineraries($destinationId)
     { 
-            $destination = Destination::with(['destinationItineraries.packageCategory', 'destinationItineraries.itinerary'])
-            ->where('id', $destinationId)
-            ->where('status', 1)
-            ->first();
+        $destination = Destination::with(['destinationItineraries.packageCategory', 'destinationItineraries.itinerary'])
+        ->where('id', $destinationId)
+        ->where('status', 1)
+        ->first();
 
         if (!$destination) {
             return response()->json([
@@ -479,6 +479,7 @@ class ApiController extends Controller
                 'title'             => $itinerary->title,
                 'short_description' => $itinerary->short_description,
                 'main_image'        => $itinerary->main_image ? asset($itinerary->main_image) : null,
+                'duration'          => $itinerary->duration,
                 'selling_price'     => $itinerary->selling_price,
                 'actual_price'      => $itinerary->actual_price,
             ];
