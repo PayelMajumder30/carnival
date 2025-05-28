@@ -19,19 +19,30 @@
                         @csrf
                         <div class="row">
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-6">
                                 <label for="destination_id">Destination</label>
                                 <select name="destination_id" id="destination_id" class="form-control" required>
                                     <option value="" disabled {{ !$itenary->destination_id ? 'selected' : '' }}>--Select Destination--</option>
                                     @foreach($destinations as $destination) 
-                                        <option value="{{ $destination->id }}" {{ $itenary->destination_id == $destination->id ? 'selected' : '' }}>
-                                            {{ $destination->destination_name}}</option>
+                                        <option 
+                                            value="{{ $destination->id }}" 
+                                            data-crm_id="{{ $destination->crm_destination_id }}" 
+                                            {{ $itenary->destination_id == $destination->id ? 'selected' : '' }}>
+                                            {{ $destination->destination_name }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
 
 
                             <div class="form-group col-md-6">
+                                <label for="itinerary_journey">Itinerary Journey</label>
+                                <select name="itinerary_journey" id="itinerary_journey" class="form-control" required>
+                                    <option selected disabled hidden>Please choose a destination first</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-12">
                                 <label for="title">Title </span></label>
                                 <input type="text" class="form-control" name="title" id="title"
                                     value="{{ old('title', $itenary->title) }}" placeholder="Enter itinerary title..">
@@ -51,7 +62,7 @@
 
 
 
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-3">
                                 <div class="form-group">
                                     <label for="discount_type">Discount Type</label>
                                     <select name="discount_type" id="discount_type" class="form-control">
@@ -62,7 +73,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="form-group col-md-3">
                                 <div class="form-group">
                                     <label id="discount_value_label" for="discount_value">Discount Value</label>
                                     <input type="text" class="form-control" name="discount_value" id="discount_value" value="{{ old('discount_value', $itenary->discount_value) }}"  placeholder="Enter discount amount" value="{{ old('discount_value') }}">
@@ -89,10 +100,10 @@
                             </div>
 
                             <div class="form-group col-md-3">
-                                <label for="duration">Trip Duration </span></label>
-                                <input type="duration" class="form-control" name="duration" id="duration"
-                                    value="{{ old('duration', $itenary->duration) }}" placeholder="Enter itinerary duration..">
-                                @error('duration') 
+                                <label for="trip_durations">Trip Duration </span></label>
+                                <input type="trip_durations" class="form-control" name="trip_durations" id="trip_durations"
+                                    value="{{ old('trip_durations', $itenary->trip_durations) }}" placeholder="Enter itinerary duration..">
+                                @error('trip_durations') 
                                     <p class="small text-danger">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -132,6 +143,10 @@
 
                            
                             <div class="row mt-3">
+                                <input type="hidden" id="crm_itinerary_id" name="crm_itinerary_id" value="{{ $itenary->crm_itinerary_id }}">
+                                <input type="hidden" id="stay_by_division_journey" name="stay_by_division_journey" value="{{ $itenary->stay_by_division_journey }}">
+                                <input type="hidden" id="total_nights" name="total_nights" value="{{ $itenary->total_nights }}">
+                                <input type="hidden" id="total_days" name="total_days" value="{{ $itenary->total_days }}">
                                 <div class="col-md-12">
                                     <button type="submit" class="btn btn-primary">Update</button>
                                 </div>
@@ -149,6 +164,79 @@
 
 @section('script')
 <script>
+    $(document).ready(function () {
+        const oldCrmItineraryId = '{{ $itenary->crm_itinerary_id }}';
+        const oldTripDuration = '{{ $itenary->trip_durations }}';
+        const selectedDestination = $('#destination_id').val();
+        const selectedDestinationCrmId = $('#destination_id').find('option:selected').data('crm_id');
+
+        function loadItineraries(destinationCrmId, preselect = true) {
+            const $dropdown = $('#itinerary_journey');
+            $dropdown.attr('disabled', 'disabled').empty().append('<option selected disabled hidden>Please wait..</option>');
+
+            $.ajax({
+                url: "{{ route('admin.itineraries.get_itineraries_from_crm') }}",
+                type: 'GET',
+                data: { destination_id: destinationCrmId },
+                success: function (response) {
+                    $dropdown.removeAttr('disabled').empty().append('<option selected disabled hidden>Select your itinerary journey</option>');
+
+                    if (response.success && response.data.length > 0) {
+                        $.each(response.data, function (index, itinerary) {
+                            const text = `${itinerary.total_nights} Nights / ${itinerary.total_days} Days - ${itinerary.itinerary_journey}`;
+                            const text_value = `${itinerary.total_nights} Nights / ${itinerary.total_days}`;
+                            const selected = itinerary.id == oldCrmItineraryId ? 'selected' : '';
+
+                            $dropdown.append(`<option value="${text_value}" data-id="${itinerary.id}" data-stay_by_journey="${itinerary.stay_by_journey}" data-total_nights="${itinerary.total_nights}" data-total_days="${itinerary.total_days}" ${selected}>${text}</option>`);
+                        });
+
+                        // Trigger change manually if preselecting
+                        if (preselect && oldCrmItineraryId) {
+                            $dropdown.trigger('change');
+                        }
+                    } else {
+                        $dropdown.attr('disabled', 'disabled').empty().append('<option selected disabled hidden>No itineraries available for this destination</option>');
+                        toastFire('error', response.message);
+                    }
+                },
+                error: function () {
+                    toastFire('error', 'No itineraries available for this destination');
+                    $dropdown.attr('disabled', 'disabled').empty().append('<option selected disabled hidden>No itineraries available for this destination</option>');
+                }
+            });
+        }
+
+        if (selectedDestinationCrmId) {
+            loadItineraries(selectedDestinationCrmId, true);
+        }
+
+        $('#destination_id').on('change', function () {
+            const destinationCrmId = $(this).find('option:selected').data('crm_id');
+
+            $('#trip_durations, #crm_itinerary_id, #stay_by_division_journey, #total_nights, #total_days').val('');
+
+            if (destinationCrmId) {
+                loadItineraries(destinationCrmId, false);
+            } else {
+                $('#itinerary_journey')
+                    .attr('disabled', 'disabled')
+                    .val('')
+                    .empty()
+                    .append('<option selected disabled hidden>Please choose a destination first');
+            }
+        });
+
+        $('#itinerary_journey').on('change', function () {
+            const $selected = $(this).find('option:selected');
+            $('#trip_durations').val($(this).val());
+            $('#crm_itinerary_id').val($selected.data('id'));
+            $('#stay_by_division_journey').val($selected.data('stay_by_journey'));
+            $('#total_nights').val($selected.data('total_nights'));
+            $('#total_days').val($selected.data('total_days'));
+        });
+    });
+
+
     $(document).ready(function(){
         function updateDiscountField() {
             let discountType    = $("#discount_type").val();

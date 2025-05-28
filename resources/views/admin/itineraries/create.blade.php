@@ -29,7 +29,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                 <div class="form-group col-md-6">
+                                <div class="form-group col-md-6">
                                     <label for="itinerary">Itinerary journey:</label>
                                     <select id="itinerary_journey" class="form-control" disabled>
                                         <option selected disabled hidden>Please choose a destination first</option>
@@ -120,7 +120,7 @@
 
 @section('script')
 <script>
-   $(document).ready(function () {
+    $(document).ready(function () {
         $('#destination_id').on('change', function () {
             const $dropdown = $('#itinerary_journey');
             const destinationId = $(this).val();
