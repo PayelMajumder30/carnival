@@ -13,6 +13,7 @@ class Destination extends Model
         'country_id',
         'crm_destination_id',
         'destination_name',
+        'slug',
         'image',
         'logo',
         'status',
