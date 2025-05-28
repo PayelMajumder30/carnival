@@ -45,9 +45,34 @@ class ItenaryListController extends Controller
         return view('admin.itineraries.create', compact('destinations'));
     }
 
+    public function get_itineraries_from_crm(Request $request){
+
+         $url = env('CRM_BASEPATH').'api/crm/active/destinations/'.$request->destination_id.'/itinerary';
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+            $itineraryResponse = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            $itineraryData = json_decode($itineraryResponse, true);
+            if ($httpCode === 200 && isset($itineraryData['status']) && $itineraryData['status'] === true) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Itineraries fetched successfully.',
+                    'data' => $itineraryData['data']
+                ], 200);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => $itineraryData['message'] ?? 'Failed to fetch itineraries.',
+                'data' => []
+            ], 400);
+    }
     public function store(Request $request)
     {
-        // dd($request->all());
+        dd($request->all());
         $request->validate([
         'main_image' => 'required|image|mimes:jpg,jpeg,png,webp,gif,svg|max:5120',
         'title' => 'required|string|max:255|unique:itenary_list,title',
@@ -80,7 +105,6 @@ class ItenaryListController extends Controller
 
             $data['main_image'] = $imagePath;
         }
-
 
         $this->ItenarylistRepository->create($data);
         return redirect()->route('admin.itineraries.list.all')->with('success', 'New itineraries created');

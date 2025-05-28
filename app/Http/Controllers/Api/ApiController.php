@@ -166,6 +166,7 @@ class ApiController extends Controller
 
                     $destinations[$key] = [
                         'id'          => $tripDest ? $tripDest->id : null,
+                        'slug'          => $tripDest ? $tripDest->slug : null,
                         'name'        => $tripDest ? $tripDest->destination_name : "N/A",
                         'logo'        => $logo,
                         'image'       => $image,
@@ -434,10 +435,10 @@ class ApiController extends Controller
     }
 
     // Itineraries / Itinerary_list
-    public function getDestinationPackagesWithItineraries($destinationId)
+    public function getDestinationPackagesWithItineraries($destination_slug)
     { 
             $destination = Destination::with(['destinationItineraries.packageCategory', 'destinationItineraries.itinerary'])
-            ->where('id', $destinationId)
+            ->where('slug', $destination_slug)
             ->where('status', 1)
             ->first();
 
@@ -451,6 +452,7 @@ class ApiController extends Controller
         $result = [
             'id'   => $destination->id,
             'name' => $destination->destination_name,
+            'slug' => $destination->slug,
             'banner_image' => asset($destination->banner_image),
             'short_desc' => $destination->short_desc,
         ];

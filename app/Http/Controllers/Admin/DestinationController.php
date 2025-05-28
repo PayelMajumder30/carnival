@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Interfaces\AboutDestinationInterface;
 use App\Interfaces\DestiantionPackageInterface;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use App\Models\{Country, Destination, ItenaryList, PackageCategory, DestinationWiseItinerary,
                 AboutDestination};
@@ -92,11 +93,24 @@ class DestinationController extends Controller
                 $existing_country_id = Country::where('crm_country_id',2)->value('id');
                 if($existing_country_id){
                     foreach ($new_destination as $key => $item) {
+                        // Generate base slug
+                        $baseSlug = Str::slug($item['name']);
+                        $slug = $baseSlug;
+                        $i = 1;
+
+                        // Ensure slug is unique using do...while
+                        // do {
+                        //     $exists = Destination::where('slug', $slug)->exists();
+                        //     if ($exists) {
+                        //         $slug = $baseSlug . '-' . $i++;
+                        //     }
+                        // } while ($exists);
                         Destination::updateOrCreate(
                             ['crm_destination_id' => (int)$item['id']],
                             [
                                 'destination_name' => $item['name'],
-                                'country_id' => (int)$existing_country_id
+                                'country_id' => (int)$existing_country_id,
+                                'slug' => $slug
                             ],
                         );
                     }

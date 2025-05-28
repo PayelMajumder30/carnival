@@ -75,7 +75,7 @@ use App\Http\Controllers\Api\ApiController;
 
     //Itineraries / itinerary list
     Route::prefix('itineraries')->group(function (){
-        Route::get('/destination/{destination_id}/packages-itineraries', [ApiController::class, 'getDestinationPackagesWithItineraries']);
+        Route::get('/destination/{destination_slug}/packages-itineraries', [ApiController::class, 'getDestinationPackagesWithItineraries']);
         //Itineraries//galley
         Route::get('/gallery', [ApiController::class, 'itinerariesWithGallery']);
         Route::get('/gallery/{id}', [ApiController::class, 'itinerariesWithGalleryByid']);
