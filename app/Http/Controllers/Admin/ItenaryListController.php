@@ -77,11 +77,15 @@ class ItenaryListController extends Controller
         'main_image' => 'required|image|mimes:jpg,jpeg,png,webp,gif,svg|max:5120',
         'title' => 'required|string|max:255|unique:itenary_list,title',
         'short_description' => 'nullable|string|max:255',
-        'duration' => 'required|string|max:255',
+        'trip_durations' => 'required|string|max:255',
         'selling_price' => 'required|numeric|lte:actual_price',
         'actual_price' => 'required|numeric',
         'destination_id' => 'required|exists:destinations,id',
-        'discount_type' => 'required',
+        'crm_itinerary_id' => 'required|string|max:255',
+        'stay_by_division_journey' => 'nullable|string|max:255',
+        'total_nights' => 'required|integer|min:1',
+        'total_days' => 'required|integer|min:1',
+        'discount_type' => 'nullable|in:percentage,flat',
         'discount_value' => 'required',
         'discount_start_date' => 'required|date',
         'discount_end_date' => 'required|date|after_or_equal:discount_start_date',
@@ -106,6 +110,7 @@ class ItenaryListController extends Controller
             $data['main_image'] = $imagePath;
         }
 
+
         $this->ItenarylistRepository->create($data);
         return redirect()->route('admin.itineraries.list.all')->with('success', 'New itineraries created');
     }
@@ -126,10 +131,10 @@ class ItenaryListController extends Controller
             'main_image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif,svg|max:5120',
             'title' => 'required|string|max:255|unique:itenary_list,title,' . $id,
             'short_description' => 'nullable|string|max:255',
-            'duration' => 'required|string|max:255',
+            'trip_durations' => 'required|string|max:255',
             'selling_price' => 'required|numeric|lte:actual_price',
             'actual_price' => 'required|numeric',
-            'discount_type' => 'required',
+            'discount_type' => 'required|in:flat,percentage',
             'discount_value' => 'required',
             'discount_start_date' => 'required|date',
             'discount_end_date' => 'required|date|after_or_equal:discount_start_date'

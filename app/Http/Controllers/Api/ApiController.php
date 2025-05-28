@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\{TripCategoryDestination, SocialMedia, Banner, TripCategory, Partner, 
     WhyChooseUs, Setting, Blog, Offer, PageContent, Destination, TripCategoryActivities, ItenaryList, 
-    ItineraryGallery, Support};
+    ItineraryGallery, Support, AboutDestination, DestinationWisePopularPackages};
 
 class ApiController extends Controller
 {
@@ -503,7 +503,7 @@ class ApiController extends Controller
 
     // Itineraries / Gallery
    public function itinerariesWithGallery() 
-   {
+    {
        $data = ItineraryGallery::with('itinerary')->get();
         $result = [];
         foreach($data as $key=>$item)
@@ -539,6 +539,55 @@ class ApiController extends Controller
                 'image' => asset($gallery->image),
             ]
         ]);
+    }
+
+    //detail page of destination
+    public function getDestinationDetails($destination_id)
+    {
+        //If destination exists
+        $destination = Destination::find($destination_id);
+        if(!$destination) {
+            return response()->json(['message' => 'Destination not found'], 404);
+        }
+
+        //Itineraries of destination
+          $itineraries = ItenaryList::where('destination_id', $destination_id)
+            ->with('itineraryGallery') 
+            ->get();
+
+        // Get About Destination
+        $about = AboutDestination::where('destination_id', $destination_id)->pluck('content');
+
+        // Get Popular Itineraries
+        //$popular = DestinationWisePopularPackages::where('destination_id', $destination_id)->get();
+        $data = DestinationWisePopularPackages::with(['destination', 'popularitinerary'])
+                                    ->where('destination_id', $destination_id)
+                                    ->get();
+        
+        // Prepare response
+        $result = [
+            'destination_id'    => $destination->id,
+            'destination_name'  => $destination->destination_name,
+            'itineraries'       => $itineraries->map(function ($itinerary) {
+                return [
+                    'id'        => $itinerary->id,
+                    'title'     => $itinerary->title,
+                    'trip_durations' => $itinerary->trip_durations,
+                    'gallery'   => $itinerary->itineraryGallery->map(function ($gallery) {
+                                        return asset($gallery->image);
+                                    })->toArray(),
+                ];
+            }),
+            'about' => $about,
+            'popular_packages' => $data->map(function ($item) {
+                return [
+                   'destination_name' => $item->destination->destination_name,
+                    'itinerary_title' => $item->popularitinerary->title,
+                ];
+            }),
+        ];
+
+        return response()->json($result);
     }
 
 }
