@@ -212,11 +212,19 @@
                                                         <div class="form-group">
                                                             <label for="package_id">Package Category</label>
                                                             <select name="package_id[]" class="form-control select2" multiple required>
+                                                                @php
+                                                                    $assigned = $assignedPackages[$item->id] ?? [];
+                                                                @endphp
+
                                                                 @foreach ($packageCategories as $category)
-                                                                    <option value="{{ $category->id }}">{{ ucwords($category->title) }}</option>
+                                                                    @if(!in_array($category->id, $assigned))
+                                                                        <option value="{{ $category->id }}">{{ ucwords($category->title) }}</option>
+                                                                    @endif
                                                                 @endforeach
+
                                                             </select>
                                                         </div>
+
                                                     </div>
 
                                                     <div class="modal-footer">
