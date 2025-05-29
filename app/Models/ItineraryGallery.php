@@ -18,7 +18,7 @@ class ItineraryGallery extends Model
     /*
     * Relationship with `itenary_list` table
     */
-   public function itinerary()
+    public function itinerary()
     {
         return $this->belongsTo(ItenaryList::class, 'itinerary_id');
     }
