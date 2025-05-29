@@ -10,7 +10,7 @@
       margin: 4px;
       font-weight: 500;
     }
-  </style>
+</style>
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -97,75 +97,75 @@
                                                 </div>
                                             </div>
                                         </td>
-                                       <td>
-                                        <div class="container">
-                                            <div class="d-flex flex-wrap">
-                                                @php
-                                                    $assignedTagIds = DB::table('itineraries_tags')
-                                                        ->where('itenary_id', $item->id)
-                                                        ->pluck('tag_id')
-                                                        ->toArray();
-                                                @endphp
+                                        <td>
+                                            <div class="container">
+                                                <div class="d-flex flex-wrap">
+                                                    @php
+                                                        $assignedTagIds = DB::table('itineraries_tags')
+                                                            ->where('itenary_id', $item->id)
+                                                            ->pluck('tag_id')
+                                                            ->toArray();
+                                                    @endphp
 
-                                                @foreach($tags as $tag)
-                                                    <span class="btn tag-button {{ in_array($tag->id, $assignedTagIds) ? 'btn-success' : 'btn-outline-success' }}" 
-                                                        data-tag-id="{{ $tag->id }}" 
-                                                        data-itenary-id="{{ $item->id }}">
-                                                        {{ $tag->title }}
-                                                    </span>
-                                                @endforeach
-                                            </div>
-
-
-                                            <table class="table table-bordered">
-                                                <thead class="table-light">
-                                                    <tr>
-                                                        <th style="width: 20%;">Destination</th>
-                                                        <th>Package Category</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach($item->itineraryItineraries->groupBy('destination_id') as $destinationId => $items)
-                                                        <tr id="destination-row-{{ $destinationId }}">
-                                                            <td><strong>{{ $items->first()->destination->destination_name }}</strong></td>
-                                                            <td>
-                                                                @foreach($items as $pckg)
-                                                                    @if($pckg->packageCategory)
-                                                                        <div class="form-check d-flex align-items-center justify-content-between mb-2">
-                                                                            <div class="d-flex align-items-center">
-                                                                                <input class="form-check-input package-checkbox me-2"
-                                                                                    data-itinerary-id="{{ $item->id }}"
-                                                                                    data-destination-id="{{ $pckg->destination_id }}"
-                                                                                    data-package-id="{{ $pckg->package_id }}"
-                                                                                    type="checkbox"
-                                                                                    {{ $pckg->status == 1 ? 'checked' : '' }}>
-                                                                                
-                                                                                <label class="form-check-label me-2 mb-0">
-                                                                                    {{ ucwords($pckg->packageCategory->title) }}
-                                                                                </label>
-                                                                            </div>
-
-                                                                            <a href="javascript:void(0)" class="btn btn-sm btn-outline-danger"
-                                                                                onclick="deleteItenaryPackage({{ $pckg->id }})"
-                                                                                title="Delete"
-                                                                                style="padding: 0.2rem 0.4rem; font-size: 0.7rem;">
-                                                                                <i class="fa fa-trash"></i>
-                                                                            </a>
-                                                                        </div>
-                                                                    @endif
-                                                                @endforeach
-                                                            </td>
-                                                        </tr>
+                                                    @foreach($tags as $tag)
+                                                        <span class="btn tag-button {{ in_array($tag->id, $assignedTagIds) ? 'btn-success' : 'btn-outline-success' }}" 
+                                                            data-tag-id="{{ $tag->id }}" 
+                                                            data-itenary-id="{{ $item->id }}">
+                                                            {{ $tag->title }}
+                                                        </span>
                                                     @endforeach
-                                                </tbody>
-                                            </table>
+                                                </div>
 
-                                            {{-- pagination link --}}
-                                            <div class="pagination-container">
-                                                {{$data->links()}}
+
+                                                <table class="table table-bordered">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th style="width: 20%;">Destination</th>
+                                                            <th>Package Category</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($item->itineraryItineraries->groupBy('destination_id') as $destinationId => $items)
+                                                            <tr id="destination-row-{{ $destinationId }}">
+                                                                <td><strong>{{ $items->first()->destination->destination_name }}</strong></td>
+                                                                <td>
+                                                                    @foreach($items as $pckg)
+                                                                        @if($pckg->packageCategory)
+                                                                            <div class="form-check d-flex align-items-center justify-content-between mb-2">
+                                                                                <div class="d-flex align-items-center">
+                                                                                    <input class="form-check-input package-checkbox me-2"
+                                                                                        data-itinerary-id="{{ $item->id }}"
+                                                                                        data-destination-id="{{ $pckg->destination_id }}"
+                                                                                        data-package-id="{{ $pckg->package_id }}"
+                                                                                        type="checkbox"
+                                                                                        {{ $pckg->status == 1 ? 'checked' : '' }}>
+                                                                                    
+                                                                                    <label class="form-check-label me-2 mb-0">
+                                                                                        {{ ucwords($pckg->packageCategory->title) }}
+                                                                                    </label>
+                                                                                </div>
+
+                                                                                <a href="javascript:void(0)" class="btn btn-sm btn-outline-danger"
+                                                                                    onclick="deleteItenaryPackage({{ $pckg->id }})"
+                                                                                    title="Delete"
+                                                                                    style="padding: 0.2rem 0.4rem; font-size: 0.7rem;">
+                                                                                    <i class="fa fa-trash"></i>
+                                                                                </a>
+                                                                            </div>
+                                                                        @endif
+                                                                    @endforeach
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+
+                                                {{-- pagination link --}}
+                                                <div class="pagination-container">
+                                                    {{$data->links()}}
+                                                </div>
                                             </div>
-                                        </div>
-                                       </td>
+                                        </td>
                                         <td class="d-flex">
                                             <div class="btn-group">
                                                 <a href="{{ route('admin.itineraries.edit', $item->id) }}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">

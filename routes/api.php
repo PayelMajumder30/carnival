@@ -84,6 +84,8 @@ use App\Http\Controllers\Api\ApiController;
     //Detail page of 
     Route::get('/destination/details/{destination_id}', [ApiController::class, 'getDestinationDetails']);
 
+     //search by keyword (home page)
+    Route::get('/search-destinations', [ApiController::class, 'search']);
 
 
 

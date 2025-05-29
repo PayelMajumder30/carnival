@@ -483,7 +483,7 @@ class ApiController extends Controller
                 'title'             => $itinerary->title,
                 'short_description' => $itinerary->short_description,
                 'main_image'        => $itinerary->main_image ? asset($itinerary->main_image) : null,
-                'duration'          => $itinerary->duration,
+                'duration'          => $itinerary->trip_durations,
                 'discount_type'     => $itinerary->discount_type,
                 'discount_value'    => $itinerary->discount_value,
                 'selling_price'     => $itinerary->selling_price,
@@ -626,6 +626,30 @@ class ApiController extends Controller
         return response()->json($result);
     }
    
+    //search by keyword (home page)
+    public function search(Request $request)
+    {
+        $keyword = $request->query('keyword');
+
+        if(!$keyword)
+        {
+            return reponse()->json([
+                'message' => 'keyword is required',
+                'status' => false,
+                'data' => []
+            ], 400);
+        }
+
+        $destinations = Destination::where('destination_name', 'LIKE', '%' . $keyword . '%')
+                        ->select('id','slug','destination_name')
+                        ->get();
+
+        return response()->json([
+            'message' => 'Search results',
+            'status' => true,
+            'data' => $destinations
+        ]);
+    }
 
 
 }

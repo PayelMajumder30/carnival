@@ -111,7 +111,7 @@ class ItenaryListController extends Controller
             $data['main_image'] = $imagePath;
         }
 
-
+        
         $this->ItenarylistRepository->create($data);
         return redirect()->route('admin.itineraries.list.all')->with('success', 'New itineraries created');
     }
@@ -128,6 +128,8 @@ class ItenaryListController extends Controller
 
     public function update(Request $request, $id)
     {
+
+        //dd($request->all());
         $request->validate([
             'main_image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif,svg|max:5120',
             'title' => 'required|string|max:255|unique:itenary_list,title,' . $id,

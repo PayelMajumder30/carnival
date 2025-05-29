@@ -37,6 +37,7 @@ class ItenarylistRepository implements ItenarylistRepositoryInterface
             'discount_start_date' => $data['discount_start_date'],
             'discount_end_date' => $data['discount_end_date'],
         ];
+    
        
         return ItenaryList::create($supportData);
     }
