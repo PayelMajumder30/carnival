@@ -35,15 +35,7 @@ class ItenaryListController extends Controller
         $destinations = Destination::select('id', 'destination_name')->get(); //for fetching destination_name from destination table
         $packageCategories = PackageCategory::select('id', 'title')->get(); //for fetching title from package_categories table
 
-      $assignedPackages = DestinationWiseItinerary::all()
-        ->groupBy(['itinerary_id', 'destination_id'])
-        ->map(function ($destinations) {
-            return $destinations->map(function ($items) {
-                return $items->pluck('package_id')->toArray();
-            });
-    });
-
-        return view('admin.itineraries.list', compact('data', 'destinations', 'packageCategories', 'tags', 'assignedPackages'));
+        return view('admin.itineraries.list', compact('data', 'destinations', 'packageCategories', 'tags'));
     }
 
     public function create()
