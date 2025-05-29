@@ -184,16 +184,22 @@
                     if (response.success && response.data.length > 0) {
                         $.each(response.data, function (index, itinerary) {
                             const text = `${itinerary.total_nights} Nights / ${itinerary.total_days} Days - ${itinerary.itinerary_journey}`;
-                            const text_value = `${itinerary.total_nights} Nights / ${itinerary.total_days}`;
+                            const text_value = `${itinerary.total_nights} Nights / ${itinerary.total_days} Days`;
                             const selected = itinerary.id == oldCrmItineraryId ? 'selected' : '';
 
                             $dropdown.append(`<option value="${text_value}" data-id="${itinerary.id}" data-stay_by_journey="${itinerary.stay_by_journey}" data-total_nights="${itinerary.total_nights}" data-total_days="${itinerary.total_days}" ${selected}>${text}</option>`);
                         });
 
-                        // Trigger change manually if preselecting
+                        
                         if (preselect && oldCrmItineraryId) {
-                            $dropdown.trigger('change');
+                            const $preSelected = $dropdown.find('option:selected');
+                            $('#trip_durations').val($dropdown.val());
+                            $('#crm_itinerary_id').val($preSelected.data('id'));
+                            $('#stay_by_division_journey').val($preSelected.data('stay_by_journey'));
+                            $('#total_nights').val($preSelected.data('total_nights'));
+                            $('#total_days').val($preSelected.data('total_days'));
                         }
+
                     } else {
                         $dropdown.attr('disabled', 'disabled').empty().append('<option selected disabled hidden>No itineraries available for this destination</option>');
                         toastFire('error', response.message);
@@ -205,6 +211,8 @@
                 }
             });
         }
+
+
 
         if (selectedDestinationCrmId) {
             loadItineraries(selectedDestinationCrmId, true);

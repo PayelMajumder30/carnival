@@ -81,5 +81,8 @@ use App\Http\Controllers\Api\ApiController;
         Route::get('/gallery/{id}', [ApiController::class, 'itinerariesWithGalleryByid']);
     });
 
+     //search by keyword (home page)
+    Route::get('/search-destinations', [ApiController::class, 'search']);
+
 
 

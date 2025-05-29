@@ -35,13 +35,9 @@ class ItenaryListController extends Controller
         $destinations = Destination::select('id', 'destination_name')->get(); //for fetching destination_name from destination table
         $packageCategories = PackageCategory::select('id', 'title')->get(); //for fetching title from package_categories table
 
-        $assignedPackages = DestinationWiseItinerary::all()
-                    ->groupBy('itinerary_id')
-                    ->map(function ($group) {
-                        return $group->pluck('package_id')->toArray();
-                    });
 
-        return view('admin.itineraries.list', compact('data', 'destinations', 'packageCategories', 'tags', 'assignedPackages'));
+
+        return view('admin.itineraries.list', compact('data', 'destinations', 'packageCategories', 'tags'));
     }
 
     public function create()
@@ -79,7 +75,7 @@ class ItenaryListController extends Controller
     }
     public function store(Request $request)
     {
-       // dd($request->all());
+        //dd($request->all());
         $request->validate([
         'main_image' => 'required|image|mimes:jpg,jpeg,png,webp,gif,svg|max:5120',
         'title' => 'required|string|max:255|unique:itenary_list,title',
@@ -117,7 +113,7 @@ class ItenaryListController extends Controller
             $data['main_image'] = $imagePath;
         }
 
-
+        
         $this->ItenarylistRepository->create($data);
         return redirect()->route('admin.itineraries.list.all')->with('success', 'New itineraries created');
     }
@@ -134,6 +130,8 @@ class ItenaryListController extends Controller
 
     public function update(Request $request, $id)
     {
+
+        //dd($request->all());
         $request->validate([
             'main_image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif,svg|max:5120',
             'title' => 'required|string|max:255|unique:itenary_list,title,' . $id,

@@ -137,11 +137,11 @@
                 $dropdown.empty().append('<option selected disabled hidden>Please wait..</option>');
 
                 $.ajax({
-                    url: "{{route('admin.itineraries.get_itineraries_from_crm')}}", // Laravel route to fetch itineraries
+                    url: "{{route('admin.itineraries.get_itineraries_from_crm')}}", 
                     type: 'GET',
                     data: { destination_id: destination_crm_id },
                     success: function (response) {
-                        // Clear and enable the itinerary dropdown
+
                         
                         $dropdown.removeAttr('disabled');
                         $dropdown.empty().append('<option selected disabled hidden>Select your itinerary journey</option>');
