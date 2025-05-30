@@ -14,9 +14,16 @@ use App\Models\{Destination, PackagesFromTopCities, Country};
 class PackageFromCityController extends Controller
 {
 
-    public function index(Request $request) {
+   public function index(Request $request)
+    {
         $keyword = $request->input('keyword');
         $selectedDestinationId = $request->input('destination_id');
+
+        $allCities = [
+            'delhi', 'mumbai', 'bangalore', 'hyderabad', 'chennai', 'kolkata', 'ahmedabad',
+            'pune', 'jaipur', 'surat', 'lucknow', 'kanpur', 'nagpur', 'bhopal', 'patna',
+            'indore', 'coimbatore', 'thiruvananthapuram', 'vadodara', 'visakhapatnam'
+        ];
 
         // Fetch all active destinations from country_id 10
         $destinations = Destination::select('id', 'destination_name')
@@ -43,14 +50,26 @@ class PackageFromCityController extends Controller
             });
         }
 
-        $assignedCities     = $query->latest('id')->paginate(25);
-        $assignedCityNames  = $assignedCities->pluck('city')->toArray();
+        $assignedCities = $query->latest('id')->paginate(25);
+
+        // Define $assignedCityNames always, empty array if no destination selected
+        if ($selectedDestinationId) {
+            $assignedCityNames = PackagesFromTopCities::where('destination_id', $selectedDestinationId)
+                ->pluck('city')
+                ->toArray();
+        } else {
+            $assignedCityNames = [];
+        }
+
+        // Filter available cities for dropdown (exclude already assigned to this destination)
+        $availableCities = array_diff($allCities, $assignedCityNames);
 
         return view('admin.packageFromtopCity.index', compact(
             'destinations',
             'selectedDestinationId',
             'assignedCities',
-            'assignedCityNames'
+            'assignedCityNames',
+            'availableCities'
         ));
     }
 
@@ -73,6 +92,19 @@ class PackageFromCityController extends Controller
         $destination = Destination::find($request->destination_id);
         $title = $destination->destination_name.' packages from ' .$request->indian_cities;
         $slug = Str::slug($title);
+        $originalSlug = $slug;
+        $counter = 1;
+
+        do {
+            //check if slug exists in the database
+            $slugExists = PackagesFromTopCities::where('slug', $slug)->exists();
+
+            if($slugExists) {
+                $slug = $originalSlug. '-' . $counter;
+                $counter++;
+            }
+
+        } while($slugExists);
 
         PackagesFromTopCities::create([
             'destination_id' => $request->destination_id,
@@ -82,6 +114,22 @@ class PackageFromCityController extends Controller
         ]);
 
         return redirect()->route('admin.assignCitytoPackage.index')->with('success', 'Assigned successfully.');
+    }
+
+    public function getAvailableCities(Request $request)
+    {
+        $assignedCities = PackagesFromTopCities::where('destination_id', $request->destination_id)
+                            ->pluck('city')
+                            ->toArray();
+
+         $allCities = [
+                        'delhi', 'mumbai', 'bangalore', 'hyderabad', 'chennai', 'kolkata', 'ahmedabad',
+                        'pune', 'jaipur', 'surat', 'lucknow', 'kanpur', 'nagpur', 'bhopal', 'patna',
+                        'indore', 'coimbatore', 'thiruvananthapuram', 'vadodara', 'visakhapatnam'
+                    ];
+        $availableCities = array_diff($allCities, $assignedCities);
+
+        return response()->json(array_values($availableCities));
     }
 
     public function status(Request $request, $id)

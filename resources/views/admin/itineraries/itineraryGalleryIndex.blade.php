@@ -21,6 +21,7 @@
                             <thead>
                                 <tr class="text-center">
                                     <th>#</th>
+                                    <th>Title</th>
                                     <th>Image</th>
                                     <th style="width: 100px">Action</th>
                                 </tr>
@@ -29,6 +30,7 @@
                                 @forelse ($gallery as $index => $item)
                                     <tr id="gallery_section_{{$item->id}}">
                                         <td class="text-center">{{ $index + $gallery->firstItem() }}</td>
+                                        <td class="text-center">{{ ucwords($item->title) }}</td>
                                         <td>
                                             <div class="text-center">
                                                 @if (!empty($item->image) && file_exists(public_path($item->image)))
@@ -71,10 +73,15 @@
                     <div class="card-body">
                         <form action="{{ route('admin.itineraries.galleryStore') }}" method="post" enctype="multipart/form-data">@csrf
                             <div class="row form-group">
-                                <div class="col-md-6">
-                                    <label for="image">Image(Multiple) <span style="color: red;">*</span></label>
-                                    <input type="file" class="form-control" name="image[]" id="image" multiple>
-                                    @error('image.*') <p class="small text-danger">{{ $message }}</p> @enderror
+                                <div class="col-md-12">
+                                    <label for="title">Title <span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control" name="title" id="title">
+                                    @error('title') <p class="small text-danger">{{ $message }}</p> @enderror
+                                </div>
+                                <div class="col-md-12 mt-2">
+                                    <label for="image">Image <span style="color: red;">*</span></label>
+                                    <input type="file" class="form-control" name="image" id="image">
+                                    @error('image') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div>
                             </div>
                             <input type="hidden" name="itinerary_id" value="{{ $itinerary->id }}">

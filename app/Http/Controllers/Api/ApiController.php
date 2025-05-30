@@ -567,7 +567,7 @@ class ApiController extends Controller
         $results['galleries'] = $existingItinerary->itineraryGallery->map(function ($gallery) {
             return [
                 'image_title' => $gallery->title,
-                'image' => $gallery->image,
+                'image' => asset($gallery->image),
             ];
         })->toArray();
         $results['destination_id'] = $destination->id;

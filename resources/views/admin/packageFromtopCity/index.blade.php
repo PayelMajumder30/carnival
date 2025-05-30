@@ -78,33 +78,6 @@
 
                         {{-- Edit modal for title --}}
 
-                        {{-- <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <form method="POST" action="{{ route('admin.packageCategory.update') }}">
-                                @csrf
-                                <input type="hidden" name="id" id="edit-id">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                    <h5 class="modal-title">Edit Package Category</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span>&times;</span>
-                                    </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="form-group">
-                                            <label for="edit-title">Title</label>
-                                            <input type="text" name="title" id="edit-title" class="form-control" required>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-primary">Update Package category</button>
-                                    </div>
-                                </div>
-                                </form>
-                            </div>
-                        </div> --}}
-
                         <div class="pagination-container">
                             {{$assignedCities->appends($_GET)->links()}}
                         </div>
@@ -117,67 +90,29 @@
                         <h4>Create</h4>
                     </div>
                     <div class="card-body">
-                        <form id="assign-top-city-form" method="POST" action="{{ route('admin.assignCitytoPackage.store') }}">
-                            @csrf
-                        
+                        <form action="{{ route('admin.assignCitytoPackage.store') }}" method="POST">
+                        @csrf
                             <div class="form-group">
-                                <label for="destination_id">Package Destination</label>
-                                <select name="destination_id" id="destination_id" class="form-control">
-                                    <option value="">-- Package Destination --</option>
+                                <label for="destination_id">Select Destination</label>
+                                <select name="destination_id" id="destination_id" class="form-control" required>
+                                    <option value="">-- Select Destination --</option>
                                     @foreach($destinations as $destination)
-                                        <option value="{{ $destination->id }}">{{ ucwords($destination->destination_name) }}</option>
+                                        <option value="{{ $destination->id }}">{{ $destination->destination_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
+
+                            <div class="form-group">
+                                <label for="indian_cities">Select City</label>
+                                <select name="indian_cities" id="indian_cities" class="form-control" required>
+                                    <option value="">-- Select City --</option>
+                                    {{-- This will be populated via JS --}}
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Assign</button>
+                        </form>
                         
-                            {{-- <div class="form-group" id="destination-group">
-                                <label for="itinerary_id">From where(City)</label>
-                                <select name="indian_cities" id="indian_cities">
-                                    <option value="">--Select a City--</option>
-                                    <option value="delhi">Delhi</option>
-                                    <option value="mumbai">Mumbai</option>
-                                    <option value="bangalore">Bangalore</option>
-                                    <option value="hyderabad">Hyderabad</option>
-                                    <option value="chennai">Chennai</option>
-                                    <option value="kolkata">Kolkata</option>
-                                    <option value="ahmedabad">Ahmedabad</option>
-                                    <option value="pune">Pune</option>
-                                    <option value="jaipur">Jaipur</option>
-                                    <option value="surat">Surat</option>
-                                    <option value="lucknow">Lucknow</option>
-                                    <option value="kanpur">Kanpur</option>
-                                    <option value="nagpur">Nagpur</option>
-                                    <option value="bhopal">Bhopal</option>
-                                    <option value="patna">Patna</option>
-                                    <option value="indore">Indore</option>
-                                    <option value="coimbatore">Coimbatore</option>
-                                    <option value="thiruvananthapuram">Thiruvananthapuram</option>
-                                    <option value="vadodara">Vadodara</option>
-                                    <option value="visakhapatnam">Visakhapatnam</option>
-                                </select>
-                            </div> --}}
-                            @php
-                                $allCities = [
-                                    'delhi', 'mumbai', 'bangalore', 'hyderabad', 'chennai', 'kolkata', 'ahmedabad',
-                                    'pune', 'jaipur', 'surat', 'lucknow', 'kanpur', 'nagpur', 'bhopal', 'patna',
-                                    'indore', 'coimbatore', 'thiruvananthapuram', 'vadodara', 'visakhapatnam'
-                                ];
-                            @endphp
-                            <div class="form-group" id="destination-group">
-                                <label for="itinerary_id">From where (City)</label>
-                                <select name="indian_cities" id="indian_cities" class="form-control">
-                                    <option value="">--Select a City--</option>
-                                    @foreach($allCities as $city)
-                                        @if(!in_array($city, $assignedCityNames))
-                                            <option value="{{ $city }}">{{ ucfirst($city) }}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">Submit</button>
-
-                        </form>                        
                     </div>
                 </div>
             </div>
@@ -232,6 +167,27 @@
             $('#edit-id').val(id);
             $('#edit-title').val(title);
         });
+    });
+
+     $('#destination_id').on('change', function () {
+        var destinationId = $(this).val();
+        if (destinationId) {
+            $.ajax({
+                url: '{{ route("admin.assignCitytoPackage.getAvailableCities") }}',
+                type: 'GET',
+                data: { destination_id: destinationId },
+                success: function (data) {
+                    var cityDropdown = $('#indian_cities');
+                    cityDropdown.empty();
+                    cityDropdown.append('<option value="">-- Select City --</option>');
+                    data.forEach(function (city) {
+                        cityDropdown.append('<option value="' + city + '">' + city + '</option>');
+                    });
+                }
+            });
+        } else {
+            $('#indian_cities').empty().append('<option value="">-- Select City --</option>');
+        }
     });
 </script>
 @endsection

@@ -11,6 +11,7 @@ class ItineraryGallery extends Model
 
     protected $table = 'itinerary_galleries';
     protected $fillable = [
+        'title',
         'itinerary_id',
         'image'
     ];

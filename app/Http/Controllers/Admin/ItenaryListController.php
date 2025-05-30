@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 use App\Interfaces\ItenarylistRepositoryInterface;
 use App\Models\{ItenaryList, Destination, PackageCategory, DestinationWiseItinerary, TagList, ItineraryGallery};
@@ -363,34 +364,54 @@ class ItenaryListController extends Controller
     }
 
     //itineraries/store gallery
+
     public function galleryStore(Request $request)
     {
         $request->validate([
-            'image'     => 'required', 
-            'image.*'   => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('itinerary_galleries', 'title'),
+            ],
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp,gif,svg|max:5120',
             'itinerary_id' => 'required|exists:itenary_list,id',
+        ], [
+            'title.required'    => 'The title field is required.',
+            'title.string'      => 'The title must be a valid string.',
+            'title.max'         => 'The title cannot exceed 255 characters.',
+            'title.unique'      => 'This title already exists. Please use a different one.',
+
+            'image.required'    => 'Please upload an image.',
+            'image.image'       => 'The uploaded file must be an image.',
+            'image.mimes'       => 'The image must be a type of: jpg, jpeg, png, webp, gif, or svg.',
+            'image.max'         => 'The image must not be larger than 5MB.',
+
+            'itinerary_id.required' => 'Itinerary ID is required.',
+            'itinerary_id.exists'   => 'The selected itinerary does not exist.',
         ]);
-    
-        $itineraryId = $request->input('itinerary_id');
 
-        if ($request->hasFile('image')) {
-            foreach ($request->file('image') as $file) {
-                if ($file->isValid()) {
-                    $fileName = time() . rand(10000, 99999) . '.' . $file->extension();
-                    $filePath = 'uploads/itinerary_galleries/' . $fileName;
-                    $file->move(public_path('uploads/itinerary_galleries'), $fileName);
+        $data = [];
+        $data['title'] = $request->input('title');
+        $data['itinerary_id'] = $request->input('itinerary_id');
 
-                    // Save each image using the repository
-                    $this->ItenarylistRepository->gallery_create([
-                        'itinerary_id' => $itineraryId,
-                        'image' => $filePath,
-                    ]);
-                }
-            }
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $file       = $request->file('image');
+            $extension  = $file->extension();
+            $fileName   = time() . rand(10000, 99999) . '.' . $extension;
+            $filePath   = 'uploads/itinerary_galleries/' . $fileName;
+
+            $file->move(public_path('uploads/itinerary_galleries/'), $fileName);
+            $data['image'] = $filePath;
         }
 
-        return redirect()->back()->with('success', 'Gallery created successfully.');    
+        \Log::info('Gallery data:', $data);
+        $this->ItenarylistRepository->gallery_create($data);
+
+        return redirect()->back()->with('success', 'Gallery created successfully.');
     }
+
+
 
     //itineraries/edit gallery
     public function galleryEdit($id) {
@@ -400,7 +421,13 @@ class ItenaryListController extends Controller
 
     public function galleryUpdate(Request $request) {
         $request->validate([
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120', 
+            'title' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('itinerary_galleries', 'title')->ignore($request->id),
+            ],
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
         ]);
         $data = $request->all();
         $this->ItenarylistRepository->gallery_update($data);

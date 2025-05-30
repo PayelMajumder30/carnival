@@ -19,18 +19,19 @@
                             @csrf
                             @method('POST') 
                             <div class="row form-group">
-                                <div class="col-md-6">
-                                    @if (!empty($itineraryGallery->image))
-                                        @if (!empty($itineraryGallery->image) && file_exists(public_path($itineraryGallery->image)))
-                                            <img src="{{ asset($itineraryGallery->image) }}" alt="image-gallery" class="img-thumbnail mr-3" style="height: 50px">
-                                        @else
-                                            <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="image-gallery" style="height: 50px" class="mr-2">
-                                        @endif
-                                        <br>
+                                <div class="col-md-12">
+                                    <label for="title">Title <span style="color: red;">*</span></label>
+                                    <input type="text" class="form-control" name="title" id="title" value="{{ old('title', $itineraryGallery->title) }}">
+                                    @error('title') <p class="small text-danger">{{ $message }}</p> @enderror
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <label for="image">Image</label><br>
+                                    @if (!empty($itineraryGallery->image) && file_exists(public_path($itineraryGallery->image)))
+                                        <img src="{{ asset($itineraryGallery->image) }}" alt="image-gallery" class="img-thumbnail mb-2" style="height: 50px">
+                                    @else
+                                        <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="image-gallery" style="height: 50px" class="mb-2">
                                     @endif
-                                    <label for="image">Image <span style="color: red;">*</span></label>
                                     <input type="file" class="form-control" name="image" id="image">
-                                    <p class="small text-muted"></p>
                                     @error('image') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div>
                             </div>
