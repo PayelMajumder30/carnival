@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use App\Interfaces\ItenarylistRepositoryInterface;
 use App\Models\{ItenaryList, Destination, PackageCategory, DestinationWiseItinerary, TagList, ItineraryGallery};
 
@@ -102,6 +103,17 @@ class ItenaryListController extends Controller
 
         $data = $request->all();
 
+        $slug = Str::slug($request->title);
+        $originalSlug = $slug;
+        $counter = 1;
+
+        while(ItenaryList::where('slug', $slug)->exists()){
+            $slug = $originalSlug . '_' . $counter;
+            $counter++;
+        }
+
+        $data['slug'] = $slug;
+
         if ($request->hasFile('main_image') && $request->file('main_image')->isValid()) {
             $image = $request->file('main_image');
             $imageName = time().rand(10000, 99999).'.'.$image->extension();
@@ -110,7 +122,7 @@ class ItenaryListController extends Controller
 
             $data['main_image'] = $imagePath;
         }
-
+    
         
         $this->ItenarylistRepository->create($data);
         return redirect()->route('admin.itineraries.list.all')->with('success', 'New itineraries created');
@@ -150,6 +162,21 @@ class ItenaryListController extends Controller
 
         $itenary = $this->ItenarylistRepository->findById($id);
         $data = $request->all();
+
+        if ($request->title !== $itenary->title) {
+            $slug = Str::slug($request->title);
+            $originalSlug = $slug;
+            $counter = 1;
+
+            while (ItenaryList::where('slug', $slug)->where('id', '!=', $id)->exists()) {
+                $slug = $originalSlug . '-' . $counter;
+                $counter++;
+            }
+
+            $data['slug'] = $slug;
+        } else {
+            $data['slug'] = $itenary->slug; 
+        }
 
         if($request->hasFile('main_image') && $request->file('main_image')->isValid()) {
 

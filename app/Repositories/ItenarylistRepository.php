@@ -23,6 +23,7 @@ class ItenarylistRepository implements ItenarylistRepositoryInterface
         $supportData = [ 
             'main_image' =>$data['main_image'],    
             'title' => $data['title'],
+            'slug' => $data['slug'],
             'short_description' => $data['short_description'], 
             'trip_durations' => $data['trip_durations'], 
             'selling_price' => $data['selling_price'],

@@ -481,6 +481,7 @@ class ApiController extends Controller
             $groupedPackages[$packageId]['itineraries'][] = [
                 'itinerary_id'      => $itinerary->id,
                 'title'             => $itinerary->title,
+                'slug'              => $itinerary->slug,
                 'short_description' => $itinerary->short_description,
                 'main_image'        => $itinerary->main_image ? asset($itinerary->main_image) : null,
                 'duration'          => $itinerary->trip_durations,
@@ -639,7 +640,7 @@ class ApiController extends Controller
                 'data' => []
             ], 400);
         }
-        
+
         $destinations = Destination::where('destination_name', 'LIKE', '%' . $keyword . '%')
             ->select('id', 'slug', 'destination_name', 'image', 'short_desc')
             ->get()
