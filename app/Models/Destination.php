@@ -66,7 +66,7 @@ class Destination extends Model
     */
     public function aboutDestination()
     {
-        return $this->hasMany(AboutDestination::class, 'destination_id');
+        return $this->hasOne(AboutDestination::class, 'destination_id');
     }
 
 
