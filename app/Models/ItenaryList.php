@@ -13,6 +13,7 @@ class ItenaryList extends Model
 
         'main_image',
         'title',
+        'slug',
         'short_description',
         
         'selling_price',

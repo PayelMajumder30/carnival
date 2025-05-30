@@ -481,6 +481,7 @@ class ApiController extends Controller
             $groupedPackages[$packageId]['itineraries'][] = [
                 'itinerary_id'      => $itinerary->id,
                 'title'             => $itinerary->title,
+                'slug'              => $itinerary->slug,
                 'short_description' => $itinerary->short_description,
                 'main_image'        => $itinerary->main_image ? asset($itinerary->main_image) : null,
                 'duration'          => $itinerary->trip_durations,
@@ -571,7 +572,7 @@ class ApiController extends Controller
         })->toArray();
         $results['destination_id'] = $destination->id;
         $results['destination_name'] = $destination->destination_name;
-        $results['about_destination'] = optional($destination->aboutDestination->first())->content ?? null;
+        $results['about_destination'] = optional(optional($destination->aboutDestination)->first())->content ?? null;
 
         $popularPackages = DestinationWisePopularPackages::with('popularitinerary')
         ->where('destination_id', $destination->id)
@@ -603,25 +604,29 @@ class ApiController extends Controller
         })->toArray();
         return response()->json($results, 200);
     }
+  
+    
 
-   
-    //search by keyword (home page)
     public function search(Request $request)
     {
         $keyword = $request->query('keyword');
 
-        if(!$keyword)
-        {
-            return reponse()->json([
-                'message' => 'keyword is required',
+        if (!$keyword) {
+            return response()->json([
+                'message' => 'Keyword is required',
                 'status' => false,
                 'data' => []
             ], 400);
         }
 
         $destinations = Destination::where('destination_name', 'LIKE', '%' . $keyword . '%')
-                        ->select('id','slug','destination_name')
-                        ->get();
+            ->select('id', 'slug', 'destination_name', 'image', 'short_desc')
+            ->get()
+            ->map(function ($destination) {
+                $destination->destination_name = $destination->destination_name . ' Trips';
+                $destination->image = asset( $destination->image); 
+                return $destination;
+            });
 
         return response()->json([
             'message' => 'Search results',
@@ -629,6 +634,7 @@ class ApiController extends Controller
             'data' => $destinations
         ]);
     }
+
 
 
 }
