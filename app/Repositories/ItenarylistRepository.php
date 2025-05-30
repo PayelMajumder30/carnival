@@ -33,7 +33,7 @@ class ItenarylistRepository implements ItenarylistRepositoryInterface
             'total_nights' => $data['total_nights'],
             'total_days' => $data['total_days'],
             'discount_type' => $data['discount_type'],
-            'discount_value' => $data['discount_value'],
+            'discount_value' => round($data['discount_value']),
             'discount_start_date' => $data['discount_start_date'],
             'discount_end_date' => $data['discount_end_date'],
         ];

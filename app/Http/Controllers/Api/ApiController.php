@@ -625,24 +625,29 @@ class ApiController extends Controller
 
         return response()->json($result);
     }
-   
-    //search by keyword (home page)
+  
+    
+
     public function search(Request $request)
     {
         $keyword = $request->query('keyword');
 
-        if(!$keyword)
-        {
-            return reponse()->json([
-                'message' => 'keyword is required',
+        if (!$keyword) {
+            return response()->json([
+                'message' => 'Keyword is required',
                 'status' => false,
                 'data' => []
             ], 400);
         }
-
+        
         $destinations = Destination::where('destination_name', 'LIKE', '%' . $keyword . '%')
-                        ->select('id','slug','destination_name')
-                        ->get();
+            ->select('id', 'slug', 'destination_name', 'image', 'short_desc')
+            ->get()
+            ->map(function ($destination) {
+                $destination->destination_name = $destination->destination_name . ' Trips';
+                $destination->image = asset( $destination->image); 
+                return $destination;
+            });
 
         return response()->json([
             'message' => 'Search results',
@@ -650,6 +655,7 @@ class ApiController extends Controller
             'data' => $destinations
         ]);
     }
+
 
 
 }
