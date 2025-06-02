@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\{TripCategoryDestination, SocialMedia, Banner, TripCategory, Partner, 
     WhyChooseUs, Setting, Blog, Offer, PageContent, Destination, TripCategoryActivities, ItenaryList, 
     ItineraryGallery, Support, AboutDestination, DestinationWisePopularPackages, DestinationWiseItinerary,
-    DestinationWisePopularPackageTag, PackagesFromTopCities};
+    DestinationWisePopularPackageTag, PackagesFromTopCities, LeadGenerate};
 
 class ApiController extends Controller
 {
@@ -566,7 +566,7 @@ class ApiController extends Controller
         $results['trip_durations']=$existingItinerary->trip_durations;
         $results['galleries'] = $existingItinerary->itineraryGallery->map(function ($gallery) {
             return [
-                'image_title' => $gallery->title,
+                'image_title' => ucwords($gallery->title),
                 'image' => asset($gallery->image),
             ];
         })->toArray();
@@ -635,6 +635,79 @@ class ApiController extends Controller
         ]);
     }
 
+    //for lead generate
+   
+    
+    // public function leadStore(Request $request)
+    // {
+       
+    //      $request->merge([
+    //         'destination_id' => $request->json('destinationID'),
+    //         'itinerary_id'   => $request->json('itinaryId'),
+    //         'package_id'     => $request->json('packageId'),
+    //     ]);
+
+    //     $validated = $request->validate([
+    //         'destination_id'   => 'required|integer',
+    //         'itinerary_id'     => 'required|integer',
+    //         'package_id'       => 'required|integer',
+    //         'customerName'     => 'required|string|max:255',
+    //         'travelLocation'   => 'required|string|max:255',
+    //         'travelDuration'   => 'required|string|max:255',
+    //         'email'            => 'required|email|max:255',
+    //         'whatsapp'         => 'required|string|max:20',
+    //         'travellers'       => 'required|integer',
+    //         'startDate'        => 'required|date',
+    //         'endDate'          => 'required|date|after_or_equal:startDate',
+    //     ]);
+
+    //     /* -------------------------------------------------
+    //     * 3.  Insert using only the validated data.
+    //     * ------------------------------------------------- */
+    //     LeadGenerate::create($validated);
+
+    //     return response()->json([
+    //         'message' => 'Lead generated successfully!'
+    //     ], 201);
+
+    // }
+
+    public function leadStore(Request $request)
+    {
+        //dd($request->all());
+        // Map JSON camelCase keys to DB snake_case columns
+        $request->merge([
+            'destination_id' => $request->json('destinationID'),
+            'itinerary_id'   => $request->json('itinaryId'),
+            'package_id'     => $request->json('packageId'),
+        ]);
+
+        //dd('hi');
+        // Extract all expected DB columns from request
+        $data = [
+            'destination_id'  => $request->destination_id,
+            'itinerary_id'    => $request->itinerary_id,
+            'package_id'      => $request->package_id,
+            'customerName'    => ucwords($request->customerName),
+            'travelLocation'  => ucwords($request->travelLocation),
+            'travelDuration'  => $request->travelDuration,
+            'email'           => $request->email,
+            'whatsapp'        => $request->whatsapp,
+            'travellers'      => $request->travellers,
+            'startDate'       => $request->startDate,
+            'endDate'         => $request->endDate,
+        ];
+        //dd($data);
+
+        // Insert into DB
+        $lead = LeadGenerate::create($data);
+        //dd($lead);
+        return response()->json([
+            'status' => true,
+            'message' => 'Lead generated successfully!',
+            'data' => $lead,
+        ], 201);
+    }
 
 
 }

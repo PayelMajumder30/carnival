@@ -87,4 +87,12 @@ class Destination extends Model
         return $this->hasMany(PackagesFromTopCities::class, 'destination_id');
     }
 
+    /*
+    * Relationship with `lead_generate` table
+    */
+    public function leadGenerate()
+    {
+        return $this->hasOne(LeadGenerate::class, 'destination_id');
+    }
+
 }

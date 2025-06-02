@@ -62,5 +62,13 @@ class ItenaryList extends Model
         return $this->hasMany(ItineraryGallery::class, 'itinerary_id', 'id');
     }
 
+    /*
+    * Relationship with `lead_generate` table
+    */
+    public function leadGenerate()
+    {
+        return $this->hasOne(LeadGenerate::class, 'itinerary_id');
+    }
+
 
 }

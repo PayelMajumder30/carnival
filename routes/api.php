@@ -87,5 +87,8 @@ use App\Http\Controllers\Api\ApiController;
      //search by keyword (home page)
     Route::get('/search-destinations', [ApiController::class, 'search']);
 
+    //for lead genrate
+    Route::post('/lead-genrate', [ApiController::class, 'leadStore']);
+
 
 
