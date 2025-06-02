@@ -169,7 +169,8 @@
         });
     });
 
-     $('#destination_id').on('change', function () {
+    //for fetch available cities
+    $('#destination_id').on('change', function () {
         var destinationId = $(this).val();
         if (destinationId) {
             $.ajax({
