@@ -438,10 +438,10 @@ class ApiController extends Controller
     // Itineraries / Itinerary_list
     public function getDestinationPackagesWithItineraries($destination_slug)
     { 
-            $destination = Destination::with(['destinationItineraries.packageCategory', 'destinationItineraries.itinerary'])
-            ->where('slug', $destination_slug)
-            ->where('status', 1)
-            ->first();
+        $destination = Destination::with(['destinationItineraries.packageCategory', 'destinationItineraries.itinerary'])
+        ->where('slug', $destination_slug)
+        ->where('status', 1)
+        ->first();
 
         if (!$destination) {
             return response()->json([
@@ -506,7 +506,7 @@ class ApiController extends Controller
     }
 
     // Itineraries / Gallery
-   public function itinerariesWithGallery() 
+    public function itinerariesWithGallery() 
     {
        $data = ItineraryGallery::with('itinerary')->get();
         $result = [];
@@ -595,7 +595,7 @@ class ApiController extends Controller
 
         $results['popular_packages'] = $popularPackages;
 
-         $results['packages_from_top_city'] = $destination->packagesFromTopCities->map(function ($toCity) {
+        $results['packages_from_top_city'] = $destination->packagesFromTopCities->map(function ($toCity) {
             return [
                 'id' => $toCity->id,
                 'title' => $toCity->title,
@@ -703,9 +703,14 @@ class ApiController extends Controller
             ], 400);
         }
 
-        $destinations = Destination::where('destination_name', 'LIKE', '%' . $keyword . '%')
-                        ->select('id','slug','destination_name')
-                        ->get();
+       $destinations = Destination::where('destination_name', 'LIKE', '%' . $keyword . '%')
+                    ->select('id','slug','destination_name', 'image', 'short_desc')
+                    ->get()
+                    ->map(function ($destination) {
+                        $destination->destination_name = $destination->destination_name . ' Trips';
+                        $destination->image = asset($destination->image); 
+                        return $destination;
+                    });
 
         return response()->json([
             'message' => 'Search results',

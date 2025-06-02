@@ -93,10 +93,10 @@
 
                             <div class="form-group col-md-6">
                                 <label for="short_description">Short Description</label>
-                            <textarea class="form-control" name="short_description" id="short_description" rows="3" placeholder="Enter short description..">{{ old('short_description', $itenary->short_description) }}</textarea>
-                                @error('short_description') 
-                                    <p class="small text-danger">{{ $message }}</p>
-                                @enderror
+                                <textarea class="form-control" name="short_description" id="short_description" rows="3" placeholder="Enter short description..">{{ old('short_description', $itenary->short_description) }}</textarea>
+                                    @error('short_description') 
+                                        <p class="small text-danger">{{ $message }}</p>
+                                    @enderror
                             </div>
 
                             <div class="form-group col-md-3">
