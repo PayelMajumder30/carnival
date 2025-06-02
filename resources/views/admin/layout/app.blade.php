@@ -92,6 +92,9 @@
                     <div class="row mb-2">
                     <div class="col-sm-6">
                         <h1 class="m-0">@yield('page-title')</h1>
+                         @hasSection('page-subtitle')
+                            <small class="text-muted">@yield('page-subtitle')</small>
+                        @endif
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
