@@ -219,6 +219,7 @@ Route::prefix('admin/')->name('admin.')->group(function() {
             Route::prefix('packages-from-top-cities')->group(function(){
                 Route::get('/', [PackageFromCityController::class, 'index'])->name('assignCitytoPackage.index');
                 Route::post('/store', [PackageFromCityController::class, 'store'])->name('assignCitytoPackage.store');
+                Route::get('/get-available-cities', [PackageFromCityController::class, 'getAvailableCities'])->name('assignCitytoPackage.getAvailableCities');
                 Route::get('/status/{id}', [PackageFromCityController::class, 'status'])->name('assignCitytoPackage.status'); 
                 Route::post('/delete', [PackageFromCityController::class, 'delete'])->name('assignCitytoPackage.delete');
             });

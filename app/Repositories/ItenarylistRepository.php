@@ -22,7 +22,7 @@ class ItenarylistRepository implements ItenarylistRepositoryInterface
     { 
         $supportData = [ 
             'main_image' =>$data['main_image'],    
-            'title' => $data['title'],
+            'title' => ucwords($data['title']),
             'slug' => $data['slug'],
             'short_description' => $data['short_description'], 
             'trip_durations' => $data['trip_durations'], 
@@ -58,14 +58,14 @@ class ItenarylistRepository implements ItenarylistRepositoryInterface
 
 
     //itineraries/gallery
-    public function gallery_create(array $data)
-    {       
-        $itineraryGalleryData = [  
-            'itinerary_id'  => $data['itinerary_id'] ?? null, 
-            'image' => $data['image'] ?? null,
-        ];
-
-        return ItineraryGallery::create($itineraryGalleryData);
+    public function gallery_create($data)
+    {
+        $gallery = new ItineraryGallery();
+        $gallery->title = $data['title']; // <- this must be included
+        $gallery->itinerary_id = $data['itinerary_id'];
+        $gallery->image = $data['image'];
+        $gallery->save();
+        return $gallery;
     }
 
     public function gallery_update(array $data)
@@ -85,8 +85,9 @@ class ItenarylistRepository implements ItenarylistRepositoryInterface
             $imagePath  = $filePath;
         }
         
-        $updateData = [            
-            'image'   => $imagePath, // Assign the image path
+        $updateData = [   
+            'title'   => $data['title'],         
+            'image'   => $imagePath, // Assign the image path           
         ];
         $itineraryGallery->update($updateData);
         return $itineraryGallery;

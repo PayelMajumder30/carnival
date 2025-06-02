@@ -14,7 +14,7 @@ class AboutDestinationRepository implements AboutDestinationInterface
         return AboutDestination::all();
     }
 
-     public function findById($id)
+    public function findById($id)
     {
         return AboutDestination::findOrFail($id);
     }
