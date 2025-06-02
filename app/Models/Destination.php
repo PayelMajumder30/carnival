@@ -51,25 +51,28 @@ class Destination extends Model
                     ->with(['packageCategory', 'itinerary']);
     }
 
+    
     /*
     * Relationship with `itenary_list` table
     */
-
     public function itineraries()
     {
         return $this->hasMany(ItenaryList::class, 'destination_id');
     }
 
+
     /*
     * Relationship with `about_destinations` table
     */
-
     public function aboutDestination()
     {
         return $this->hasMany(AboutDestination::class, 'destination_id');
     }
 
-    
+
+    /*
+    * Relationship with `destination_wise_popular_package_tags` table
+    */
     public function popularItineraries()
     {
         return $this->hasMany(DestinationWisePopularPackages::class, 'destination_id', 'id');
@@ -77,9 +80,8 @@ class Destination extends Model
 
     
     /*
-    * Relationship with `about_destinations` table
+    * Relationship with `packages_from_top_cities` table
     */
-
     public function packagesFromTopCities()
     {
         return $this->hasMany(PackagesFromTopCities::class, 'destination_id');

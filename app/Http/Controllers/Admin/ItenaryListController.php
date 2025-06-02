@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use App\Interfaces\ItenarylistRepositoryInterface;
 use App\Models\{ItenaryList, Destination, PackageCategory, DestinationWiseItinerary, TagList, ItineraryGallery};
 
@@ -31,10 +32,56 @@ class ItenaryListController extends Controller
         
         $tags = TagList::where('status', 1)->get();
 
+      
         $destinations = Destination::select('id', 'destination_name')->get(); //for fetching destination_name from destination table
         $packageCategories = PackageCategory::select('id', 'title')->get(); //for fetching title from package_categories table
 
         return view('admin.itineraries.list', compact('data', 'destinations', 'packageCategories', 'tags'));
+    }
+
+    public function ItineraryBuilder($id,$tab){
+        $active_tab = $tab;
+        $itinerary = ItenaryList::find($id);
+        if(!$itinerary){
+            abort(404);
+        }
+
+        $postData = [
+            'division_ids' => explode(',', $itinerary->stay_by_division_journey) 
+        ];
+
+        // dd($postData);
+        $ch = curl_init(env('CRM_BASEPATH').'api/crm/active/divisions');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData)); // encode only once!
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Accept: application/json'
+        ]);
+
+        $itineraryResponse = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+       $itineraryData = json_decode($itineraryResponse, true); // decode JSON to array
+
+       $DayDivisons =[];
+        if (isset($itineraryData['status']) && $itineraryData['status'] === true) {
+            $DayDivisons = $itineraryData['data'];
+            // return response()->json([
+            //     'success' => true,
+            //     'message' => 'Divisions fetched successfully.',
+            //     'data' => $itineraryData['data']
+            // ], 200);
+        }
+
+        // return response()->json([
+        //     'success' => false,
+        //     'message' => $itineraryData['message'] ?? 'Failed to fetch divisions.',
+        //     'data' => []
+        // ], 400);
+         return view('admin.itineraries.itinerary_builder', compact('itinerary','active_tab','DayDivisons'));
     }
 
     public function create()
@@ -72,16 +119,20 @@ class ItenaryListController extends Controller
     }
     public function store(Request $request)
     {
-        dd($request->all());
+        //dd($request->all());
         $request->validate([
         'main_image' => 'required|image|mimes:jpg,jpeg,png,webp,gif,svg|max:5120',
         'title' => 'required|string|max:255|unique:itenary_list,title',
         'short_description' => 'nullable|string|max:255',
-        'duration' => 'required|string|max:255',
+        'trip_durations' => 'required|string|max:255',
         'selling_price' => 'required|numeric|lte:actual_price',
         'actual_price' => 'required|numeric',
         'destination_id' => 'required|exists:destinations,id',
-        'discount_type' => 'required',
+        'crm_itinerary_id' => 'required|string|max:255',
+        'stay_by_division_journey' => 'nullable|string|max:255',
+        'total_nights' => 'required|integer|min:1',
+        'total_days' => 'required|integer|min:1',
+        'discount_type' => 'nullable|in:percentage,flat',
         'discount_value' => 'required',
         'discount_start_date' => 'required|date',
         'discount_end_date' => 'required|date|after_or_equal:discount_start_date',
@@ -106,6 +157,7 @@ class ItenaryListController extends Controller
             $data['main_image'] = $imagePath;
         }
 
+        
         $this->ItenarylistRepository->create($data);
         return redirect()->route('admin.itineraries.list.all')->with('success', 'New itineraries created');
     }
@@ -122,14 +174,21 @@ class ItenaryListController extends Controller
 
     public function update(Request $request, $id)
     {
+
+        //dd($request->all());
         $request->validate([
             'main_image' => 'nullable|image|mimes:jpg,jpeg,png,webp,gif,svg|max:5120',
             'title' => 'required|string|max:255|unique:itenary_list,title,' . $id,
             'short_description' => 'nullable|string|max:255',
-            'duration' => 'required|string|max:255',
+            'trip_durations' => 'required|string|max:255',
             'selling_price' => 'required|numeric|lte:actual_price',
             'actual_price' => 'required|numeric',
-            'discount_type' => 'required',
+            'destination_id' => 'required|exists:destinations,id',
+            'crm_itinerary_id' => 'required|string|max:255',
+            'stay_by_division_journey' => 'nullable|string|max:255',
+            'total_nights' => 'required|integer|min:1',
+            'total_days' => 'required|integer|min:1',
+            'discount_type' => 'required|in:flat,percentage',
             'discount_value' => 'required',
             'discount_start_date' => 'required|date',
             'discount_end_date' => 'required|date|after_or_equal:discount_start_date'

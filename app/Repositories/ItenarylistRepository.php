@@ -24,15 +24,20 @@ class ItenarylistRepository implements ItenarylistRepositoryInterface
             'main_image' =>$data['main_image'],    
             'title' => $data['title'],
             'short_description' => $data['short_description'], 
-            'duration' => $data['duration'],
+            'trip_durations' => $data['trip_durations'], 
             'selling_price' => $data['selling_price'],
             'actual_price' => $data['actual_price'], 
             'destination_id' => $data['destination_id'],
+            'crm_itinerary_id' => $data['crm_itinerary_id'],
+            'stay_by_division_journey' => $data['stay_by_division_journey'],
+            'total_nights' => $data['total_nights'],
+            'total_days' => $data['total_days'],
             'discount_type' => $data['discount_type'],
             'discount_value' => $data['discount_value'],
             'discount_start_date' => $data['discount_start_date'],
             'discount_end_date' => $data['discount_end_date'],
         ];
+    
        
         return ItenaryList::create($supportData);
     }

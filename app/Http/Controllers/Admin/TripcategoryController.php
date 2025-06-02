@@ -38,7 +38,7 @@ class TripcategoryController extends Controller
         // dd($request->all());
         $request->validate([
             'title'      => 'required|string|max:255|unique:trip_categories,title',
-            'short_desc' => 'nullable|string|max:200',
+            'short_desc' => 'nullable|string|max:400',
         ], [
             'title.required' => 'The title field is required.',
             'title.string'   => 'The title must be a string.',
@@ -59,7 +59,7 @@ class TripcategoryController extends Controller
     public function update(Request $request, $id){
         $request->validate([
             'title'      => 'required|string|max:255|unique:trip_categories,title,' . $id,
-            'short_desc' => 'nullable|string|max:200',
+            'short_desc' => 'nullable|string|max:400',
         ], [
             'title.required' => 'The title field is required.',
             'title.string'   => 'The title must be a string.',

@@ -233,8 +233,11 @@
         const countryId = $('#country_id').val();
         const tripCatId = $('#trip_cat_id').val();
 
+        let baseUrl = "{{ route('admin.tripcategorydestination.getActivities', ['country_id' => '__COUNTRY__', 'trip_cat_id' => '__TRIPCAT__']) }}";
+        baseUrl = baseUrl.replace('__COUNTRY__', countryId).replace('__TRIPCAT__', tripCatId);
+
         $.ajax({
-            url: "{{ url('/admin/master-module/tripcategory/activities/by-destination') }}/" + countryId + "/" + tripCatId,
+            url: baseUrl,
             type: 'GET',
             success: function (data) {
                 $("#destination_id").html("<option value=''>-- Select Destination --</option>");
@@ -256,7 +259,7 @@
         });
     }
 
-
+    
     function addDestination() {
         const destinationId = $('#destination_id').val();
         const activityName = $('#activity_name').val();
@@ -325,25 +328,7 @@
     }
 
 
-    // function fetchActivities(crmDestinationId) {
-    //     const apiUrl = `https://christmastree.quickdemo.in/api/crm/active/destination-wise/activities/${crmDestinationId}`;
-       
-    //     $.get(apiUrl, function(response) {
 
-    //         $('#activity_name').html("<option value=''>-- Select Activity --</option>");
-    //         if (response.data.length > 0) {
-    //             response.data.forEach(activity => {
-    //                 $('#activity_name').append(new Option(activity.name));
-    //             });
-    //         } else {
-    //             $('#activity_name').html("<option value=''>No activities found</option>");
-    //             toastr.error('No activities found for selected destination');
-    //         }
-    //     }).fail(function() {
-    //         $('#activity_name').html("<option value=''>-- Select Activity --</option>");
-    //         toastr.error('Failed to fetch activities');
-    //     });
-    // }
 
     function fetchActivities(crmDestinationId) {
         const apiUrl = `https://christmastree.quickdemo.in/api/crm/active/destination-wise/activities/${crmDestinationId}`;

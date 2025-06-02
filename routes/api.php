@@ -68,7 +68,7 @@ use App\Http\Controllers\Api\ApiController;
     });
 
     //Page content
-     Route::prefix('pageContent')->group(function (){
+    Route::prefix('pageContent')->group(function (){
         Route::get('/', [ApiController::class, 'contentIndex']);
         Route::get('/{id}',[ApiController::class, 'contentShow']);
     });
@@ -80,6 +80,12 @@ use App\Http\Controllers\Api\ApiController;
         Route::get('/gallery', [ApiController::class, 'itinerariesWithGallery']);
         Route::get('/gallery/{id}', [ApiController::class, 'itinerariesWithGalleryByid']);
     });
+
+    //Detail page of 
+    Route::get('/destination/details/{destination_id}', [ApiController::class, 'getDestinationDetails']);
+
+     //search by keyword (home page)
+    Route::get('/search-destinations', [ApiController::class, 'search']);
 
 
 

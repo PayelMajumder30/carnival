@@ -165,6 +165,7 @@ Route::prefix('admin/')->name('admin.')->group(function() {
             //itenary list
             Route::prefix('itinerary-list')->group(function() {
                 Route::get('/', [ItenaryListController::class, 'index'])->name('itineraries.list.all');
+                Route::get('/builder/{id}/{tab}', [ItenaryListController::class, 'ItineraryBuilder'])->name('itinerary.builder');
                 Route::get('/create', [ItenaryListController::class, 'create'])->name('itineraries.create');
                 Route::get('/get-itineraries-from-crm', [ItenaryListController::class, 'get_itineraries_from_crm'])->name('itineraries.get_itineraries_from_crm');
                 Route::post('/store', [ItenaryListController::class, 'store'])->name('itineraries.store');

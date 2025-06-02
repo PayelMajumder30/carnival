@@ -14,10 +14,15 @@ class ItenaryList extends Model
         'main_image',
         'title',
         'short_description',
-        'duration',
+        
         'selling_price',
         'actual_price',
         'destination_id',
+        'crm_itinerary_id',
+        'stay_by_division_journey',
+        'total_nights',
+        'total_days',
+        'trip_durations',
         'discount_type',
         'discount_value',
         'discount_start_date',
@@ -53,7 +58,7 @@ class ItenaryList extends Model
     * Relationship with itinerary_galleries
     */
     public function itineraryGallery(){
-        return $this->hasMany(itinerary_gallery::class, 'itinerary_id', 'id');
+        return $this->hasMany(ItineraryGallery::class, 'itinerary_id', 'id');
     }
 
 
