@@ -3,22 +3,34 @@ $('form').on('submit', () => {
 });
 
 // sweetalert toast
-function toastFire(type = 'success', title) {
-    const Toast = Swal.mixin({
+// function toastFire(type = 'success', title) {
+//     const Toast = Swal.mixin({
+//         toast: true,
+//         position: 'bottom',
+//         timer: 3000,
+//         showCloseButton: true,
+//         showConfirmButton: false,
+//         didOpen: (toast) => {
+//             toast.addEventListener('mouseenter', Swal.stopTimer)
+//             toast.addEventListener('mouseleave', Swal.resumeTimer)
+//         }
+//     })
+//     Toast.fire({
+//         icon: type,
+//         title: title
+//     })
+// }
+function toastFire(type = 'error', title) {
+    Swal.fire({
         toast: true,
         position: 'bottom',
         timer: 3000,
-        showCloseButton: true,
-        showConfirmButton: false,
-        didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-        }
-    })
-    Toast.fire({
         icon: type,
-        title: title
-    })
+        title: title,
+        showConfirmButton: false,
+        background: type === 'error' ? '#dc3545' : '#d1e7dd', // red for error
+        color: type === 'error' ? '#ffffff' : '#0f5132',  
+    });
 }
 
 //  enable tooltip everywhere
