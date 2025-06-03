@@ -27,4 +27,12 @@ class PackageCategory extends Model
     {
         return $this->hasMany(ItenaryList::class, 'package_id');
     }
+
+    /*
+    * Relationship with `lead_generate` table
+    */
+    public function leadGenerate()
+    {
+        return $this->hasOne(LeadGenerate::class, 'package_id');
+    }
 }

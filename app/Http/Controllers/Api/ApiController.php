@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\{TripCategoryDestination, SocialMedia, Banner, TripCategory, Partner, 
     WhyChooseUs, Setting, Blog, Offer, PageContent, Destination, TripCategoryActivities, ItenaryList, 
     ItineraryGallery, Support, AboutDestination, DestinationWisePopularPackages, DestinationWiseItinerary,
-    DestinationWisePopularPackageTag, PackagesFromTopCities};
+    DestinationWisePopularPackageTag, PackagesFromTopCities, LeadGenerate};
 
 class ApiController extends Controller
 {
@@ -566,7 +566,7 @@ class ApiController extends Controller
         $results['trip_durations']=$existingItinerary->trip_durations;
         $results['galleries'] = $existingItinerary->itineraryGallery->map(function ($gallery) {
             return [
-                'image_title' => $gallery->title,
+                'image_title' => ucwords($gallery->title),
                 'image' => asset($gallery->image),
             ];
         })->toArray();
@@ -607,26 +607,110 @@ class ApiController extends Controller
   
     
 
+    //detail page of destination
+
+    // public function getDestinationDetails($destination_id)
+    // {
+    //     $destination = Destination::find($destination_id);
+
+    //     if (!$destination) {
+    //         return response()->json(['message' => 'Destination not found'], 404);
+    //     }
+
+    //     // Itineraries mapped via destination_wise_itinerary
+    //     $itineraryIds = DestinationWiseItinerary::where('destination_id', $destination_id)
+    //         ->distinct()
+    //         ->pluck('itinerary_id')
+    //         ->toArray();
+
+    //     $itineraries = ItenaryList::whereIn('id', $itineraryIds)->where('status',1)
+    //         ->with('itineraryGallery')
+    //         ->get();
+
+    //     // About Destination
+    //     $about = AboutDestination::where('destination_id', $destination_id)
+    //         ->pluck('content')
+    //         ->first(); // Just take one
+
+    //     // Popular Itineraries
+    //     $popularPackages = DestinationWisePopularPackages::with(['destination', 'popularitinerary'])
+    //         ->where('destination_id', $destination_id)
+    //         ->get();
+
+    //     // Popular Tags
+    //     $popularPackageIds = $popularPackages->pluck('id')->toArray();
+
+    //     $popularTags = DestinationWisePopularPackageTag::with('tag')
+    //         ->whereIn('popular_package_id', $popularPackageIds)
+    //         ->get()
+    //         ->pluck('tag')
+    //         ->unique('id') 
+    //         ->values();
+
+    //     //packages from top cities
+    //     $packagesFromTopCities = PackagesFromTopCities::where('destination_id', $destination_id)->where('status',1)
+    //                 ->get()->map(function ($package) {
+    //                     return [
+    //                         'id'    => $package->id,
+    //                         'slug'  => ucwords($package->slug),
+    //                     ];
+    //                 });
+       
+    //     $result = [
+    //         'destination_id'   => $destination->id,
+    //         'destination_name' => $destination->destination_name,
+
+    //         'about' => strip_tags($about),
+
+    //         'itineraries' => $itineraries->map(function ($itinerary) {
+    //             return [
+    //                 'id'             => $itinerary->id,
+    //                 'title'          => $itinerary->title,
+    //                 'trip_durations' => $itinerary->trip_durations,
+    //                 'selling_price'     => $itinerary->selling_price,
+    //                 'actual_price'      => $itinerary->actual_price,
+    //                 'gallery'        => $itinerary->itineraryGallery->map(function ($gallery) {
+    //                     return asset($gallery->image);
+    //                 })->toArray(),
+    //             ];
+    //         }),
+
+    //         'popular_packages' => $popularPackages->map(function ($item) {
+    //             return [
+    //                 'destination_name' => $item->destination->destination_name,
+    //                 'itinerary_title'  => $item->popularitinerary->title,
+    //             ];
+    //         }),
+
+    //         'packages_from_top_cities' => $packagesFromTopCities,
+    //         //'popular_tags' => $popularTags
+    //     ];
+
+    //     return response()->json($result);
+    // }
+   
+    //search by keyword (home page)
     public function search(Request $request)
     {
         $keyword = $request->query('keyword');
 
-        if (!$keyword) {
-            return response()->json([
-                'message' => 'Keyword is required',
+        if(!$keyword)
+        {
+            return reponse()->json([
+                'message' => 'keyword is required',
                 'status' => false,
                 'data' => []
             ], 400);
         }
 
         $destinations = Destination::where('destination_name', 'LIKE', '%' . $keyword . '%')
-            ->select('id', 'slug', 'destination_name', 'image', 'short_desc')
-            ->get()
-            ->map(function ($destination) {
-                $destination->destination_name = $destination->destination_name . ' Trips';
-                $destination->image = asset( $destination->image); 
-                return $destination;
-            });
+                        ->select('id','slug','destination_name', 'image', 'short_desc')
+                        ->get()
+                        ->map(function ($destination) {
+                            $destination->destination_name = $destination->destination_name . ' Trips';
+                            $destination->image = asset($destination->image); 
+                            return $destination;
+                        });
 
         return response()->json([
             'message' => 'Search results',
@@ -635,6 +719,44 @@ class ApiController extends Controller
         ]);
     }
 
+    //for lead generate
+
+    public function leadStore(Request $request)
+    {
+        //dd($request->all());
+        // Map JSON camelCase keys to DB snake_case columns
+        $request->merge([
+            'destination_id' => $request->json('destinationID'),
+            'itinerary_id'   => $request->json('itinaryID'),
+            'package_id'     => $request->json('packageID'),
+        ]);
+
+        //dd('hi');
+        // Extract all expected DB columns from request
+        $data = [
+            'destination_id'  => $request->destination_id,
+            'itinerary_id'    => $request->itinerary_id,
+            'package_id'      => $request->package_id,
+            'customerName'    => ucwords($request->customerName),
+            'travelLocation'  => ucwords($request->travelLocation),
+            'travelDuration'  => $request->travelDuration,
+            'email'           => $request->email,
+            'whatsapp'        => $request->whatsapp,
+            'travellers'      => $request->travellers,
+            'startDate'       => $request->startDate,
+            'endDate'         => $request->endDate,
+        ];
+        //dd($data);
+
+        // Insert into DB
+        $lead = LeadGenerate::create($data);
+        //dd($lead);
+        return response()->json([
+            'status' => true,
+            'message' => 'Lead generated successfully!',
+            'data' => $lead,
+        ], 201);
+    }
 
 
 }

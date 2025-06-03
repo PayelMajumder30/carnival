@@ -14,8 +14,7 @@ class ItenaryList extends Model
         'main_image',
         'title',
         'slug',
-        'short_description',
-        
+        'short_description',      
         'selling_price',
         'actual_price',
         'destination_id',
@@ -60,6 +59,14 @@ class ItenaryList extends Model
     */
     public function itineraryGallery(){
         return $this->hasMany(ItineraryGallery::class, 'itinerary_id', 'id');
+    }
+
+    /*
+    * Relationship with `lead_generate` table
+    */
+    public function leadGenerate()
+    {
+        return $this->hasOne(LeadGenerate::class, 'itinerary_id');
     }
 
 

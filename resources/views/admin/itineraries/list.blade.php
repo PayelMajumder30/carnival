@@ -1,6 +1,7 @@
 @extends('admin.layout.app')
 @section('page-title', 'Itineraries')
 
+
 @section('section')
 <style>
     .tag-button {
@@ -60,6 +61,7 @@
                                     <tr class="text-left align-middle">
                                         <td>
                                             <div class="card shadow-sm" style="width: 18rem;">
+                                                <span class="badge badge-dark">{{$item->trip_durations}}({{optional($item->destination)->destination_name??"N/A"}})</span>
                                                 @if (!empty($item->main_image) && file_exists(public_path($item->main_image)))
                                                     <img src="{{ asset($item->main_image) }}" class="card-img-top" alt="main-image">
                                                 @else
@@ -159,14 +161,9 @@
                                                         @endforeach
                                                     </tbody>
                                                 </table>
-
-                                                {{-- pagination link --}}
-                                                <div class="pagination-container">
-                                                    {{$data->links()}}
-                                                </div>
                                             </div>
                                         </td>
-                                        <td class="d-flex">
+                                        <td class="">
                                             <div class="btn-group">
                                                 <a href="{{ route('admin.itineraries.edit', $item->id) }}" class="btn btn-sm btn-info" data-toggle="tooltip" title="Edit">
                                                     <i class="fa fa-edit"></i>
@@ -182,6 +179,9 @@
                                                 <a href="{{ route('admin.itineraries.galleries.list', ['itinerary_id' => $item->id])}}" class="btn btn-sm btn-success ml-1" data-toggle="tooltip" title="Manage Gallery">
                                                     <i class="fa fa-image"></i>
                                                 </a>
+                                            </div>
+                                            <div class="btn-group mt-2">
+                                                <a href="{{route('admin.itinerary.builder',[$item->id,'summarised'])}}" class="btn btn-outline-secondary btn-sm">Itinerary Builder</a>
                                             </div>
                                         </td>
                                     </tr>

@@ -83,9 +83,13 @@ use App\Http\Controllers\Api\ApiController;
 
     //Detail page of 
     Route::get('/destination/details/{itinerary_slug}', [ApiController::class, 'getDestinationDetails']);
+    //Route::get('/destination/details/{destination_id}', [ApiController::class, 'getDestinationDetails']);
 
      //search by keyword (home page)
     Route::get('/search-destinations', [ApiController::class, 'search']);
+
+    //for lead genrate
+    Route::post('/lead-generate', [ApiController::class, 'leadStore']);
 
 
 
