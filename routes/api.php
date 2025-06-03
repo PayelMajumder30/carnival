@@ -89,7 +89,7 @@ use App\Http\Controllers\Api\ApiController;
     Route::get('/search-destinations', [ApiController::class, 'search']);
 
     //for lead genrate
-    Route::post('/lead-genrate', [ApiController::class, 'leadStore']);
+    Route::post('/lead-generate', [ApiController::class, 'leadStore']);
 
 
 

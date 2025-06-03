@@ -123,7 +123,7 @@ class PackageFromCityController extends Controller
                             ->pluck('city')
                             ->toArray();
 
-         $allCities = [
+        $allCities = [
                         'delhi', 'mumbai', 'bangalore', 'hyderabad', 'chennai', 'kolkata', 'ahmedabad',
                         'pune', 'jaipur', 'surat', 'lucknow', 'kanpur', 'nagpur', 'bhopal', 'patna',
                         'indore', 'coimbatore', 'thiruvananthapuram', 'vadodara', 'visakhapatnam'

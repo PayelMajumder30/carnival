@@ -572,7 +572,7 @@ class ApiController extends Controller
         })->toArray();
         $results['destination_id'] = $destination->id;
         $results['destination_name'] = $destination->destination_name;
-        $results['about_destination'] = optional(optional($destination->aboutDestination)->first())->content ?? null;
+        $results['about_destination'] = optional(optional($destination->aboutDestination))->content ?? null;
 
         $popularPackages = DestinationWisePopularPackages::with('popularitinerary')
         ->where('destination_id', $destination->id)
@@ -727,8 +727,8 @@ class ApiController extends Controller
         // Map JSON camelCase keys to DB snake_case columns
         $request->merge([
             'destination_id' => $request->json('destinationID'),
-            'itinerary_id'   => $request->json('itinaryId'),
-            'package_id'     => $request->json('packageId'),
+            'itinerary_id'   => $request->json('itinaryID'),
+            'package_id'     => $request->json('packageID'),
         ]);
 
         //dd('hi');
