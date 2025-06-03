@@ -167,6 +167,10 @@ Route::prefix('admin/')->name('admin.')->group(function() {
                 Route::get('/', [ItenaryListController::class, 'index'])->name('itineraries.list.all');
                 Route::get('/builder/{id}/{tab}', [ItenaryListController::class, 'ItineraryBuilder'])->name('itinerary.builder');
                 Route::get('/create', [ItenaryListController::class, 'create'])->name('itineraries.create');
+                Route::post('/itinerary/save-highlight', [ItenaryListController::class, 'SaveHighlight'])->name('itinerary.save-highlight');
+                Route::post('/itinerary/delete-highlight', [ItenaryListController::class, 'DeleteHighlight'])->name('itinerary.delete-highlight');
+                Route::post('/activity/create', [ItenaryListController::class, 'ActivityCreate'])->name('itinerary.activity.create');
+                Route::post('/activity/delete', [ItenaryListController::class, 'ActivityDelete'])->name('itinerary.activity.delete');
                 Route::get('/get-itineraries-from-crm', [ItenaryListController::class, 'get_itineraries_from_crm'])->name('itineraries.get_itineraries_from_crm');
                 Route::post('/store', [ItenaryListController::class, 'store'])->name('itineraries.store');
                 Route::get('/edit/{id}', [ItenaryListController::class, 'edit'])->name('itineraries.edit');
