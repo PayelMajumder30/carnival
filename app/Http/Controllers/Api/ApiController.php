@@ -572,7 +572,7 @@ class ApiController extends Controller
         })->toArray();
         $results['destination_id'] = $destination->id;
         $results['destination_name'] = $destination->destination_name;
-        $results['about_destination'] = optional(optional($destination->aboutDestination)->first())->content ?? null;
+        $results['about_destination'] = optional(optional($destination->aboutDestination))->content ?? null;
 
         $popularPackages = DestinationWisePopularPackages::with('popularitinerary')
         ->where('destination_id', $destination->id)
@@ -703,14 +703,14 @@ class ApiController extends Controller
             ], 400);
         }
 
-        $destinations = Destination::where('destination_name', 'LIKE', '%' . $keyword . '%')
-                        ->select('id','slug','destination_name', 'image', 'short_desc')
-                        ->get()
-                        ->map(function ($destination) {
-                            $destination->destination_name = $destination->destination_name . ' Trips';
-                            $destination->image = asset($destination->image); 
-                            return $destination;
-                        });
+       $destinations = Destination::where('destination_name', 'LIKE', '%' . $keyword . '%')
+                    ->select('id','slug','destination_name', 'image', 'short_desc')
+                    ->get()
+                    ->map(function ($destination) {
+                        $destination->destination_name = $destination->destination_name . ' Trips';
+                        $destination->image = asset($destination->image); 
+                        return $destination;
+                    });
 
         return response()->json([
             'message' => 'Search results',

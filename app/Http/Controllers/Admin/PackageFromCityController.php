@@ -116,13 +116,14 @@ class PackageFromCityController extends Controller
         return redirect()->route('admin.assignCitytoPackage.index')->with('success', 'Assigned successfully.');
     }
 
+    //for fetch available cities
     public function getAvailableCities(Request $request)
     {
         $assignedCities = PackagesFromTopCities::where('destination_id', $request->destination_id)
                             ->pluck('city')
                             ->toArray();
 
-         $allCities = [
+        $allCities = [
                         'delhi', 'mumbai', 'bangalore', 'hyderabad', 'chennai', 'kolkata', 'ahmedabad',
                         'pune', 'jaipur', 'surat', 'lucknow', 'kanpur', 'nagpur', 'bhopal', 'patna',
                         'indore', 'coimbatore', 'thiruvananthapuram', 'vadodara', 'visakhapatnam'
