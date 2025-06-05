@@ -120,7 +120,7 @@
                                         </span>
                                         <span class="summary-item">
                                             <img src="{{ asset('images/taxi.png') }}" alt="Transfers">
-                                            <span>12 Transfers</span>
+                                            <span>{{count($total_cabs)}} Transfers</span>
                                         </span>
                                         <span class="summary-item">
                                             <img src="{{ asset('images/hotel.png') }}" alt="Hotels">
@@ -131,6 +131,7 @@
                                     @foreach ($DayDivisons as $key => $divison_item)
                                     @php
                                         $day_activities = App\Models\ItineraryDetail::where('itinerary_id',$itinerary->id)->where('header','day_'.$key + 1)->where('field','day_activity')->get();
+                                        $day_cabs = App\Models\ItineraryDetail::where('itinerary_id',$itinerary->id)->where('header','day_'.$key + 1)->where('field','day_cab')->get();
                                     @endphp
                                     <div class="itinerary-day px-3 py-2 rounded mb-3 d-flex justify-content-between align-items-center toggle-header"
                                         data-key="{{$key+1}}">
@@ -142,7 +143,7 @@
                                             </span>
                                             <span class="summary-day-item">
                                                 <img class="day_logo" src="{{ asset('images/taxi.png') }}" alt="">
-                                                <span> 12</span>
+                                                <span> {{count($day_cabs)}}</span>
                                             </span>
                                             <span class="summary-day-item">
                                                 <img class="day_logo" src="{{ asset('images/hotel.png') }}" alt="">
@@ -162,11 +163,15 @@
                                                 <strong>Activity:</strong>{{$activity_item->value}}
                                             </div>
                                         @endforeach
-                                        <div class="mb-2"><img class="day_logo" src="{{ asset('images/taxi.png') }}" alt="">
-                                            <strong>Transfer:</strong> Transfer from Rome State Airport to Deluxe Hotel in
-                                            Rome</div>
+                                        @foreach ($day_cabs as $day_cab)
+                                            <div class="mb-2">
+                                                <img class="day_logo" src="{{ asset('images/taxi.png') }}" alt="">
+                                                <strong>Transfer:</strong>{{$day_cab->location_from}} To {{$day_cab->location_to}}({{$day_cab->value}})
+                                            </div>
+                                        @endforeach
                                         <div class="mb-2"><img class="day_logo" src="{{ asset('images/hotel.png') }}"
-                                                alt=""> <strong>Hotel:</strong> Check-in at Deluxe Hotel in Rome</div>
+                                                alt=""> <strong>Hotel:</strong> Check-in at Deluxe Hotel in Rome
+                                        </div>
                                     </div>
                                     @endforeach
                                 </div>
@@ -180,7 +185,7 @@
                                     <div class="d-flex flex-wrap gap-4 mb-4 itinerary-summary-icons">
                                         <span class="summary-item">
                                             <img src="{{ asset('images/travel.png') }}" alt="Activities">
-                                            <span>8 Activities</span>
+                                            <span>{{count($activities)}} Activities</span>
                                         </span>
                                     </div>
 
@@ -271,7 +276,7 @@
                                     <div class="d-flex flex-wrap gap-4 mb-4 itinerary-summary-icons">
                                         <span class="summary-item">
                                             <img src="{{ asset('images/taxi.png') }}" alt="Cabs">
-                                            <span>8 Cabs</span>
+                                            <span>{{count($total_cabs)}} Cabs</span>
                                         </span>
                                     </div>
 
@@ -285,7 +290,7 @@
                                             <div class="d-flex gap-3 text-muted small cursor-pointer toggle-icon">
                                                 <span class="summary-day-item">
                                                     <img class="day_logo" src="{{ asset('images/taxi.png') }}" alt="">
-                                                    <span id="activityCountWrapper_{{$key+1}}">{{count($day_cabs)}}</span>
+                                                    <span id="cabCountWrapper_{{$key+1}}">{{ count($day_cabs) }}</span>
                                                 </span>
                                                 <span class="summary-day-item">
                                                     <i class="fa fa-chevron-down mt-1"></i>
@@ -345,8 +350,8 @@
                                 
                                         <!-- Add more form fields as needed -->
                                         <div class="mb-3">
-                                            <label for="cab_id" class="form-label">Select your Cab</label>
-                                            <select id="cab_id" name="cab_id" class="form-select" required>
+                                            <label for="cab_id" class="form-label">Select Your Cab</label>
+                                            <select id="cab_id" name="cab_id" class="form-control" required>
                                                 <option value="">-- Select Cab --</option>
                                             </select>
                                         </div>
@@ -707,22 +712,49 @@
             },
             success: function(response) {
                 if (response.success) {
-                    toastFire('success', 'Cab Added successfully!');
+                    // $('#cabModal').modal('hide');
+                    // toastFire('success', 'Cab Added successfully!');
+
+                    const container = $('#cabWrapper_' + dayNumber);
+                    container.html(''); 
+
+                    response.data.forEach(function(cab_item) {
+                        container.append(`
+                            <div class="mb-2 d-flex justify-content-between align-items-center" id="cab-item-${cab_item.id}">
+                                <div class="cab-item d-flex align-items-center p-3 mb-2 rounded shadow-sm border bg-light">
+                                    <img src="{{ asset('images/taxi.png') }}" alt="Cab" class="me-3" style="width: 24px; height: 24px;">
+                                    <div class="flex-grow-1">
+                                        <div class="fw-bold text-primary mb-1">Cab: ${cab_item.value}</div>
+                                        <div class="small text-muted">From <strong>${cab_item.location_from}</strong> to <strong>${cab_item.location_to}</strong></div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="deleteCab(${cab_item.id})">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                        `);
+                    });
+
+                    $('#cabCountWrapper_' + dayNumber).text(response.data.length);
+
                     $('#cabModal').modal('hide');
+                    toastFire('success', 'Cab Added successfully!');
+                    
                 } else {
-                    toastFire('error', response.message || 'Failed to added cab.');
+                    toastFire('error', response.message || 'Failed to add cab.');
                 }
             },
             error: function(xhr) {
-                toastFire('error', 'Failed To Saved Cab. Please try again.');
+                toastFire('error', 'Failed to save cab. Please try again.');
+                console.error(xhr.responseText);
             }
         });
     }
 
+
     function deleteCab(cabId)
     {
-        // if (!confirm('Are you sure you want to delete this cab?')) return;
-
+        
         $.ajax({
             url: "{{ route('admin.itinerary.cab.delete') }}", 
             type: 'POST',

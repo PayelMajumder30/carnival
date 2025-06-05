@@ -72,12 +72,13 @@ class ItenaryListController extends Controller
 
         $trip_highlight = ItineraryDetail::where('itinerary_id',$id)->where('header','summarised')->where('field','trip_highlight')->get();
         $activities = ItineraryDetail::where('itinerary_id',$id)->where('field','day_activity')->get();
+        $total_cabs = ItineraryDetail::where('itinerary_id',$id)->where('field','day_cab')->get();
 
         if (isset($itineraryData['status']) && $itineraryData['status'] === true) {
             $DayDivisons = $itineraryData['data'];
         }
 
-         return view('admin.itineraries.itinerary_builder', compact('itinerary','active_tab','DayDivisons','trip_highlight','activities'));
+         return view('admin.itineraries.itinerary_builder', compact('itinerary','active_tab','DayDivisons','trip_highlight','activities', 'total_cabs'));
     }
 
     public function FetchCabs($division_id){
@@ -142,7 +143,15 @@ class ItenaryListController extends Controller
             $cabDetails = ItineraryDetail::where('itinerary_id', $itineraryId)
                 ->where('header', 'day_' . $dayNumber)
                 ->where('field', 'day_cab')
-                ->get();
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'value' => $item->value,
+                        'location_from' => $item->location_from,
+                        'location_to' => $item->location_to,
+                    ];
+                });
 
             return response()->json([
                 'success' => true,
