@@ -19,7 +19,7 @@
                           
                                 <div class="form-group">
                                     <label for="title">Title <span style="color: red;">*</span></label>
-                                    <input type="text" class="form-control" name="title" id="title" placeholder="Enter partner title.." value="{{ old('title') }}">
+                                    <input type="text" class="form-control" name="title" id="title" placeholder="Enter title.." value="{{ old('title') }}">
                                     @error('title') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div>
                                 <div class="form-group">

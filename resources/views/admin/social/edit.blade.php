@@ -35,7 +35,6 @@
                                     @endif
                                     <label for="image">Image <span style="color: red;">*</span></label>
                                     <input type="file" class="form-control" name="image" id="image">
-                                    <p class="small text-muted">Size: less than 1 mb</p>
                                     @error('image') <p class="small text-danger">{{ $message }}</p> @enderror
                                 </div>
                             </div>

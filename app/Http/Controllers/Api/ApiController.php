@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\{TripCategoryDestination, SocialMedia, Banner, TripCategory, Partner, 
     WhyChooseUs, Setting, Blog, Offer, PageContent, Destination, TripCategoryActivities, ItenaryList, 
     ItineraryGallery, Support, AboutDestination, DestinationWisePopularPackages, DestinationWiseItinerary,
-    DestinationWisePopularPackageTag, PackagesFromTopCities, LeadGenerate};
+    DestinationWisePopularPackageTag, PackagesFromTopCities, LeadGenerate, ItineraryDetail};
 
 class ApiController extends Controller
 {
@@ -602,92 +602,67 @@ class ApiController extends Controller
                 'slug' => $toCity->slug,
             ];
         })->toArray();
+
+        //fetch trip summary
+        $postData = [
+            'division_ids' => explode(',', $existingItinerary->stay_by_division_journey),
+        ];
+
+        // dd($postData);
+        $ch = curl_init(env('CRM_BASEPATH').'api/crm/active/divisions');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($postData)); // encode only once!
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'Accept: application/json'
+        ]);
+
+        $itineraryResponse = curl_exec($ch);
+        curl_close($ch);
+        $itineraryData = json_decode($itineraryResponse, true);
+
+        $trip_summary = [];
+
+        if(isset($itineraryData['status']) && $itineraryData['status'] === true) {
+            $DayDivisons = $itineraryData['data'];
+
+            foreach($DayDivisons as $key => $day) {
+                $dayNumber = $key + 1;
+                $headerKey = 'day_' . $dayNumber;
+
+                $activities = ItineraryDetail::where('itinerary_id', $existingItinerary->id)
+                        ->where('header', $headerKey)
+                        ->where('field', 'day_activity')
+                        ->pluck('value');
+
+                $hotels = ItineraryDetail::where('itinerary_id', $existingItinerary->id)
+                    ->where('header', $headerKey)
+                    ->where('field', 'day_hotel')
+                    ->pluck('value');
+
+                $transfers = ItineraryDetail::where('itinerary_id', $existingItinerary->id)
+                    ->where('header', $headerKey)
+                    ->where('field', 'day_cab')
+                    ->pluck('value');
+
+                $trip_summary[] = [
+                    'day'   => $dayNumber,
+                    'title' => $day['name'],
+                    'activities'=> $activities,
+                    'hotels'    => $hotels,
+                    'transfers' => $transfers,
+                ];
+                //dd($trip_summary);
+            }
+        }
+
+        $results['trip_summary'] = $trip_summary;
+
         return response()->json($results, 200);
     }
   
     
-
-    //detail page of destination
-
-    // public function getDestinationDetails($destination_id)
-    // {
-    //     $destination = Destination::find($destination_id);
-
-    //     if (!$destination) {
-    //         return response()->json(['message' => 'Destination not found'], 404);
-    //     }
-
-    //     // Itineraries mapped via destination_wise_itinerary
-    //     $itineraryIds = DestinationWiseItinerary::where('destination_id', $destination_id)
-    //         ->distinct()
-    //         ->pluck('itinerary_id')
-    //         ->toArray();
-
-    //     $itineraries = ItenaryList::whereIn('id', $itineraryIds)->where('status',1)
-    //         ->with('itineraryGallery')
-    //         ->get();
-
-    //     // About Destination
-    //     $about = AboutDestination::where('destination_id', $destination_id)
-    //         ->pluck('content')
-    //         ->first(); // Just take one
-
-    //     // Popular Itineraries
-    //     $popularPackages = DestinationWisePopularPackages::with(['destination', 'popularitinerary'])
-    //         ->where('destination_id', $destination_id)
-    //         ->get();
-
-    //     // Popular Tags
-    //     $popularPackageIds = $popularPackages->pluck('id')->toArray();
-
-    //     $popularTags = DestinationWisePopularPackageTag::with('tag')
-    //         ->whereIn('popular_package_id', $popularPackageIds)
-    //         ->get()
-    //         ->pluck('tag')
-    //         ->unique('id') 
-    //         ->values();
-
-    //     //packages from top cities
-    //     $packagesFromTopCities = PackagesFromTopCities::where('destination_id', $destination_id)->where('status',1)
-    //                 ->get()->map(function ($package) {
-    //                     return [
-    //                         'id'    => $package->id,
-    //                         'slug'  => ucwords($package->slug),
-    //                     ];
-    //                 });
-       
-    //     $result = [
-    //         'destination_id'   => $destination->id,
-    //         'destination_name' => $destination->destination_name,
-
-    //         'about' => strip_tags($about),
-
-    //         'itineraries' => $itineraries->map(function ($itinerary) {
-    //             return [
-    //                 'id'             => $itinerary->id,
-    //                 'title'          => $itinerary->title,
-    //                 'trip_durations' => $itinerary->trip_durations,
-    //                 'selling_price'     => $itinerary->selling_price,
-    //                 'actual_price'      => $itinerary->actual_price,
-    //                 'gallery'        => $itinerary->itineraryGallery->map(function ($gallery) {
-    //                     return asset($gallery->image);
-    //                 })->toArray(),
-    //             ];
-    //         }),
-
-    //         'popular_packages' => $popularPackages->map(function ($item) {
-    //             return [
-    //                 'destination_name' => $item->destination->destination_name,
-    //                 'itinerary_title'  => $item->popularitinerary->title,
-    //             ];
-    //         }),
-
-    //         'packages_from_top_cities' => $packagesFromTopCities,
-    //         //'popular_tags' => $popularTags
-    //     ];
-
-    //     return response()->json($result);
-    // }
    
     //search by keyword (home page)
     public function search(Request $request)
