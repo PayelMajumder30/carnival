@@ -72,39 +72,104 @@ class ItenaryListController extends Controller
 
         $trip_highlight = ItineraryDetail::where('itinerary_id',$id)->where('header','summarised')->where('field','trip_highlight')->get();
         $activities = ItineraryDetail::where('itinerary_id',$id)->where('field','day_activity')->get();
+        $total_cabs = ItineraryDetail::where('itinerary_id',$id)->where('field','day_cab')->get();
 
         if (isset($itineraryData['status']) && $itineraryData['status'] === true) {
             $DayDivisons = $itineraryData['data'];
         }
 
-         return view('admin.itineraries.itinerary_builder', compact('itinerary','active_tab','DayDivisons','trip_highlight','activities'));
+         return view('admin.itineraries.itinerary_builder', compact('itinerary','active_tab','DayDivisons','trip_highlight','activities', 'total_cabs'));
     }
+
     public function FetchCabs($division_id){
-            $url = env('CRM_BASEPATH').'api/crm/active/division-wise/cabs/'.$division_id;
-            $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $url = env('CRM_BASEPATH').'api/crm/active/division-wise/cabs/'.$division_id;
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-            $itineraryResponse = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
+        $itineraryResponse = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
 
-            $responseCab = json_decode($itineraryResponse, true);
-            if ($httpCode === 200 && isset($itineraryData['status']) && $itineraryData['status'] === true) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'cab fetched successfully.',
-                    'data' => $itineraryData['data']
-                ], 200);
-            }
+        $responseCab = json_decode($itineraryResponse, true);
+        if ($httpCode === 200 && isset($responseCab['status']) && $responseCab['status'] === true) {
+            return response()->json([
+                'success' => true,
+                'message' => 'cab fetched successfully.',
+                'data' => $responseCab['data']
+            ], 200);
+        }
+       // dd($responseCab);
+        return response()->json([
+            'success' => false,
+            'message' => $responseCab['message'] ?? 'Failed to fetch cabs.',
+            'data' => []
+        ], 400);     
+    }
+
+
+    public function storeCab(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $request->validate([
+                'itinerary_id' => 'required|integer',
+                'cab_id' => 'required|integer',
+                'cab_name' => 'required|string',
+                'location_from' => 'required|string',
+                'location_to' => 'required|string'
+            ]);
+
+            $itineraryId = $request->input('itinerary_id');
+            $dayNumber = $request->input('day_number');
+            $cabName = $request->input('cab_name');
+
+            ItineraryDetail::updateOrCreate(
+                [
+                'itinerary_id'    => $itineraryId,
+                'header'          => 'day_' . $dayNumber,
+                'field'           => 'day_cab',
+                'location_from'   => ucwords($request->input('location_from')),
+                'location_to'     => ucwords($request->input('location_to')),
+                ],
+                [
+                'value'           => $cabName,
+                'images'          => null,
+                ]
+            );
+
+            DB::commit();
+
+            $cabDetails = ItineraryDetail::where('itinerary_id', $itineraryId)
+                ->where('header', 'day_' . $dayNumber)
+                ->where('field', 'day_cab')
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'value' => $item->value,
+                        'location_from' => $item->location_from,
+                        'location_to' => $item->location_to,
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cab saved successfully.',
+                'data' => $cabDetails
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
 
             return response()->json([
                 'success' => false,
-                'message' => $itineraryData['message'] ?? 'Failed to fetch cabs.',
-                'data' => []
-            ], 400);
-
-            
+                'message' => 'Failed to save cab.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
+
+
     public function SaveHighlight(Request $request)
     {
         $highlight = ItineraryDetail::updateOrCreate(
@@ -119,7 +184,7 @@ class ItenaryListController extends Controller
             ]
         );
 
-         return response()->json([
+        return response()->json([
             'status' => true,
             'highlight_id' => $highlight->id,
             'message' => 'Highlight saved successfully.'
@@ -613,5 +678,22 @@ class ItenaryListController extends Controller
         ]);
     }
 
+    public function cabDelete(Request $request)
+    {
+        try {
+            $cab = ItineraryDetail::findOrFail($request->id);
+            $cab->delete();
 
+            return response()->json([
+                'status' => true,
+                'message' => 'Cab deleted successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to delete cab.',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
 }

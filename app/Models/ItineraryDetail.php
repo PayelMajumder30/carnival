@@ -13,6 +13,8 @@ class ItineraryDetail extends Model
         'itinerary_id',
         'header',
         'field',
+        'location_from',
+        'location_to',
         'value',
         'images',
     ];

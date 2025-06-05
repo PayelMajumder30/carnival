@@ -120,7 +120,7 @@
                                         </span>
                                         <span class="summary-item">
                                             <img src="{{ asset('images/taxi.png') }}" alt="Transfers">
-                                            <span>12 Transfers</span>
+                                            <span>{{count($total_cabs)}} Transfers</span>
                                         </span>
                                         <span class="summary-item">
                                             <img src="{{ asset('images/hotel.png') }}" alt="Hotels">
@@ -131,6 +131,7 @@
                                     @foreach ($DayDivisons as $key => $divison_item)
                                     @php
                                         $day_activities = App\Models\ItineraryDetail::where('itinerary_id',$itinerary->id)->where('header','day_'.$key + 1)->where('field','day_activity')->get();
+                                        $day_cabs = App\Models\ItineraryDetail::where('itinerary_id',$itinerary->id)->where('header','day_'.$key + 1)->where('field','day_cab')->get();
                                     @endphp
                                     <div class="itinerary-day px-3 py-2 rounded mb-3 d-flex justify-content-between align-items-center toggle-header"
                                         data-key="{{$key+1}}">
@@ -142,7 +143,7 @@
                                             </span>
                                             <span class="summary-day-item">
                                                 <img class="day_logo" src="{{ asset('images/taxi.png') }}" alt="">
-                                                <span> 12</span>
+                                                <span> {{count($day_cabs)}}</span>
                                             </span>
                                             <span class="summary-day-item">
                                                 <img class="day_logo" src="{{ asset('images/hotel.png') }}" alt="">
@@ -162,11 +163,15 @@
                                                 <strong>Activity:</strong>{{$activity_item->value}}
                                             </div>
                                         @endforeach
-                                        <div class="mb-2"><img class="day_logo" src="{{ asset('images/taxi.png') }}" alt="">
-                                            <strong>Transfer:</strong> Transfer from Rome State Airport to Deluxe Hotel in
-                                            Rome</div>
+                                        @foreach ($day_cabs as $day_cab)
+                                            <div class="mb-2">
+                                                <img class="day_logo" src="{{ asset('images/taxi.png') }}" alt="">
+                                                <strong>Transfer:</strong>{{$day_cab->location_from}} To {{$day_cab->location_to}}({{$day_cab->value}})
+                                            </div>
+                                        @endforeach
                                         <div class="mb-2"><img class="day_logo" src="{{ asset('images/hotel.png') }}"
-                                                alt=""> <strong>Hotel:</strong> Check-in at Deluxe Hotel in Rome</div>
+                                                alt=""> <strong>Hotel:</strong> Check-in at Deluxe Hotel in Rome
+                                        </div>
                                     </div>
                                     @endforeach
                                 </div>
@@ -180,7 +185,7 @@
                                     <div class="d-flex flex-wrap gap-4 mb-4 itinerary-summary-icons">
                                         <span class="summary-item">
                                             <img src="{{ asset('images/travel.png') }}" alt="Activities">
-                                            <span>8 Activities</span>
+                                            <span>{{count($activities)}} Activities</span>
                                         </span>
                                     </div>
 
@@ -271,7 +276,7 @@
                                     <div class="d-flex flex-wrap gap-4 mb-4 itinerary-summary-icons">
                                         <span class="summary-item">
                                             <img src="{{ asset('images/taxi.png') }}" alt="Cabs">
-                                            <span>8 Cabs</span>
+                                            <span>{{count($total_cabs)}} Cabs</span>
                                         </span>
                                     </div>
 
@@ -285,7 +290,7 @@
                                             <div class="d-flex gap-3 text-muted small cursor-pointer toggle-icon">
                                                 <span class="summary-day-item">
                                                     <img class="day_logo" src="{{ asset('images/taxi.png') }}" alt="">
-                                                    <span id="activityCountWrapper_{{$key+1}}">{{count($day_cabs)}}</span>
+                                                    <span id="cabCountWrapper_{{$key+1}}">{{ count($day_cabs) }}</span>
                                                 </span>
                                                 <span class="summary-day-item">
                                                     <i class="fa fa-chevron-down mt-1"></i>
@@ -299,19 +304,27 @@
                                                 <div class="col-12">
                                                     <div class="text-right">
                                                         <button type="button"
-                                                            class="btn btn-outline-success mt-2 btn-sm" onclick="AddCab({{ $key + 1 }})"><i class="fa fa-plus me-1"></i> ADD CAB</button>
+                                                            class="btn btn-outline-success mt-2 btn-sm" onclick="AddCab({{ $key + 1 }},{{$divison_item['id']}})"><i class="fa fa-plus me-1"></i> ADD CAB</button>
                                                     </div>
                                                 </div>
                                             </div>
                                             
-                                            <div id="activityListWrapper_{{$key+1}}">
+                                            <div id="cabWrapper_{{$key+1}}">
                                                 @foreach ($day_cabs as $cab_item)
-                                                    <div class="mb-2 d-flex justify-content-between align-items-center" id="activity-item-{{$cab_item->id}}">
-                                                        <div>
+                                                    <div class="mb-2 d-flex justify-content-between align-items-center" id="cab-item-{{$cab_item->id}}">
+                                                        {{-- <div>
                                                             <img class="day_logo" src="{{ asset('images/taxi.png') }}" alt="">
-                                                            <strong>Activity:</strong>{{$cab_item->value}}
+                                                            <strong>Cab:</strong>{{$cab_item->value}} {{$cab_item->location_from}} To {{$cab_item->location_to}}
+                                                        </div> --}}
+                                                        <div class="cab-item d-flex align-items-center p-3 mb-2 rounded shadow-sm border bg-light">
+                                                            <img src="{{ asset('images/taxi.png') }}" alt="Cab" class="me-3" style="width: 24px; height: 24px;">
+                                                            <div class="flex-grow-1">
+                                                                <div class="fw-bold text-primary mb-1"> Cab: {{ $cab_item->value }}</div>
+                                                                <div class="small text-muted">From <strong>{{ $cab_item->location_from }}</strong> to <strong>{{ $cab_item->location_to }}</strong></div>
+                                                            </div>
                                                         </div>
-                                                        <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="deleteActivity({{$cab_item->id}})">
+
+                                                        <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="deleteCab({{$cab_item->id}})">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </div>
@@ -327,34 +340,44 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="cabModalLabel">Add New Cab - <span id="day_number"></span></h5>
+                                        <h5 class="modal-title" id="cabModalLabel">Add New Cab - <span id="day_number_label"></span></h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <input type="hidden" id="new_itinerary_id" name="itinerary_id" value="{{$itinerary->id}}">
                                         <input type="hidden" id="new_itinerary_day" name="itinerary_day" value="">
-                                        
+                                        <input type="hidden" id="day_number" name="day_number" value="">
+                                
                                         <!-- Add more form fields as needed -->
                                         <div class="mb-3">
-                                        <label for="activity_name" class="form-label">Activity Name</label>
-                                            <div id="activityNameWrapper">
-                                                <!-- Input fields will be added here -->
-                                            </div>
-                                            <div class="text-right">
-                                                <button type="button" class="btn btn-outline-success btn-sm mt-2" id="addActivityNameBtn">
-                                                    <i class="fa fa-plus me-1"></i> Add More
-                                                </button>
-                                            </div>
+                                            <label for="cab_id" class="form-label">Select Your Cab</label>
+                                            <select id="cab_id" name="cab_id" class="form-control" required>
+                                                <option value="">-- Select Cab --</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                             <label for="location_from" class="form-label">Location From</label>
+                                             <input type="text" id="location_from" name="location_from" class="form-control" required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                             <label for="location_to" class="form-label">Location To</label>
+                                             <input type="text" id="location_to" name="location_to" class="form-control" required>
                                         </div>
 
                                         <!-- Submit button -->
                                         <div class="text-center">
-                                            <button class="btn btn-primary" onclick="submitActivity()">Save Activity</button>
+                                            <button class="btn btn-primary" onclick="submitCab()">Save Cab</button>
                                         </div>
                                     </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <script>
+                                const fetchCabsRoute = "{{ route('admin.itinerary.fetch.cabs', ['division_id' => 'divisionId']) }}";
+                            </script>
                         @endif
                     </div>
                 </div>
@@ -557,7 +580,7 @@
                                     <img class="day_logo" src="{{ asset('images/travel.png') }}" alt="">
                                     <strong>Activity:</strong> ${item.value}
                                 </div>
-                                <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="deleteActivity(${item.id})">
+                                <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="deleteCab(${item.id})">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </div>
@@ -577,11 +600,32 @@
         }
     }
 
-    function deleteActivity(activityId) {
-        // if (!confirm('Are you sure you want to delete this activity?')) return;
+    // function deleteActivity(activityId) {
+    //     // if (!confirm('Are you sure you want to delete this activity?')) return;
 
+    //     $.ajax({
+    //         url: "{{route('admin.itinerary.activity.delete')}}", // adjust to your actual route
+    //         type: 'POST',
+    //         data: {
+    //             id: activityId,
+    //             _token: $('meta[name="csrf-token"]').attr('content')
+    //         },
+    //         success: function (response) {
+    //             if (response.status) {
+    //                 $('#activity-item-' + activityId).remove();
+    //             } else {
+    //                 toastFire('success', 'Failed to delete activity');
+    //             }
+    //         },
+    //         error: function () {
+    //             toastFire('error', 'An error occurred. Please try again');
+    //         }
+    //     });
+    // }
+
+    function deleteActivity(activityId) {
         $.ajax({
-            url: "{{route('admin.itinerary.activity.delete')}}", // adjust to your actual route
+            url: "{{ route('admin.itinerary.activity.delete') }}",
             type: 'POST',
             data: {
                 id: activityId,
@@ -590,26 +634,147 @@
             success: function (response) {
                 if (response.status) {
                     $('#activity-item-' + activityId).remove();
+                    toastFire('success', response.message || 'Activity deleted successfully!');
                 } else {
-                    toastFire('success', 'Failed to delete activity');
+                   toastFire('error', response.message || 'Failed to delete activity.');
                 }
             },
             error: function () {
-                toastFire('error', 'An error occurred. Please try again');
+                toastFire('error', 'An error occurred. Please try again.');
             }
         });
     }
 
+
     // Day Hotel
     // Day Cab
 
-    function AddCab(dayNumber) {
-        // Set values inside modal
-        document.getElementById('activityNameWrapper').innerHTML = '';
+
+    function AddCab(dayNumber, division_id) {
+        //console.log("division_id:", division_id);
+        $('#cab_id').empty().append('<option value="">Loading...</option>');
+        $('#location_from').val('');
+        $('#location_to').val('');
         document.getElementById('new_itinerary_day').value = dayNumber;
-        // Show the modal
+        document.getElementById('day_number').value = dayNumber;
+        document.getElementById('day_number_label').textContent = dayNumber;
+
+        const url = fetchCabsRoute.replace('divisionId', division_id);
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    $('#cab_id').empty().append('<option value="">-- Select Cab --</option>');
+                    $.each(response.data, function(index, cab) {
+                        $('#cab_id').append(`<option value="${cab.id}">${cab.name}</option>`);
+                    });
+                } else {
+                    $('#cab_id').empty().append('<option value="">No cabs found</option>');
+                }
+            },
+            error: function() {
+                $('#cab_id').empty().append('<option value="">Error loading cabs</option>');
+            }
+        });
+
         const myModal = new bootstrap.Modal(document.getElementById('cabModal'));
         myModal.show();
     }
+
+    function submitCab() {
+        const itineraryId = $('#new_itinerary_id').val();
+        const itineraryDay = $('#new_itinerary_day').val();
+        const dayNumber = $('#day_number').val();
+        const cabId = $('#cab_id').val();
+        const cabName = $('#cab_id option:selected').text(); 
+        const locationFrom = $('#location_from').val();
+        const locationTo = $('#location_to').val();
+
+        if (!cabId || !locationFrom || !locationTo) {
+            alert('Please fill in all fields.');
+            return;
+        }
+
+        $.ajax({
+            url: "{{ route('admin.itinerary.store.cab') }}",
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                itinerary_id: itineraryId,
+                itinerary_day: itineraryDay,
+                day_number: dayNumber,
+                cab_id: cabId,
+                cab_name: cabName,
+                location_from: locationFrom,
+                location_to: locationTo
+            },
+            success: function(response) {
+                if (response.success) {
+                    // $('#cabModal').modal('hide');
+                    // toastFire('success', 'Cab Added successfully!');
+
+                    const container = $('#cabWrapper_' + dayNumber);
+                    container.html(''); 
+
+                    response.data.forEach(function(cab_item) {
+                        container.append(`
+                            <div class="mb-2 d-flex justify-content-between align-items-center" id="cab-item-${cab_item.id}">
+                                <div class="cab-item d-flex align-items-center p-3 mb-2 rounded shadow-sm border bg-light">
+                                    <img src="{{ asset('images/taxi.png') }}" alt="Cab" class="me-3" style="width: 24px; height: 24px;">
+                                    <div class="flex-grow-1">
+                                        <div class="fw-bold text-primary mb-1">Cab: ${cab_item.value}</div>
+                                        <div class="small text-muted">From <strong>${cab_item.location_from}</strong> to <strong>${cab_item.location_to}</strong></div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger ms-2" onclick="deleteCab(${cab_item.id})">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </div>
+                        `);
+                    });
+
+                    $('#cabCountWrapper_' + dayNumber).text(response.data.length);
+
+                    $('#cabModal').modal('hide');
+                    toastFire('success', 'Cab Added successfully!');
+                    
+                } else {
+                    toastFire('error', response.message || 'Failed to add cab.');
+                }
+            },
+            error: function(xhr) {
+                toastFire('error', 'Failed to save cab. Please try again.');
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+
+    function deleteCab(cabId)
+    {
+        
+        $.ajax({
+            url: "{{ route('admin.itinerary.cab.delete') }}", 
+            type: 'POST',
+            data: {
+                id: cabId,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                if (response.status) {
+                    $('#cab-item-' + cabId).remove();
+                    toastFire('success', 'Cab deleted successfully!');
+                } else {
+                    toastFire('error', response.message || 'Failed to delete cab.');
+                }
+            },
+            error: function () {
+                toastFire('error', 'An error occurred. Please try again.');
+            }
+        });
+    }
+
 </script>
 @endsection
