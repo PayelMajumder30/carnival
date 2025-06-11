@@ -155,24 +155,52 @@
                                         </div>
                                     </div>
 
-                                    <div class="day-details ps-4 mb-3 mx-4" id="day_details_{{$key+1}}"
-                                        style="display: none;">
-                                        @foreach ($day_activities as $activity_item)
+                                    <div class="day-details ps-4 mb-3 mx-4" id="day_details_{{$key+1}}" style="display: none;">
+                                        @if(count($day_activities))
                                             <div class="mb-2">
                                                 <img class="day_logo" src="{{ asset('images/travel.png') }}" alt="">
-                                                <strong>Activity:</strong>{{$activity_item->value}}
+                                                <strong>Activity:</strong>
+                                                <ul class="ms-4 mt-2">
+                                                    @foreach ($day_activities as $activity_item)
+                                                        <li>{{ $activity_item->value }}</li>
+                                                    @endforeach
+                                                </ul>
                                             </div>
-                                        @endforeach
-                                        @foreach ($day_cabs as $day_cab)
+                                        @endif
+
+                                       @if(count($day_cabs))
                                             <div class="mb-2">
                                                 <img class="day_logo" src="{{ asset('images/taxi.png') }}" alt="">
-                                                <strong>Transfer:</strong>{{$day_cab->location_from}} To {{$day_cab->location_to}}({{$day_cab->value}})
+                                                <strong>Transfer:</strong>
+                                                <ul class="ms-4 mt-2">
+                                                    @foreach ($day_cabs as $day_cab)
+                                                        <li class="mb-1">
+                                                            <strong>
+                                                                <i class="fas fa-map-marker-alt text-danger me-1" style="font-size:12px;"></i> From:
+                                                            </strong> {{ $day_cab->location_from }} &nbsp;
+
+                                                            <strong>
+                                                                <i class="fas fa-map-marker-alt text-success me-1" style="font-size:12px;"></i> To:
+                                                            </strong> {{ $day_cab->location_to }} &nbsp;
+
+                                                            <strong>
+                                                               <img class="day_logo" src="{{ asset('images/taxi.png') }}" alt="" style="width: 20px;"> Cab:
+                                                            </strong> {{ $day_cab->value }}
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+
+
                                             </div>
-                                        @endforeach
-                                        <div class="mb-2"><img class="day_logo" src="{{ asset('images/hotel.png') }}"
-                                                alt=""> <strong>Hotel:</strong> Check-in at Deluxe Hotel in Rome
+                                        @endif
+
+
+                                        <div class="mb-2">
+                                            <img class="day_logo" src="{{ asset('images/hotel.png') }}" alt="">
+                                            <strong>Hotel:</strong> Check-in at Deluxe Hotel in Rome
                                         </div>
                                     </div>
+
                                     @endforeach
                                 </div>
                             </div>
@@ -657,7 +685,7 @@
         $('#location_to').val('');
         document.getElementById('new_itinerary_day').value = dayNumber;
         document.getElementById('day_number').value = dayNumber;
-        document.getElementById('day_number_label').textContent = dayNumber;
+        document.getElementById('day_number_label').textContent = 'Day '+dayNumber;
 
         const url = fetchCabsRoute.replace('divisionId', division_id);
 

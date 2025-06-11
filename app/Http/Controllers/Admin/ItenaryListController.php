@@ -52,7 +52,6 @@ class ItenaryListController extends Controller
             'division_ids' => explode(',', $itinerary->stay_by_division_journey) 
         ];
 
-        // dd($postData);
         $ch = curl_init(env('CRM_BASEPATH').'api/crm/active/divisions');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
