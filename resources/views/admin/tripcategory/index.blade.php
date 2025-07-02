@@ -250,13 +250,13 @@
         $(document).on('change', '.trip-checkbox', function () {
             let checkedCount = $('.trip-checkbox:checked').length;
 
-            if (checkedCount > 2) {
+            if (checkedCount > 3) {
                 this.checked = false;
-                $('#highlightError').text('You can only select up to two checkboxes.').show();
+                $('#highlightError').text('You can only select up to three checkboxes.').show();
                 return;
             }
 
-            if (checkedCount > 0 && checkedCount <= 2) {
+            if (checkedCount > 0 && checkedCount <= 3) {
                 $('#highlightError').hide();
                 resetSaveButton();
             }
@@ -277,8 +277,8 @@
                 return;
             }
 
-            if (checkedCount > 2) {
-                $('#highlightError').text('You can only select up to two checkboxes.').show();
+            if (checkedCount > 3) {
+                $('#highlightError').text('You can only select up to three checkboxes.').show();
                 return;
             }
 
