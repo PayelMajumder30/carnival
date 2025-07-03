@@ -636,10 +636,10 @@ class ApiController extends Controller
                         ->where('field', 'day_activity')
                         ->pluck('value');
 
-                $hotels = ItineraryDetail::where('itinerary_id', $existingItinerary->id)
-                    ->where('header', $headerKey)
-                    ->where('field', 'day_hotel')
-                    ->pluck('value');
+                // $hotels = ItineraryDetail::where('itinerary_id', $existingItinerary->id)
+                //     ->where('header', $headerKey)
+                //     ->where('field', 'day_hotel')
+                //     ->pluck('value');
 
                 $transfers = ItineraryDetail::where('itinerary_id', $existingItinerary->id)
                     ->where('header', $headerKey)
@@ -650,7 +650,7 @@ class ApiController extends Controller
                     'day'   => $dayNumber,
                     'title' => $day['name'],
                     'activities'=> $activities,
-                    'hotels'    => $hotels,
+                    // 'hotels'    => $hotels,
                     'transfers' => $transfers,
                 ];
                 //dd($trip_summary);

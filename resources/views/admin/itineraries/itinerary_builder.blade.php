@@ -298,8 +298,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="day-details ps-4 mb-3 mx-4" id="day_details_{{$key+1}}"
-                                            style="display: none;">
+                                        <div class="day-details ps-4 mb-3 mx-4" id="day_details_{{$key+1}}" style="display: none;">
                                             <div class="row mb-1">
                                                 <div class="col-12">
                                                     <div class="text-right">
