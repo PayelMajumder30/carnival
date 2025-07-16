@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Repositories\PageContentRepository;
+use App\Models\{PageContent};
 
 class PageContentController extends Controller
 {
@@ -93,6 +94,15 @@ class PageContentController extends Controller
         // dd($data);
         // dd("yfh");
         return redirect()->route('admin.page_content.list.all')->with('success', 'Page Content Updated Successfully!');
+    }
+    public function PageContentStatus(Request $request, $id){
+        $data = PageContent::find($id);
+        $data->status = ($data->status == 1) ? 0 : 1;
+        $data->update();
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Status updated',
+        ]);
     }
 
     public function PageContentDelete($id)

@@ -143,6 +143,7 @@ Route::prefix('admin/')->name('admin.')->group(function() {
                Route::get('/detail/{id}', [PageContentController::class, 'PageContentDetail'])->name('page_content.detail');
                Route::get('/edit/{id}', [PageContentController::class, 'PageContentEdit'])->name('page_content.edit');
                Route::post('/update/{id}', [PageContentController::class, 'PageContentUpdate'])->name('page_content.update');
+               Route::get('/status/{id}', [PageContentController::class, 'PageContentStatus'])->name('page_content.status');
                Route::get('/delete/{id}', [PageContentController::class, 'PageContentDelete'])->name('page_content.delete');
             });
         });

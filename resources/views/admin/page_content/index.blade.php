@@ -44,6 +44,7 @@
                                     <th style="width: 10px">#</th>
                                     <th>Page</th>
                                     <th>Title</th>
+                                    <th>Status</th>
                                     <th style="width: 100px">Action</th>
                                 </tr>
                             </thead>
@@ -53,6 +54,12 @@
                                         <td>{{ $index + $data->firstItem() }}</td>
                                         <td>{{ strtoupper($item->page) }}</td>
                                         <td>{{ ucwords($item->title) }}</td>
+                                        <td>
+                                           <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
+                                                <input type="checkbox" class="custom-control-input" id="customSwitch{{$item->id}}" {{ ($item->status == 1) ? 'checked' : '' }} onchange="statusToggle('{{ route('admin.page_content.status', $item->id) }}')">
+                                                <label class="custom-control-label" for="customSwitch{{$item->id}}"></label>
+                                            </div>
+                                        </td>
                                         <td class="d-flex">
                                             <div class="btn-group">
                                                 {{-- <a href="{{ route('admin.page_content.detail', $item->id) }}" class="btn btn-sm btn-dark" data-toggle="tooltip" title="View">

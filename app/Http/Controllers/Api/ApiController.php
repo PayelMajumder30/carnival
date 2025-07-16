@@ -832,7 +832,7 @@ class ApiController extends Controller
 
     public function contentIndex() {
 
-        $data = PageContent::orderBy('id','asc')->get();
+        $data = PageContent::orderBy('id','asc')->where('status', 1)->get();
 
         $result = [];
 
