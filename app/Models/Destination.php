@@ -17,6 +17,7 @@ class Destination extends Model
         'image',
         'logo',
         'status',
+        'banner_media',
         'banner_image',
         'short_desc'
     ];

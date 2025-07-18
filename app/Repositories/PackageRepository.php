@@ -21,7 +21,8 @@ class PackageRepository implements PackageInterface
     public function create(array $data)
     {
         $packageData = [     
-            'title'     => ucwords($data['title']),                 
+            'title'     => ucwords($data['title']),    
+            'positions' => $data['positions']       
         ];
         return PackageCategory::create($packageData);
     }

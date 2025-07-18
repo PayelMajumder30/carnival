@@ -121,6 +121,8 @@ Route::prefix('admin/')->name('admin.')->group(function() {
                 Route::get('status/{id}',[TagController::class, 'status'])->name('tag.status');
                 Route::post('delete',[TagController::class, 'delete'])->name('tag.delete');
             });
+
+            Route::get('/news-letter', [NewsletterController::class, 'index'])->name('newsletter.list.all');
         });
         // Route::resource('article', ArticleController::class);
 
@@ -159,9 +161,8 @@ Route::prefix('admin/')->name('admin.')->group(function() {
                 Route::post('/update-status', [PopularpackagesController::class, 'updateStatus'])->name('popularpackages.updateStatus');
                 Route::post('/popular-itinerary-delete',[PopularpackagesController::class, 'delete'])->name('popularpackages.delete');
                 Route::post('/assign-tags', [PopularpackagesController::class, 'assignTags'])->name('popularpackages.assign.tags');
-
-
             });
+          
 
             //itenary list
             Route::prefix('itinerary-list')->group(function() {
@@ -244,6 +245,7 @@ Route::prefix('admin/')->name('admin.')->group(function() {
                 Route::get('/status/{id}', [TripcategoryController::class, 'status'])->name('tripcategory.status'); 
                 //Route::get('/isHighlight/{id}', [TripcategoryController::class, 'isHighlight'])->name('tripcategory.isHighlight');
                 Route::post('/highlight/update', [TripcategoryController::class, 'updateHighlights'])->name('tripcategory.updateHighlights');
+                Route::post('/header/update', [TripcategoryController::class, 'updateHeaders'])->name('tripcategory.updateHeaders');
                 Route::post('/delete', [TripcategoryController::class, 'delete'])->name('tripcategory.delete');
                 Route::post('/sort', [TripcategoryController::class, 'sort'])->name('tripcategory.sort');
 
@@ -280,10 +282,13 @@ Route::prefix('admin/')->name('admin.')->group(function() {
                 Route::post('/update', [PackageController::class, 'update'])->name('packageCategory.update');   
                 Route::get('/status/{id}', [PackageController::class, 'status'])->name('packageCategory.status');
                 Route::post('/delete', [PackageController::class, 'delete'])->name('packageCategory.delete');
+                Route::post('/sort', [PackageController::class, 'sort'])->name('packageCategory.sort');
 
             });
+           
 
         });
+       
         
     });
 

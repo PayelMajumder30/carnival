@@ -102,6 +102,13 @@
                             <p>Tags List</p>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ route('admin.newsletter.list.all') }}"
+                        class="nav-link {{ (request()->is('admin/newsletter/index*')) ? 'active active_nav_link' : '' }}">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>News Letter</p>
+                        </a>
+                    </li>
                    
                 </ul>
             </li>

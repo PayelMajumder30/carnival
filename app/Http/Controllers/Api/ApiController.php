@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 
 
-use App\Models\{TripCategoryDestination, SocialMedia, Banner, TripCategory, Partner, 
+use App\Models\{TripCategoryDestination, SocialMedia, Banner, TripCategory, Partner,PackageCategory,
 
     WhyChooseUs, Setting, Blog, Offer, PageContent, Destination, TripCategoryActivities, ItenaryList, 
 
@@ -282,9 +282,10 @@ class ApiController extends Controller
 
                 'id'             => $data_item->id,
 
-                'slug'             => $data_item->slug,
+                'slug'           => $data_item->slug,
 
                 'is_highlighted' => $data_item->is_highlighted,
+                'is_header'      => $data_item->is_header,
 
                 'title'          => ucwords($data_item->title),
 
@@ -904,7 +905,7 @@ class ApiController extends Controller
 
             'slug' => $destination->slug,
 
-            'banner_image' => asset($destination->banner_image),
+            'banner_media' => asset($destination->banner_media),
 
             'short_desc' => $destination->short_desc,
 
@@ -916,27 +917,16 @@ class ApiController extends Controller
 
         $groupedPackages = [];
 
-
-
         foreach ($destination->destinationItineraries as $entry) {
 
             $package = $entry->packageCategory;
 
             $itinerary = $entry->itinerary;
 
-
-
             if (!$package || !$itinerary) {
-
                 continue; 
-
             }
-
-
-
             $packageId = $package->id;
-
-
 
             if (!isset($groupedPackages[$packageId])) {
 
@@ -987,12 +977,15 @@ class ApiController extends Controller
 
 
         // Assign grouped package data to result
-
-        $result['packages'] = array_values($groupedPackages);
-
-
-
-        //Fetch all active support
+        // dd($groupedPackages);
+        $newGroupedPackages = [];
+        foreach ($groupedPackages as $index => $item_pack) {
+            $positions = PackageCategory::where('id', $index)->value('positions');
+            $newGroupedPackages[$positions] = $item_pack;
+        }
+        // Sort by positions after assigning
+        ksort($newGroupedPackages);
+        $result['packages'] = array_values($newGroupedPackages);
 
         $supports = Support::where('status', 1)->orderBy('id', 'asc')->get(['id', 'title', 'description']);           
 
@@ -1919,7 +1912,7 @@ class ApiController extends Controller
     public function newsletter(Request $request) {
         // Validate using $request->validate
         $validated = $request->validate([
-            'email' => 'required|email|max:255|unique:news_letter,email',
+            'email' => 'required|email|max:100|unique:news_letter,email',
         ]);
 
         $newsletter = NewsLetter::create([

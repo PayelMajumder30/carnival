@@ -13,8 +13,11 @@
                             <div class="col-md-12 text-right">
                                 <a href="{{ route('admin.tripcategory.create') }}" class="btn btn-sm btn-primary"> <i class="fa fa-plus"></i> Create</a>
                                 
-                                 <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#highlightModal">
+                                <button type="button" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#highlightModal">
                                     <i class="fa fa-star"></i> Is Highlighted
+                                </button>
+                                <button type="button" class="btn btn-sm btn-pink" data-toggle="modal" data-target="#headerModal">
+                                    <i class="fa fa-header"></i> Header Trips
                                 </button>
                             </div>
                         </div>
@@ -47,6 +50,7 @@
                             <div class="col-1">#</div>
                             <div class="col-3 text-left">Title</div>
                             <div class="col-2">Highlighted Status</div>
+                            <div class="col-2">Header Status</div>
                             <div class="col-3">Status</div>
                             <div class="col-3">Action</div>
                         </div>
@@ -65,7 +69,16 @@
                                                    
                                                 <label class="custom-control-label" for="highlightSwitch{{ $item->id }}"></label> 
                                             </div>
-                                        </div>                                       
+                                        </div>   
+                                        <div class="col-2">
+                                            <div class="custom-control custom-switch"  title="Toggle Highlight"> 
+                                                <input type="checkbox" class="custom-control-input" 
+                                                    id="headerSwitch{{ $item->id }}" 
+                                                    {{ $item->is_header == 1 ? 'checked' : '' }}>
+                                                   
+                                                <label class="custom-control-label" for="headerSwitch{{ $item->id }}"></label> 
+                                            </div>
+                                        </div>                                      
                                         <div class="col-3">
                                             <div class="custom-control custom-switch" data-toggle="tooltip" title="Toggle status">
                                                 <input type="checkbox" class="custom-control-input"
@@ -140,6 +153,44 @@
                                 <button type="submit" class="btn btn-primary">Save Changes</button>
                             </div>
                         </div>
+                        </form>
+                    </div>
+                </div>
+
+                {{-- add modal for header status --}}
+
+                <div class="modal fade" id="headerModal" tabindex="-1" role="dialog" aria-labelledby="headerModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <form id="headerForm">
+                            @csrf
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="headerModalLabel">Manage Header Trips</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        @foreach($allTrips as $trip)
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                    <input class="form-check-input header-checkbox" type="checkbox" name="header_trip_ids[]" value="{{ $trip->id }}" id="headerTrip{{ $trip->id }}"
+                                                        {{ $trip->is_header ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="headerTrip{{ $trip->id }}">
+                                                        {{ $trip->title }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                        <div id="headerError" class="text-danger mt-2" style="display: none;"></div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -232,7 +283,7 @@
         });
     }
 
-     //select checkboxes
+     //select checkboxes for status highlight
     $(document).ready(function () {
         // Function to reset the Save button state
         function resetSaveButton() {
@@ -304,5 +355,60 @@
             });
         });
     });
+
+   //select checkboxes for status header
+    $(document).ready(function () {
+        function resetHeaderSaveButton() {
+            const $btn = $('#headerForm button[type="submit"]');
+            $btn.prop('disabled', false).text('Save Changes');
+        }
+
+        function showHeaderLoadingButton() {
+            const $btn = $('#headerForm button[type="submit"]');
+            $btn.prop('disabled', true).text('Saving...');
+        }
+        
+        // Reset checkboxes when modal is shown
+        $('#headerModal').on('show.bs.modal', function () {
+            $('.header-checkbox').prop('checked', false);  // Clear all
+            $('#headerError').hide();                      // Hide errors
+            resetHeaderSaveButton();                       // Reset button state
+        });
+
+        $('#headerForm').on('submit', function (e) {
+            e.preventDefault();
+
+            let checkedCount = $('.header-checkbox:checked').length;
+
+            if (checkedCount === 0) {
+                $('#headerError').text('Please select at least one checkbox.').show();
+                return;
+            }
+
+            $('#headerError').hide();
+            showHeaderLoadingButton();
+
+            $.ajax({
+                url: '{{ route("admin.tripcategory.updateHeaders") }}', // adjust as needed
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function (res) {
+                    if (res.status) {
+                        $('#headerModal').modal('hide');
+                        location.reload();
+                    } else {
+                        resetHeaderSaveButton();
+                    }
+                },
+                error: function () {
+                    resetHeaderSaveButton();
+                    $('#headerError').text('Something went wrong. Please try again.').show();
+                }
+            });
+        });
+    });
+
+
+
 </script>
 @endsection

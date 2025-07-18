@@ -93,12 +93,20 @@
                                             @endif
                                         </div>
                                     </td>
+                                    
                                     <td>
                                         <div class="text-center">
-                                            @if (!empty($desti_item->banner_image) && file_exists(public_path($desti_item->banner_image)))
-                                                <img src="{{ asset($desti_item->banner_image) }}" alt="destination-banner-image" style="height: 50px; width: 70px; object-position: center;" class="img-thumbnail">
+                                            @if (!empty($desti_item->banner_media) && file_exists(public_path($desti_item->banner_media)) && in_array(pathinfo($desti_item->banner_media, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'webp']))
+                                                <img src="{{ asset($desti_item->banner_media) }}" alt="destination-banner-image" style="height: 50px; width: 70px; object-position: center;" class="img-thumbnail">
+                                            
+                                            @elseif (!empty($desti_item->banner_media) && file_exists(public_path($desti_item->banner_media)) && in_array(pathinfo($desti_item->banner_media, PATHINFO_EXTENSION), ['mp4', 'webm']))
+                                                <video width="70" height="50" class="img-thumbnail" controls>
+                                                    <source src="{{ asset($desti_item->banner_media) }}" type="video/{{ pathinfo($desti_item->banner_media, PATHINFO_EXTENSION) }}">
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            
                                             @else
-                                                <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="placeholder-banner_image" title="banner image" style="height: 50px; width: 70px;" class="img-thumbnail">
+                                                <img src="{{ asset('backend-assets/images/placeholder.jpg') }}" alt="placeholder-banner" title="banner media" style="height: 50px; width: 70px;" class="img-thumbnail">
                                             @endif
                                         </div>
                                     </td>
@@ -174,11 +182,39 @@
                                                 <input type="file" class="form-control" name="image" id="image">
                                                 <div class="error text-danger" id="image-error"></div>
                                             </div>
-                                            <div class="form-group">
+                                            {{-- <div class="form-group">
                                                 <label for="banner_image">Upload Banner Image</label>
                                                 <input type="file" class="form-control" name="banner_image" id="banner_image">
                                                 <div class="error text-danger" id="banner-image-error"></div>
+                                            </div> --}}
+                                            <div class="form-group">
+                                                <label>Upload Banner Media</label>
+
+                                                <!-- Radio Buttons -->
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="banner_type" id="bannerImageRadio" value="image" checked>
+                                                    <label class="form-check-label" for="bannerImageRadio">Image</label>
+                                                </div>
+
+                                                <div class="form-check form-check-inline ms-3"> <!-- added spacing class -->
+                                                    <input class="form-check-input" type="radio" name="banner_type" id="bannerVideoRadio" value="video">
+                                                    <label class="form-check-label" for="bannerVideoRadio">Video</label>
+                                                </div>
+
+                                                <!-- Image Upload Field -->
+                                                <div id="bannerImageField" class="mt-2">
+                                                    <input type="file" class="form-control" name="banner_image" accept="image/*">
+                                                </div>
+
+                                                <!-- Video Upload Field (Hidden initially) -->
+                                                <div id="bannerVideoField" class="mt-2 d-none">
+                                                    <input type="file" class="form-control" name="banner_video" accept="video/mp4,video/webm">
+                                                </div>
+
+                                                <div class="error text-danger" id="banner-image-error"></div>
                                             </div>
+
+
                                             <div class="form-group">
                                                 <label for="short_desc">Upload Short Description</label>
                                                 <textarea class="form-control" name="short_desc" id="short_desc" rows="4" 
@@ -405,6 +441,19 @@
             });
         });
     });
+
+    $('#bannerImageRadio, #bannerVideoRadio').on('change', function () {
+        if ($('#bannerImageRadio').is(':checked')) {
+            $('#bannerImageField').removeClass('d-none');
+            $('#bannerVideoField').addClass('d-none');
+        } else if ($('#bannerVideoRadio').is(':checked')) {
+            $('#bannerVideoField').removeClass('d-none');
+            $('#bannerImageField').addClass('d-none');
+        }
+    });
+
+
+
 
 
 

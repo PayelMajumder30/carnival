@@ -38,23 +38,26 @@
                     </div>
                     <div id="ajax-message"></div>
                     <div class="card-body">
-                        <div class="d-flex font-weight-bold text-center border-bottom py-2 bg-light">
+                        <!-- Header Row -->
+                        <div class="row font-weight-bold text-center border-bottom py-2 bg-light">
                             <div class="col-1">#</div>
                             <div class="col-3">Title</div>
                             <div class="col-4">Description</div>
                             <div class="col-2">Status</div>
                             <div class="col-2">Action</div>
                         </div>
-                        
+
+                        <!-- Sortable List -->
                         <ul class="list-group sortable-list" id="sortable">
                             @forelse($data as $index => $item)
                                 <li class="list-group-item sortable-item py-3" data-id="{{ $item->id }}">
-                                    <div class="d-flex text-center align-items-center">
+                                    <div class="row align-items-center text-center">
                                         <div class="col-1">{{ $index + $data->firstItem() }}</div>
                                         <div class="col-3 text-left">{{ $item->title }}</div>
                                         <div class="col-4 text-left">{{ Str::limit($item->desc, 100) }}</div>
+                                        
                                         <div class="col-2">
-                                            <div class="custom-control custom-switch" data-toggle="tooltip" title="Toggle status">
+                                            <div class="custom-control custom-switch d-inline-block" data-toggle="tooltip" title="Toggle status">
                                                 <input type="checkbox" class="custom-control-input"
                                                     id="customSwitch{{$item->id}}"
                                                     {{ ($item->status == 1) ? 'checked' : '' }}
@@ -62,11 +65,12 @@
                                                 <label class="custom-control-label" for="customSwitch{{$item->id}}"></label>
                                             </div>
                                         </div>
+                                        
                                         <div class="col-2 d-flex justify-content-center">
                                             <a href="{{ route('admin.whychooseus.edit', $item->id) }}" class="btn btn-sm btn-info mr-1" data-toggle="tooltip" title="Edit">
                                                 <i class="fa fa-edit"></i>
                                             </a>
-                                            <a href="javascript: void(0)" class="btn btn-sm btn-dark" onclick="deleteChoose({{$item->id}})" data-toggle="tooltip" title="Delete">
+                                            <a href="javascript:void(0)" class="btn btn-sm btn-dark" onclick="deleteChoose({{ $item->id }})" data-toggle="tooltip" title="Delete">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         </div>
@@ -77,8 +81,9 @@
                             @endforelse
                         </ul>
 
-                        <div class="pagination-container">
-                            {{$data->links()}}
+                        <!-- Pagination -->
+                        <div class="pagination-container mt-3">
+                            {{ $data->links() }}
                         </div>
                     </div>
                 </div>
@@ -119,7 +124,7 @@
                             </div>
                         `);
 
-                        // ✅ Reload after a short delay
+                        // Reload after a short delay
                         setTimeout(function () {
                             location.reload();
                         }, 1000); // reload after 1 second (1000ms)

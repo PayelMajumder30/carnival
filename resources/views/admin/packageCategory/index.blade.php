@@ -31,86 +31,56 @@
                             </div>
                         </div>
                     </div>
+                   <div id="ajax-message"></div>
                     <div class="card-body">
-                        <table class="table table-sm table-hover">
-                            <thead>
-                                <tr class="text-center">
-                                    <th>#</th>
-                                    <th>Title</th>
-                                    <th>status</th>
-                                    <th style="width: 100px">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($data as $index => $item)
-                                    <tr id="{{$item->id}}">
-                                        <td>
-                                            <div class = "text-center">
-                                                {{ $index + $data->firstItem() }}</td>
-                                            </div>
-                                        <td>
-                                           <div class="text-center">
-                                                <p class="text-muted mb-0">{{ ucwords($item->title) }}</p>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
-                                                <input type="checkbox" class="custom-control-input" id="customSwitch{{$item->id}}" {{ ($item->status == 1) ? 'checked' : '' }} onchange="statusAllToggle('{{ route('admin.packageCategory.status', $item->id) }}')">
-                                                <label class="custom-control-label" for="customSwitch{{$item->id}}"></label>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="btn-group">
-                                                <a href="javascript:void(0)" class="btn btn-sm btn-info edit-btn" data-id="{{$item->id}}" 
-                                                    data-title="{{ $item->title }}" data-toggle="modal" data-target="#editModal" title="Edit">
-                                                    <i class="fa fa-edit"></i>
-                                                </a>
-                                                <a href="javascript:void(0)" class="btn btn-sm btn-dark delete-btn">
-                                                    <input type="hidden" class="hidden-id" value="{{ $item->id }}">
-                                                    <i class="fa fa-trash"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="100%" class="text-center">No records found</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-
-                        {{-- Edit modal for title --}}
-
-                        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <form method="POST" action="{{ route('admin.packageCategory.update') }}">
-                                @csrf
-                                <input type="hidden" name="id" id="edit-id">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                    <h5 class="modal-title">Edit Package Category</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span>&times;</span>
-                                    </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="form-group">
-                                            <label for="edit-title">Title</label>
-                                            <input type="text" name="title" id="edit-title" class="form-control" required>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-primary">Update Package category</button>
-                                    </div>
-                                </div>
-                                </form>
-                            </div>
+                        <!-- Header Row -->
+                        <div class="row font-weight-bold text-center border-bottom py-2 bg-light">
+                            <div class="col-1">#</div>
+                            <div class="col-6">Title</div>
+                            <div class="col-2">Status</div>
+                            <div class="col-3">Action</div>
                         </div>
 
-                        <div class="pagination-container">
-                            {{$data->appends($_GET)->links()}}
+                        <!-- Sortable List -->
+                        <ul class="list-group sortable-list" id="sortable">
+                            @forelse($data as $index => $item)
+                                <li class="list-group-item sortable-item py-3" data-id="{{ $item->id }}">
+                                    <div class="row align-items-center text-center">
+                                        <div class="col-1">{{ $index + $data->firstItem() }}</div>
+                                        <div class="col-6">{{ $item->title }}</div>
+                                        <div class="col-2">
+                                            <div class="custom-control custom-switch d-inline-block" data-toggle="tooltip" title="Toggle status">
+                                                <div class="custom-control custom-switch mt-1" data-toggle="tooltip" title="Toggle status">
+                                                <input type="checkbox" class="custom-control-input" id="customSwitch{{$item->id}}" {{ ($item->status == 1) ? 'checked' : '' }} onchange="statusAllToggle('{{ route('admin.packageCategory.status', $item->id) }}')">
+                                                <label class="custom-control-label" for="customSwitch{{$item->id}}"></label>
+                                                </div>              
+                                        </div>
+                                        </div>
+                                        
+                                        <div id="item-{{ $item->id }}" class="col-3 d-flex justify-content-center align-items-center mb-2">
+                                            <a href="javascript:void(0)" class="btn btn-sm btn-info edit-btn"
+                                                data-id="{{ $item->id }}" 
+                                                data-title="{{ $item->title }}"
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#editModal" title="Edit">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+
+                                            <a href="javascript:void(0)" class="btn btn-sm btn-dark" onclick="deletePackage({{ $item->id }})" data-toggle="tooltip" title="Delete">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </li>
+                            @empty
+                                <li class="list-group-item text-center">No records found</li>
+                            @endforelse
+                        </ul>
+
+                        <!-- Pagination -->
+                        <div class="pagination-container mt-3">
+                            {{ $data->links() }}
                         </div>
                     </div>
                 </div>
@@ -132,6 +102,31 @@
                     </div>
                 </div>
             </div>
+            <!-- Edit Modal -->
+            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <form action="{{ route('admin.packageCategory.update') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="id" id="edit-id">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Edit Package Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                        <div class="form-group">
+                            <label for="edit-title">Title</label>
+                            <input type="text" class="form-control" name="title" id="edit-title" required>
+                        </div>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -139,46 +134,91 @@
 @endsection
 
 @section('script')
+<script src="{{ asset('backend-assets/js/jquery-ui.min.js') }}"></script> 
 <script>
  
-    $(document).ready(function () {
-        $('.delete-btn').click(function () {
-            let itemId = $(this).find('.hidden-id').val(); // get hidden input value
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "Are you sure you want to delete this?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: "{{ route('admin.packageCategory.delete') }}",
-                        type: "POST",
-                        data: {
-                            _token: "{{ csrf_token() }}",
-                            id: itemId
-                        },
-                        success: function (response) {
-                            if (response.status === 'success') {
-                                toastFire('Deleted!', response.message, 'success');
-                                // Optionally remove the row
-                                $('#' + itemId).remove();
-                            } else {
-                                toastFire('Error', 'Something went wrong', 'error');
-                            }
-                        },
-                        error: function () {
-                            toastFire('Error', 'Server error occurred', 'error');
-                        }
+    //for sorting
+    $(function () {
+        $('#sortable').sortable({
+            update: function (event, ui) {
+                let order = [];
+                $('.sortable-item').each(function (index, element) {
+                    order.push({
+                        id: $(this).data('id'),
+                        position: index + 1
                     });
-                }
-            });
+                });
+
+                $.ajax({
+                    url: "{{ route('admin.packageCategory.sort') }}",
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        order: order
+                    },
+                    success: function(response) {
+                        $('#ajax-message').html(`
+                            <div class="alert alert-success alert-dismissible fade show mt-2 text-dark" role="alert">
+                                ${response.message}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        `);
+
+                        // Reload after a short delay
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000); 
+                    },
+                    error: function () {
+                        $('#ajax-message').html(`
+                            <div class="alert alert-danger fade show mt-2" role="alert">
+                                Sorting failed. Please try again.
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        `);
+                    }
+                });
+            }
         });
-    });
+    }); 
+
+    // for delete
+    function deletePackage(packageId) {
+        Swal.fire({
+            icon: 'warning',
+            title: "Are you sure you want to delete this?",
+            text: "You won't be able to revert this!",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Delete",
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('admin.packageCategory.delete')}}",
+                    type: 'POST',
+                    data: {
+                        "id": packageId,
+                        "_token": '{{ csrf_token() }}',
+                    },
+                    success: function (data){
+                        if (data.status != 200) {
+                            toastFire('error', data.message);
+                        } else {
+                            toastFire('success', data.message);
+                            location.reload();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
 
 
     //script for modal
@@ -191,5 +231,7 @@
             $('#edit-title').val(title);
         });
     });
+
+
 </script>
 @endsection

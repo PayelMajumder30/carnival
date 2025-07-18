@@ -25,19 +25,20 @@ class PackageController extends Controller
         $query->when($keyword, function($query) use ($keyword) {
             $query->where('title', 'like', '%'.$keyword.'%');
         });
-        $data = $query->latest('id')->paginate(25);
+        $data = $query->orderBy('positions', 'asc')->paginate(25);
         return view('admin.packageCategory.index', compact('data'));
     }
 
     public function create(Request $request) {
         return view ('admin.packageCategory.index');
     }
+    
     public function store(Request $request) {
         $request->validate([
             'title' => [
-            'required',
-            'string',
-            'max:255',
+                'required',
+                'string',
+                'max:255',
                 Rule::unique('package_categories')->where(function ($query) {
                     return $query->whereNull('deleted_at');
                 }),
@@ -49,6 +50,15 @@ class PackageController extends Controller
             'title.unique'      => 'This title already exists. Please choose a different one.',
         ]);
         $data = $request->all();
+
+        // Get the max 'positions' value among active (non-deleted) records
+        $existingData = PackageCategory::whereNull('deleted_at')->count();
+        //dd($maxPosition); 
+
+        $data['positions'] = $existingData>0?$existingData+1:1;
+        
+        //dd($data['positions']); 
+
         $this->packageRepository->create($data);
         return redirect()->route('admin.packageCategory.list.all')->with('success', 'New Package category created');
     }
@@ -78,13 +88,30 @@ class PackageController extends Controller
     }
 
     public function delete(Request $request){
-       $item = PackageCategory::findOrFail($request->id);
+        $data = PackageCategory::find($request->id); // use find(), not findOrFail() to avoid immediate 404
+    
+        if (!$data) {
+            return response()->json([
+                'status'    => 404,
+                'message'   => 'Package category not found.',
+            ]);
+        }
+    
+        $data->delete(); // perform deletion
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Package category deleted successfully.',
+        ]);
+    }
 
-       if($item->delete()) {
-        return response()->json(['status' => 'success', 'message' => 'Package category deleted successfully.']);
-       } else {
-        return response()->json(['status' => 'error', 'message' => 'Deletion failed.']);
-       }
+    public function sort(Request $request) {
+        foreach ($request->order as $item) {
+            PackageCategory::where('id', $item['id'])->update(['positions'  => $item['position']]);
+        }
+        return response()->json([
+            'status'    => 200,
+            'message'   => 'Table updated successfully',
+        ]);
     }
 
  

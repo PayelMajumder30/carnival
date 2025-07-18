@@ -81,47 +81,6 @@ class TripcategoryController extends Controller
         ]);
     }
 
-    // public function isHighlight(Request $request, $id) {
-    //     $category = TripCategory::find($id);
-    //     if (!$category) {
-    //         return response()->json([
-    //             'status'    => 404,
-    //             'message'   => 'Trip Category not found',
-    //         ]);
-    //     }        
-    //     // Toggle off if already highlighted
-    //     if ($category->is_highlighted == 1) {
-    //         $category->is_highlighted = 0; 
-    //         $category->save();
-        
-    //         return response()->json([
-    //             'status'    => 200,
-    //             'message'   => 'Highlight removed successfully.',
-    //         ]);
-    //     }       
-    //     // Count how many are currently highlighted
-    //     $highlightedCount = TripCategory::where('is_highlighted', 1)->count();
-        
-    //     if ($highlightedCount >= 2) {
-    //         // Turn off the oldest highlighted category
-    //         $oldest = TripCategory::where('is_highlighted', 1)
-    //             ->orderBy('updated_at', 'asc')
-    //             ->first();
-        
-    //         if ($oldest) {
-    //             $oldest->is_highlighted = 0;
-    //             $oldest->save();
-    //         }
-    //     }       
-    //     // Now highlight the selected one
-    //     $category->is_highlighted = 1;
-    //     $category->save();
-        
-    //     return response()->json([
-    //         'status' => 200,
-    //         'message' => 'Highlight activated successfully.',
-    //     ]);       
-    // }
 
     public function updateHighlights(Request $request) {
 
@@ -132,6 +91,20 @@ class TripcategoryController extends Controller
         }
         return response()->json(['status' => true, 'message' => 'Highlighted trips updated successfully.']);
     }
+
+    public function updateHeaders(Request $request)
+    {
+        // Reset all
+        TripCategory::query()->update(['is_header' => 0]);
+
+        // Update selected ones
+        if ($request->has('header_trip_ids')) {
+            TripCategory::whereIn('id', $request->header_trip_ids)->update(['is_header' => 1]);
+        }
+
+        return response()->json(['status' => true, 'message' => 'Header trips updated successfully.']);
+    }
+
 
     public function delete(Request $request){
         $tripcategory = TripCategory::find($request->id); // use find(), not findOrFail() to avoid immediate 404

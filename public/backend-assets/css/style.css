@@ -250,6 +250,16 @@
       border-radius: 8px;
   }
 
+    /* for is_header */
+.btn-pink {
+    background-color: #e83e8c;
+    color: #fff;
+    border-color: #e83e8c;
+}
 
+.btn-pink:hover {
+    background-color: #d63384;
+    border-color: #d63384;
+}
 
 

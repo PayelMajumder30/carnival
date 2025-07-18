@@ -12,6 +12,7 @@ class PackageCategory extends Model
     protected $table = 'package_categories';
     protected $fillable = [
         'title',
+        'positions',
         'status',
     ];
 

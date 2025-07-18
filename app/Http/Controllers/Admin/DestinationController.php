@@ -182,69 +182,162 @@ class DestinationController extends Controller
     }
 
    
-    public function createDestImage(Request $request) {
-        $request->validate([
-            'id'    => 'required|exists:destinations,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'logo'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'banner_image'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
-            'short_desc'    => 'nullable|string|min:1',
-        ], [
-            'image.max'   => 'Upload image must not be more than 5MB.',
-            'logo.max'    => 'Logo must not be more than 5MB.',
-            'banner_image.max'    => 'Banner iamge must not be more than 5MB.',
-        ]);
+    // public function createDestImage(Request $request)
+    // {
+    //     $request->validate([
+    //         'id'             => 'required|exists:destinations,id',
+    //         'image'          => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+    //         'logo'           => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+    //         'banner_type'    => 'required|in:image,video',
+    //         'banner_image'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+    //         'banner_video'   => 'nullable|mimes:mp4,webm|max:20480', // 20MB
+    //         'short_desc'     => 'nullable|string|min:1',
+    //     ], [
+    //         'image.max'            => 'Upload image must not be more than 5MB.',
+    //         'logo.max'             => 'Logo must not be more than 5MB.',
+    //         'banner_image.max'     => 'Banner image must not be more than 5MB.',
+    //         'banner_video.max'     => 'Video must not be more than 20MB.',
+    //         'banner_video.mimes'   => 'Only MP4 or WEBM video files are allowed.',
+    //     ]);
 
-        // if (!$request->hasFile('image') && !$request->hasFile('logo')) {
-        //     return response()->json([
-        //         'errors' => [
-        //             'image' => ['Please upload at least one file: image or logo.'],
-        //             'logo'  => ['Please upload at least one file: image or logo.'],
-        //         ]
-        //     ], 422);
-        // }
+    //     $destination = Destination::find($request->id);
+
+    //     // Upload main image
+    //     if ($request->hasFile('image') && $request->file('image')->isValid()) {
+    //         $image = $request->file('image');
+    //         $imageName = time() . rand(10000, 99999) . '.' . $image->extension();
+    //         $imagePath = 'uploads/country_wise_dest/' . $imageName;
+    //         $image->move(public_path('uploads/country_wise_dest'), $imageName);
+    //         $destination->image = $imagePath;
+    //     }
+
+    //     // Upload logo
+    //     if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
+    //         $logo = $request->file('logo');
+    //         $logoName = time() . rand(10000, 99999) . '_logo.' . $logo->extension();
+    //         $logoPath = 'uploads/country_wise_dest/' . $logoName;
+    //         $logo->move(public_path('uploads/country_wise_dest'), $logoName);
+    //         $destination->logo = $logoPath;
+    //     }
+
+    //     // Upload banner media
+    //     if ($request->input('banner_type') === 'image') {
+    //         if ($request->hasFile('banner_image') && $request->file('banner_image')->isValid()) {
+    //             $bannerImage = $request->file('banner_image');
+    //             $bannerImageName = time() . rand(10000, 99999) . '.' . $bannerImage->extension();
+    //             $bannerImagePath = 'uploads/desti_wise_bannerImg/' . $bannerImageName;
+    //             $bannerImage->move(public_path('uploads/desti_wise_bannerImg'), $bannerImageName);
+    //             $destination->banner_media = $bannerImagePath;
+    //         }
+    //     } elseif ($request->input('banner_type') === 'video') {
+    //         if ($request->hasFile('banner_video') && $request->file('banner_video')->isValid()) {
+    //             $bannerVideo = $request->file('banner_video');
+    //             $bannerVideoName = time() . rand(10000, 99999) . '.' . $bannerVideo->extension();
+    //             $bannerVideoPath = 'uploads/desti_wise_bannerVid/' . $bannerVideoName;
+    //             $bannerVideo->move(public_path('uploads/desti_wise_bannerVid'), $bannerVideoName);
+    //             $destination->banner_media = $bannerVideoPath;
+    //         }
+    //     }
+
+    //     if ($request->filled('short_desc')) {
+    //         $destination->short_desc = $request->short_desc;
+    //     }
+
+    //     $destination->save();
+
+    //     return response()->json(['success' => true]);
+    // }
+
+    public function createDestImage(Request $request)
+    {
+        $request->validate([
+            'id'             => 'required|exists:destinations,id',
+            'image'          => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'logo'           => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'banner_type'    => 'required|in:image,video',
+            'banner_image'   => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'banner_video'   => 'nullable|mimes:mp4,webm|max:20480', // 20MB
+            'short_desc'     => 'nullable|string|min:1',
+        ], [
+            'image.max'            => 'Upload image must not be more than 5MB.',
+            'logo.max'             => 'Logo must not be more than 5MB.',
+            'banner_image.max'     => 'Banner image must not be more than 5MB.',
+            'banner_video.max'     => 'Video must not be more than 20MB.',
+            'banner_video.mimes'   => 'Only MP4 or WEBM video files are allowed.',
+        ]);
 
         $destination = Destination::find($request->id);
 
-        //image and logo upload
-        if($request->hasFile('image') && $request->file('image')->isValid())
-        {
-            $image = $request->file('image');
-            $imageName = time(). rand(10000, 99999). '.'. $image->extension();
-            $imagePath = 'uploads/country_wise_dest/' . $imageName;
+        // Handle image
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            // Remove old image if exists
+            if (!empty($destination->image) && file_exists(public_path($destination->image))) {
+                unlink(public_path($destination->image));
+            }
 
+            $image = $request->file('image');
+            $imageName = time() . rand(10000, 99999) . '.' . $image->extension();
+            $imagePath = 'uploads/country_wise_dest/' . $imageName;
             $image->move(public_path('uploads/country_wise_dest'), $imageName);
             $destination->image = $imagePath;
         }
 
-        if($request->hasFile('logo') && $request->file('logo')->isValid())
-        {
-            $logo = $request->file('logo');
-            $logoName = time(). rand(10000, 99999). '_logo.'. $logo->extension();
-            $logoPath = 'uploads/country_wise_dest/' . $logoName;
+        // Handle logo
+        if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
+            // Remove old logo if exists
+            if (!empty($destination->logo) && file_exists(public_path($destination->logo))) {
+                unlink(public_path($destination->logo));
+            }
 
+            $logo = $request->file('logo');
+            $logoName = time() . rand(10000, 99999) . '_logo.' . $logo->extension();
+            $logoPath = 'uploads/country_wise_dest/' . $logoName;
             $logo->move(public_path('uploads/country_wise_dest'), $logoName);
             $destination->logo = $logoPath;
         }
 
-        //upload banner image
-        if ($request->hasFile('banner_image') && $request->file('banner_image')->isValid()) {
-            $bannerImage = $request->file('banner_image');
-            $bannerImageName = time() . rand(10000, 99999) . '.' . $bannerImage->extension();
-            $bannerImagePath = 'uploads/desti_wise_bannerImg/' . $bannerImageName;
-            $bannerImage->move(public_path('uploads/desti_wise_bannerImg'), $bannerImageName);
-            $destination->banner_image = $bannerImagePath;
+        // Handle banner media (image or video)
+        if ($request->input('banner_type') === 'image') {
+            if ($request->hasFile('banner_image') && $request->file('banner_image')->isValid()) {
+                // Remove old banner if exists
+                if (!empty($destination->banner_media) && file_exists(public_path($destination->banner_media))) {
+                    unlink(public_path($destination->banner_media));
+                }
+
+                $bannerImage = $request->file('banner_image');
+                $bannerImageName = time() . rand(10000, 99999) . '.' . $bannerImage->extension();
+                $bannerImagePath = 'uploads/desti_wise_bannerImg/' . $bannerImageName;
+                $bannerImage->move(public_path('uploads/desti_wise_bannerImg'), $bannerImageName);
+                $destination->banner_media = $bannerImagePath;
+            }
+        } elseif ($request->input('banner_type') === 'video') {
+            if ($request->hasFile('banner_video') && $request->file('banner_video')->isValid()) {
+                // Remove old banner if exists
+                if (!empty($destination->banner_media) && file_exists(public_path($destination->banner_media))) {
+                    unlink(public_path($destination->banner_media));
+                }
+
+                $bannerVideo = $request->file('banner_video');
+                $bannerVideoName = time() . rand(10000, 99999) . '.' . $bannerVideo->extension();
+                $bannerVideoPath = 'uploads/desti_wise_bannerVid/' . $bannerVideoName;
+                $bannerVideo->move(public_path('uploads/desti_wise_bannerVid'), $bannerVideoName);
+                $destination->banner_media = $bannerVideoPath;
+            }
         }
 
+        // Handle short description
         if ($request->filled('short_desc')) {
             $destination->short_desc = $request->short_desc;
         }
+
         $destination->save();
 
-        
-        // return redirect()->back()->with('success', 'Image and logo Updated Successfully');
         return response()->json(['success' => true]);
     }
+
+
+
+
 
     public function destinationStatus(Request $request, $id) {      
         $destination = Destination::find($id);
